@@ -1,0 +1,521 @@
+.register-shell {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 28px 14px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 20%, rgba(92, 205, 255, 0.2), transparent 35%),
+    radial-gradient(circle at 85% 18%, rgba(130, 170, 255, 0.2), transparent 36%),
+    linear-gradient(180deg, #070a1c 0%, #0f2452 55%, #1d77b9 100%);
+}
+
+.register-stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(2px 2px at 10% 14%, rgba(255, 247, 176, 0.7), transparent 100%),
+    radial-gradient(1px 1px at 20% 55%, rgba(255, 247, 176, 0.8), transparent 100%),
+    radial-gradient(2px 2px at 37% 24%, rgba(255, 247, 176, 0.75), transparent 100%),
+    radial-gradient(2px 2px at 52% 11%, rgba(255, 247, 176, 0.72), transparent 100%),
+    radial-gradient(1px 1px at 67% 72%, rgba(255, 247, 176, 0.78), transparent 100%),
+    radial-gradient(2px 2px at 82% 28%, rgba(255, 247, 176, 0.72), transparent 100%),
+    radial-gradient(1px 1px at 92% 61%, rgba(255, 247, 176, 0.75), transparent 100%);
+  animation: starDrift 9s ease-in-out infinite alternate;
+}
+
+.register-glow {
+  position: absolute;
+  width: 46vw;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  filter: blur(50px);
+  opacity: 0.24;
+  pointer-events: none;
+}
+
+.register-glow-left {
+  left: -16vw;
+  bottom: -18vw;
+  background: #62c2ff;
+}
+
+.register-glow-right {
+  right: -18vw;
+  top: -10vw;
+  background: #7aa8ff;
+}
+
+.register-card {
+  position: relative;
+  z-index: 2;
+  width: min(1060px, calc(100% - 10px));
+  border-radius: 28px;
+  padding: 28px;
+  background: rgba(10, 17, 46, 0.55);
+  border: 1px solid rgba(160, 193, 255, 0.34);
+  box-shadow:
+    0 20px 65px rgba(2, 10, 33, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
+  backdrop-filter: blur(18px) saturate(130%);
+}
+
+.register-header {
+  text-align: center;
+}
+
+.register-signature {
+  margin: 0;
+  color: #eef7ff;
+  font-size: clamp(1.7rem, 4.5vw, 2.4rem);
+  font-family: "Snell Roundhand", "Apple Chancery", "Segoe Script", cursive;
+}
+
+.register-card h1 {
+  margin: 2px 0 0;
+  color: #f5fbff;
+  font-size: clamp(2rem, 5.2vw, 3rem);
+  letter-spacing: -0.03em;
+  font-family: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.register-subtitle {
+  margin: 8px 0 0;
+  color: rgba(228, 242, 255, 0.86);
+}
+
+.register-form {
+  margin-top: 22px;
+  display: grid;
+  gap: 18px;
+}
+
+.register-section {
+  padding: 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(174, 210, 255, 0.2);
+  background: rgba(9, 18, 49, 0.32);
+}
+
+.section-head h2 {
+  margin: 0;
+  color: #f5fbff;
+  font-size: 1.15rem;
+}
+
+.section-head p {
+  margin: 6px 0 0;
+  color: rgba(226, 240, 255, 0.8);
+}
+
+.role-toggle {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 6px;
+  border-radius: 14px;
+  background: rgba(156, 195, 255, 0.15);
+  border: 1px solid rgba(196, 221, 255, 0.28);
+}
+
+.role-toggle button {
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 0.95rem;
+  font-weight: 620;
+  color: rgba(231, 243, 255, 0.8);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.role-toggle button.active {
+  color: #081f42;
+  background: linear-gradient(135deg, #f1f7ff 0%, #cde1ff 100%);
+  box-shadow: 0 10px 24px rgba(63, 146, 255, 0.28);
+}
+
+.profile-grid,
+.upload-grid,
+.field-row.two-up {
+  display: grid;
+  gap: 14px;
+}
+
+.profile-grid {
+  margin-top: 16px;
+  grid-template-columns: 220px minmax(0, 1fr);
+  align-items: start;
+}
+
+.avatar-upload,
+.drop-zone,
+.referral-field,
+.field-row label,
+.register-section label {
+  display: grid;
+  gap: 8px;
+  color: rgba(230, 242, 255, 0.95);
+  font-size: 0.9rem;
+  font-weight: 520;
+}
+
+.avatar-upload input,
+.drop-zone input {
+  display: none;
+}
+
+.profile-upload,
+.drop-zone {
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px dashed rgba(186, 220, 255, 0.35);
+  background: rgba(11, 20, 53, 0.45);
+  padding: 14px;
+}
+
+.upload-title {
+  font-weight: 650;
+  color: #f5fbff;
+}
+
+.upload-hint {
+  color: rgba(206, 227, 255, 0.68);
+  font-size: 0.85rem;
+}
+
+.avatar-preview {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 18px;
+  margin-top: 6px;
+  object-fit: cover;
+  border: 1px solid rgba(174, 210, 255, 0.3);
+  background: rgba(4, 10, 30, 0.65);
+}
+
+.avatar-preview-wrap {
+  position: relative;
+  margin-top: 6px;
+}
+
+.avatar-preview-wrap .avatar-preview {
+  margin-top: 0;
+}
+
+.avatar-refresh-btn {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(205, 228, 255, 0.5);
+  border-radius: 999px;
+  background: rgba(10, 20, 52, 0.64);
+  color: #ffffff;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.avatar-refresh-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.avatar-refresh-btn:hover {
+  transform: translateY(-1px) rotate(12deg);
+  border-color: rgba(226, 240, 255, 0.78);
+  box-shadow: 0 8px 18px rgba(11, 38, 82, 0.42);
+}
+
+.profile-stack {
+  display: grid;
+  gap: 14px;
+}
+
+.register-section input,
+.register-section select {
+  min-height: 44px;
+  border-radius: 12px;
+  padding: 0 12px;
+  color: #edf6ff;
+  background: rgba(11, 20, 53, 0.65);
+  border: 1px solid rgba(165, 201, 255, 0.25);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.register-section input::placeholder {
+  color: rgba(206, 227, 255, 0.58);
+}
+
+.register-section input:focus,
+.register-section select:focus {
+  border-color: rgba(193, 225, 255, 0.8);
+  box-shadow: 0 0 0 3px rgba(131, 196, 255, 0.25);
+}
+
+.college-select {
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: 16px;
+  padding-right: 44px !important;
+  background-color: rgba(11, 20, 53, 0.5);
+  background:
+    linear-gradient(135deg, rgba(181, 222, 255, 0.15) 0%, rgba(122, 186, 255, 0.12) 100%),
+    linear-gradient(45deg, transparent 50%, #ffffff 50%),
+    linear-gradient(135deg, #ffffff 50%, transparent 50%),
+    rgba(11, 20, 53, 0.5);
+  background-repeat: no-repeat;
+  background-size: 100% 100%, 8px 8px, 8px 8px, 100% 100%;
+  background-position: 0 0, calc(100% - 20px) calc(50% + 1px), calc(100% - 14px) calc(50% + 1px), 0 0;
+  border: 1px solid rgba(170, 210, 255, 0.35);
+  color: #ffffff;
+  backdrop-filter: blur(6px) saturate(120%);
+}
+
+.college-select:hover {
+  border-color: rgba(201, 229, 255, 0.65);
+  box-shadow: inset 0 0 0 1px rgba(201, 229, 255, 0.25);
+}
+
+.college-select option {
+  color: #ffffff;
+  background-color: rgba(12, 24, 60, 0.72);
+}
+
+.custom-college-toggle {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+  color: #eff8ff;
+  font-size: 0.9rem;
+  font-weight: 520;
+}
+
+.custom-college-toggle input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #88d4ff;
+}
+
+.register-section input:disabled,
+.register-section select:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.input-with-status {
+  display: grid;
+  gap: 8px;
+}
+
+.status-pill {
+  width: fit-content;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  color: rgba(230, 242, 255, 0.88);
+  background: rgba(115, 150, 210, 0.24);
+}
+
+.status-pill.available {
+  color: #dfffe8;
+  background: rgba(51, 173, 97, 0.22);
+}
+
+.status-pill.taken {
+  color: #ffd9d9;
+  background: rgba(224, 71, 71, 0.22);
+}
+
+.error-text {
+  color: #ffb6b6;
+  font-size: 0.82rem;
+}
+
+.phone-row {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 8px;
+}
+
+.rule-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rule-list span {
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: rgba(125, 160, 220, 0.16);
+  color: rgba(210, 227, 255, 0.72);
+  font-size: 0.78rem;
+}
+
+.rule-list span.pass {
+  color: #dfffe8;
+  background: rgba(51, 173, 97, 0.22);
+}
+
+.college-picker {
+  margin-top: 8px;
+  display: grid;
+  gap: 6px;
+  max-height: 190px;
+  overflow: auto;
+  padding: 8px;
+  border-radius: 14px;
+  border: 1px solid rgba(174, 210, 255, 0.24);
+  background: rgba(7, 14, 39, 0.72);
+}
+
+.college-picker button {
+  text-align: left;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: #eaf5ff;
+  background: rgba(132, 165, 255, 0.14);
+  cursor: pointer;
+}
+
+.add-college-btn {
+  border: 1px dashed rgba(174, 215, 255, 0.42) !important;
+}
+
+.selected-college {
+  margin-top: 8px;
+  color: rgba(219, 236, 255, 0.88);
+}
+
+.upload-grid {
+  margin-top: 14px;
+  grid-template-columns: 1.2fr 0.8fr;
+}
+
+.file-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 2px;
+  color: rgba(220, 236, 255, 0.8);
+  font-size: 0.84rem;
+}
+
+.file-preview {
+  margin-top: 10px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(174, 210, 255, 0.25);
+  background: rgba(6, 12, 34, 0.65);
+}
+
+.file-preview img,
+.file-preview iframe {
+  display: block;
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border: 0;
+}
+
+.referral-field {
+  align-content: start;
+}
+
+.register-actions {
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+}
+
+.register-submit {
+  width: min(320px, 100%);
+}
+
+.secondary-link {
+  color: #cfe7ff;
+  text-decoration: none;
+}
+
+.secondary-link:hover {
+  color: #ffffff;
+}
+
+@keyframes starDrift {
+  from {
+    opacity: 0.78;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-8px);
+  }
+}
+
+@media (max-width: 900px) {
+  .register-card {
+    width: min(100%, 100%);
+  }
+
+  .profile-grid,
+  .upload-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .register-card {
+    padding: 20px;
+    border-radius: 22px;
+  }
+
+  .field-row.two-up,
+  .upload-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .phone-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 400px) {
+  .register-shell {
+    padding: 16px 10px;
+  }
+
+  .register-card {
+    padding: 16px;
+    border-radius: 18px;
+  }
+
+  .register-section {
+    padding: 14px;
+    border-radius: 16px;
+  }
+
+  .register-section input,
+  .register-section select {
+    min-height: 42px;
+  }
+}
