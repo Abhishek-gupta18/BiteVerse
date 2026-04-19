@@ -1,8 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/Sidebar.css";
 
 const Sidebar = ({ isOpen, userRole, userData, onToggle }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [activeNav, setActiveNav] = useState("dashboard");
+
+  useEffect(() => {
+    if (location.pathname === "/chat") {
+      setActiveNav("chats");
+      return;
+    }
+
+    if (location.pathname === "/dashboard") {
+      setActiveNav("dashboard");
+    }
+  }, [location.pathname]);
 
   const navItems = [
     { id: "dashboard", label: "Dashboard", icon: "📊" },
@@ -36,7 +50,13 @@ const Sidebar = ({ isOpen, userRole, userData, onToggle }) => {
             <button
               key={item.id}
               className={`nav-item ${activeNav === item.id ? "active" : ""}`}
-              onClick={() => setActiveNav(item.id)}
+              onClick={() => {
+                setActiveNav(item.id);
+
+                if (item.id === "chats") {
+                  navigate("/chat");
+                }
+              }}
             >
               <span className="nav-icon">{item.icon}</span>
               {isOpen && <span className="nav-label">{item.label}</span>}
