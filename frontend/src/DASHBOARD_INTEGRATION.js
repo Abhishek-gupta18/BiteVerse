@@ -89,12 +89,12 @@ const App = () => {
 const Home = () => (
   <div>
     <h1>Welcome to Campus Eats</h1>
-    {/* Navigation to dashboard */}
-  </div>
-);
+    {/* Navigation to dashboard */
+//   </div>
+// );
 
-export default App;
-*/
+// export default App;
+// */
 
 // ============================================================
 // STYLING SETUP IN main.jsx

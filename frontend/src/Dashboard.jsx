@@ -2,12 +2,6 @@ import React, { useEffect, useState } from "react";
 import "./Dashboard.css";
 import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
-import HeroCard from "./components/sections/HeroCard";
-import StreakCard from "./components/sections/StreakCard";
-import RecommendedFeed from "./components/sections/RecommendedFeed";
-import RewardsCard from "./components/sections/RewardsCard";
-import AchievementsSection from "./components/sections/AchievementsSection";
-import ReviewHistorySection from "./components/sections/ReviewHistorySection";
 
 const Dashboard = ({ userRole = "student" }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -37,7 +31,6 @@ const Dashboard = ({ userRole = "student" }) => {
       "https://api.dicebear.com/7.x/avataaars/svg?seed=Rahman&backgroundColor=random",
   };
 
-  // Mock stats data
   const stats = {
     totalReviews: 42,
     averageRating: 4.8,
@@ -45,117 +38,225 @@ const Dashboard = ({ userRole = "student" }) => {
     currentStreak: 7,
   };
 
-  // Mock recommended food data
+  const preferenceSignals = ["Late afternoon", "Rainy weather", "Recent: spicy noodles", "Campus favorites"];
+
   const recommendedFood = [
     {
       id: 1,
       name: "Garlic Butter Naan",
       stall: "The Tandoor",
-      image: "https://images.unsplash.com/photo-1565557623814-695d26c6631c?w=400",
       price: "₹80",
       rating: 4.7,
-      tag: "Popular",
+      reason: "Best when you want something warm and quick.",
     },
     {
       id: 2,
       name: "Vegetable Biryani",
       stall: "Spice Kitchen",
-      image: "https://images.unsplash.com/photo-1584737604270-a0b58674d621?w=400",
       price: "₹120",
       rating: 4.5,
-      tag: "Trending",
+      reason: "Popular for rainy evenings and shared meals.",
     },
     {
       id: 3,
       name: "Grilled Paneer Tikka",
       stall: "BBQ Masters",
-      image: "https://images.unsplash.com/photo-1599043513691-9134cc900bb0?w=400",
       price: "₹150",
       rating: 4.9,
-      tag: "Healthy",
-    },
-    {
-      id: 4,
-      name: "Margherita Pizza",
-      stall: "Italian Bites",
-      image: "https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?w=400",
-      price: "₹200",
-      rating: 4.6,
-      tag: "Comfort Food",
+      reason: "High protein pick for post-class hunger.",
     },
   ];
 
-  // Mock reviews data
-  const reviews = [
+  const badges = [
     {
       id: 1,
-      foodName: "West Quad Salad",
-      stallName: "The Harvest Bowl",
-      image: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=300",
-      rating: 5.0,
-      review: "Hands down the best salad on campus. The avocado was perfectly ripe.",
-      tags: ["Healthy Choice"],
-      timestamp: "2 days ago",
+      name: "Gourmet Student",
+      icon: "🍴",
+      detail: "Reviews written",
     },
     {
       id: 2,
-      foodName: "Smash Burger Deluxe",
-      stallName: "The Union Hub",
-      image: "https://images.unsplash.com/photo-1571407970349-bc2e8c8bd10f?w=300",
-      rating: 4.2,
-      review: "Great flavor, but the wait time was nearly 20 minutes during rush hour.",
-      tags: ["Comfort Food"],
-      timestamp: "1 week ago",
+      name: "Early Bird Reviewer",
+      icon: "🌅",
+      detail: "Morning check-ins",
+    },
+    {
+      id: 3,
+      name: "Food Explorer",
+      icon: "🗺️",
+      detail: "Stalls discovered",
     },
   ];
 
-  // Mock rewards data
   const rewards = {
     nextReward: "50% Off Meal Bowl",
     progress: 750,
     total: 1000,
-    badges: [
-      { id: 1, name: "Gourmet Student", icon: "🍴" },
-      { id: 2, name: "Early Bird Reviewer", icon: "🌅" },
-      { id: 3, name: "Food Explorer", icon: "🗺️" },
-    ],
   };
 
+  const chatPreview = [
+    {
+      id: 1,
+      name: "Aarav",
+      time: "2m",
+      message: "The west gate wrap stall has a new combo meal today.",
+      tone: "warm",
+    },
+    {
+      id: 2,
+      name: "Meera",
+      time: "8m",
+      message: "I’m heading there after class. Want me to save a seat?",
+      tone: "soft",
+    },
+    {
+      id: 3,
+      name: "You",
+      time: "Now",
+      message: "Yes. Also checking the dessert cart on the way back.",
+      tone: "calm",
+    },
+  ];
+
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-shell">
       <Sidebar
         isOpen={sidebarOpen}
         userRole={userRole}
         userData={userData}
         onToggle={() => setSidebarOpen(!sidebarOpen)}
       />
-      <div className="main-content">
+      <div className="dashboard-main">
         <Navbar
           onSidebarToggle={() => setSidebarOpen(!sidebarOpen)}
           onNotificationsToggle={() => setNotificationsOpen(!notificationsOpen)}
           userData={userData}
         />
-        <div className="dashboard-content">
-          <div className="content-grid">
-            {/* Left Column */}
-            <div className="left-column">
-              <HeroCard stats={stats} userData={userData} />
-              <StreakCard currentStreak={stats.currentStreak} />
-            </div>
+        <main className="dashboard-content">
+          <div className="dashboard-grid">
+            <section className="panel panel--food">
+              <div className="panel-heading">
+                <div>
+                  <p className="panel-kicker">Food preference</p>
+                  <h1>Recommendations shaped by time, season, and past searches</h1>
+                </div>
+                <div className="panel-meta">
+                  <span className="meta-pill">Updated 2 min ago</span>
+                  <span className="meta-pill meta-pill--accent">{stats.totalReviews} reviews</span>
+                  <span className="meta-pill">{stats.currentStreak}-day streak</span>
+                </div>
+              </div>
 
-            {/* Right Column */}
-            <div className="right-column">
-              <RewardsCard reward={rewards} />
-              <AchievementsSection badges={rewards.badges} />
-            </div>
-          </div>
+              <div className="preference-tags" aria-label="Recommendation signals">
+                {preferenceSignals.map((signal) => (
+                  <span key={signal} className="preference-tag">
+                    {signal}
+                  </span>
+                ))}
+              </div>
 
-          {/* Full Width Sections */}
-          <div className="full-width">
-            <RecommendedFeed food={recommendedFood} />
-            <ReviewHistorySection reviews={reviews} />
+              <div className="food-list">
+                {recommendedFood.map((food) => (
+                  <article key={food.id} className="food-card">
+                    <div>
+                      <p className="food-card__label">{food.stall}</p>
+                      <h2>{food.name}</h2>
+                      <p className="food-card__reason">{food.reason}</p>
+                    </div>
+                    <div className="food-card__footer">
+                      <strong>{food.price}</strong>
+                      <span>★ {food.rating}</span>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+
+            <section className="panel panel--reward">
+              <div className="panel-heading panel-heading--compact">
+                <div>
+                  <p className="panel-kicker">Reward info</p>
+                  <h2>{rewards.nextReward}</h2>
+                </div>
+                <span className="points-chip">{stats.pointsEarned} pts</span>
+              </div>
+
+              <div className="reward-stats">
+                <div>
+                  <span>Target</span>
+                  <strong>{rewards.total} pts</strong>
+                </div>
+                <div>
+                  <span>Current points</span>
+                  <strong>{rewards.progress} pts</strong>
+                </div>
+              </div>
+
+              <div className="progress-track" aria-label="Reward progress">
+                <span style={{ width: `${(rewards.progress / rewards.total) * 100}%` }} />
+              </div>
+
+              <div className="reward-actions">
+                <button className="primary-action" type="button">
+                  Earn More
+                </button>
+                <button className="secondary-action" type="button">
+                  Redeem
+                </button>
+              </div>
+            </section>
+
+            <section className="panel panel--achievements">
+              <div className="panel-heading panel-heading--compact">
+                <div>
+                  <p className="panel-kicker">Current achievement</p>
+                  <h2>Badges and milestones</h2>
+                </div>
+              </div>
+
+              <div className="badge-row">
+                {badges.map((badge) => (
+                  <article key={badge.id} className="badge-card">
+                    <span className="badge-icon">{badge.icon}</span>
+                    <strong>{badge.name}</strong>
+                    <p>{badge.detail}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
+
+            <section className="panel panel--chat">
+              <div className="panel-heading panel-heading--compact">
+                <div>
+                  <p className="panel-kicker">Chat option</p>
+                  <h2>Minimized chat section</h2>
+                </div>
+                <div className="panel-meta panel-meta--chat">
+                  <span className="meta-pill">12 unread</span>
+                  <span className="meta-pill">3 online</span>
+                </div>
+              </div>
+
+              <div className="chat-mini-feed">
+                {chatPreview.map((message) => (
+                  <article key={message.id} className={`chat-mini-card chat-mini-card--${message.tone}`}>
+                    <div className="chat-mini-card__top">
+                      <strong>{message.name}</strong>
+                      <span>{message.time}</span>
+                    </div>
+                    <p>{message.message}</p>
+                  </article>
+                ))}
+              </div>
+
+              <div className="chat-mini-compose" aria-label="Chat quick reply">
+                <span className="chat-mini-compose__icon">✎</span>
+                <input type="text" placeholder="Write a quick reply..." />
+                <button type="button">Send</button>
+              </div>
+            </section>
           </div>
-        </div>
+        </main>
       </div>
     </div>
   );
