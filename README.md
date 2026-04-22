@@ -45,5 +45,15 @@ Health check:
 2. Fill credentials in `backend-node/.env`.
 3. Verify backend health endpoint returns `database: connected`.
 
+## Project Timeline
+
+| Date | Day No. | Work Done | Files |
+| --- | --- | --- | --- |
+| 2026-04-21 | Day 1 | Rebuilt the user dashboard around the new wireframe, replacing the old mixed card layout with dedicated food preference, reward, achievements, and minimized chat panels. | `frontend/src/Dashboard.jsx`, `frontend/src/Dashboard.css` |
+| 2026-04-21 | Day 1 | Updated the top search bar and the left rail so the dashboard header and navigation match the new layout. | `frontend/src/components/Navbar.jsx`, `frontend/src/components/Sidebar.jsx`, `frontend/src/styles/Navbar.css`, `frontend/src/styles/Sidebar.css` |
+| 2026-04-22 | Day 2 | Fixed the overlap between the food preference panel and the achievements panel by separating their grid placement. | `frontend/src/Dashboard.css` |
+
+> The timeline below should be updated as new project work lands.
+
 ## Next Step
 - Implement full auth flow in Node backend: user table, OTP storage, OTP verification, JWT issuance, and protected routes.
