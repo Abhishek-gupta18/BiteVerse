@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/Sidebar.css";
 
-const Sidebar = ({ isOpen, userRole, userData, onToggle }) => {
+const Sidebar = ({ isOpen, userData, onToggle }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeNav, setActiveNav] = useState("dashboard");
@@ -24,7 +24,6 @@ const Sidebar = ({ isOpen, userRole, userData, onToggle }) => {
     { id: "stalls", label: "Dining Halls", icon: "🏪" },
     { id: "reviews", label: "Reviews", icon: "⭐" },
     { id: "rewards", label: "Rewards", icon: "🏆" },
-    { id: "leaderboard", label: "Leaderboard", icon: "🥇" },
     { id: "community", label: "Community", icon: "👥" },
     { id: "chats", label: "Messages", icon: "💬" },
   ];
@@ -32,19 +31,24 @@ const Sidebar = ({ isOpen, userRole, userData, onToggle }) => {
   return (
     <>
       <div className={`sidebar ${isOpen ? "open" : "closed"}`}>
-        {/* Profile Section */}
-        <div className="sidebar-profile">
-          <div className="profile-avatar">
-            <img src={userData.avatar} alt={userData.name} />
-            <span className="level-badge">{userData.level}</span>
-          </div>
-          <div className="profile-info">
-            <h3 className="profile-name">{userData.name}</h3>
-            <p className="profile-college">{userData.college}</p>
-          </div>
+        <div className="sidebar-brand" aria-label="Brand logo">
+          <span>🍽️</span>
         </div>
 
-        {/* Navigation Menu */}
+        <div className="sidebar-user" aria-label="User icon on dashboard">
+          <div className="sidebar-user__avatar">
+            <img src={userData.avatar} alt={userData.name} />
+          </div>
+          {isOpen && (
+            <div className="sidebar-user__meta">
+              <strong>{userData.name}</strong>
+              <span>{userData.college}</span>
+            </div>
+          )}
+        </div>
+
+        {isOpen && <p className="sidebar-rail-label">Expandable Sidebar</p>}
+
         <nav className="sidebar-nav">
           {navItems.map((item) => (
             <button
@@ -52,6 +56,10 @@ const Sidebar = ({ isOpen, userRole, userData, onToggle }) => {
               className={`nav-item ${activeNav === item.id ? "active" : ""}`}
               onClick={() => {
                 setActiveNav(item.id);
+
+                if (item.id === "dashboard") {
+                  navigate("/dashboard");
+                }
 
                 if (item.id === "chats") {
                   navigate("/chat");
@@ -63,28 +71,10 @@ const Sidebar = ({ isOpen, userRole, userData, onToggle }) => {
             </button>
           ))}
         </nav>
-
-        {/* Write Review Button */}
-        {isOpen && (
-          <button className="write-review-btn">
-            <span>✏️</span> Write a Review
-          </button>
-        )}
-
-        {/* Bottom Section */}
-        <div className="sidebar-bottom">
-          <button className="bottom-item">
-            <span>⚙️</span> {isOpen && "Settings"}
-          </button>
-          <button className="bottom-item">
-            <span>💬</span> {isOpen && "Support"}
-          </button>
-        </div>
       </div>
 
-      {/* Sidebar Toggle Button */}
-      <button 
-        className="sidebar-toggle" 
+      <button
+        className="sidebar-toggle"
         onClick={onToggle}
         title={isOpen ? "Collapse sidebar" : "Expand sidebar"}
       >

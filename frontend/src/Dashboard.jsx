@@ -5,7 +5,6 @@ import Navbar from "./components/Navbar";
 
 const Dashboard = ({ userRole = "student" }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [notificationsOpen, setNotificationsOpen] = useState(false);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 768px)");
@@ -122,139 +121,141 @@ const Dashboard = ({ userRole = "student" }) => {
     <div className="dashboard-shell">
       <Sidebar
         isOpen={sidebarOpen}
-        userRole={userRole}
         userData={userData}
         onToggle={() => setSidebarOpen(!sidebarOpen)}
       />
       <div className="dashboard-main">
         <Navbar
-          onSidebarToggle={() => setSidebarOpen(!sidebarOpen)}
-          onNotificationsToggle={() => setNotificationsOpen(!notificationsOpen)}
+          onNotificationsToggle={() => {}}
           userData={userData}
         />
         <main className="dashboard-content">
-          <div className="dashboard-grid">
-            <section className="panel panel--food">
-              <div className="panel-heading">
-                <div>
-                  <p className="panel-kicker">Food preference</p>
-                  <h1>Recommendations shaped by time, season, and past searches</h1>
-                </div>
-                <div className="panel-meta">
-                  <span className="meta-pill">Updated 2 min ago</span>
-                  <span className="meta-pill meta-pill--accent">{stats.totalReviews} reviews</span>
-                  <span className="meta-pill">{stats.currentStreak}-day streak</span>
-                </div>
-              </div>
-
-              <div className="preference-tags" aria-label="Recommendation signals">
-                {preferenceSignals.map((signal) => (
-                  <span key={signal} className="preference-tag">
-                    {signal}
-                  </span>
-                ))}
-              </div>
-
-              <div className="food-list">
-                {recommendedFood.map((food) => (
-                  <article key={food.id} className="food-card">
+          <div className="dashboard-canvas">
+            <div className="dashboard-grid">
+              <div className="dashboard-column dashboard-column--left">
+                <section className="panel panel--food">
+                  <div className="panel-heading">
                     <div>
-                      <p className="food-card__label">{food.stall}</p>
-                      <h2>{food.name}</h2>
-                      <p className="food-card__reason">{food.reason}</p>
+                      <p className="panel-kicker">Food preference</p>
+                      <h1>Recommendations shaped by time, season, and past searches</h1>
                     </div>
-                    <div className="food-card__footer">
-                      <strong>{food.price}</strong>
-                      <span>★ {food.rating}</span>
+                    <div className="panel-meta">
+                      <span className="meta-pill">Updated 2 min ago</span>
+                      <span className="meta-pill meta-pill--accent">{stats.totalReviews} reviews</span>
+                      <span className="meta-pill">{stats.currentStreak}-day streak</span>
                     </div>
-                  </article>
-                ))}
-              </div>
-            </section>
+                  </div>
 
-            <section className="panel panel--reward">
-              <div className="panel-heading panel-heading--compact">
-                <div>
-                  <p className="panel-kicker">Reward info</p>
-                  <h2>{rewards.nextReward}</h2>
-                </div>
-                <span className="points-chip">{stats.pointsEarned} pts</span>
-              </div>
+                  <div className="preference-tags" aria-label="Recommendation signals">
+                    {preferenceSignals.map((signal) => (
+                      <span key={signal} className="preference-tag">
+                        {signal}
+                      </span>
+                    ))}
+                  </div>
 
-              <div className="reward-stats">
-                <div>
-                  <span>Target</span>
-                  <strong>{rewards.total} pts</strong>
-                </div>
-                <div>
-                  <span>Current points</span>
-                  <strong>{rewards.progress} pts</strong>
-                </div>
-              </div>
+                  <div className="food-list">
+                    {recommendedFood.map((food) => (
+                      <article key={food.id} className="food-card">
+                        <div>
+                          <p className="food-card__label">{food.stall}</p>
+                          <h2>{food.name}</h2>
+                          <p className="food-card__reason">{food.reason}</p>
+                        </div>
+                        <div className="food-card__footer">
+                          <strong>{food.price}</strong>
+                          <span>★ {food.rating}</span>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                </section>
 
-              <div className="progress-track" aria-label="Reward progress">
-                <span style={{ width: `${(rewards.progress / rewards.total) * 100}%` }} />
-              </div>
-
-              <div className="reward-actions">
-                <button className="primary-action" type="button">
-                  Earn More
-                </button>
-                <button className="secondary-action" type="button">
-                  Redeem
-                </button>
-              </div>
-            </section>
-
-            <section className="panel panel--achievements">
-              <div className="panel-heading panel-heading--compact">
-                <div>
-                  <p className="panel-kicker">Current achievement</p>
-                  <h2>Badges and milestones</h2>
-                </div>
-              </div>
-
-              <div className="badge-row">
-                {badges.map((badge) => (
-                  <article key={badge.id} className="badge-card">
-                    <span className="badge-icon">{badge.icon}</span>
-                    <strong>{badge.name}</strong>
-                    <p>{badge.detail}</p>
-                  </article>
-                ))}
-              </div>
-            </section>
-
-            <section className="panel panel--chat">
-              <div className="panel-heading panel-heading--compact">
-                <div>
-                  <p className="panel-kicker">Chat option</p>
-                  <h2>Minimized chat section</h2>
-                </div>
-                <div className="panel-meta panel-meta--chat">
-                  <span className="meta-pill">12 unread</span>
-                  <span className="meta-pill">3 online</span>
-                </div>
-              </div>
-
-              <div className="chat-mini-feed">
-                {chatPreview.map((message) => (
-                  <article key={message.id} className={`chat-mini-card chat-mini-card--${message.tone}`}>
-                    <div className="chat-mini-card__top">
-                      <strong>{message.name}</strong>
-                      <span>{message.time}</span>
+                <section className="panel panel--achievements">
+                  <div className="panel-heading panel-heading--compact">
+                    <div>
+                      <p className="panel-kicker">Current achievement and badges</p>
+                      <h2>Current achievement and badges</h2>
                     </div>
-                    <p>{message.message}</p>
-                  </article>
-                ))}
+                  </div>
+
+                  <div className="badge-row">
+                    {badges.map((badge) => (
+                      <article key={badge.id} className="badge-card">
+                        <span className="badge-icon">{badge.icon}</span>
+                        <strong>{badge.name}</strong>
+                        <p>{badge.detail}</p>
+                      </article>
+                    ))}
+                  </div>
+                </section>
               </div>
 
-              <div className="chat-mini-compose" aria-label="Chat quick reply">
-                <span className="chat-mini-compose__icon">✎</span>
-                <input type="text" placeholder="Write a quick reply..." />
-                <button type="button">Send</button>
+              <div className="dashboard-column dashboard-column--right">
+                <section className="panel panel--reward">
+                  <div className="panel-heading panel-heading--compact panel-heading--stacked">
+                    <div>
+                      <p className="panel-kicker">Reward info, target, and current points</p>
+                      <h2>{rewards.nextReward}</h2>
+                    </div>
+                    <div className="reward-actions reward-actions--vertical">
+                      <button className="primary-action" type="button">
+                        Earn More
+                      </button>
+                      <button className="secondary-action" type="button">
+                        Redeem
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="reward-stats">
+                    <div>
+                      <span>Target</span>
+                      <strong>{rewards.total} pts</strong>
+                    </div>
+                    <div>
+                      <span>Current points</span>
+                      <strong>{rewards.progress} pts</strong>
+                    </div>
+                  </div>
+
+                  <div className="progress-track" aria-label="Reward progress">
+                    <span style={{ width: `${(rewards.progress / rewards.total) * 100}%` }} />
+                  </div>
+                </section>
+
+                <section className="panel panel--chat">
+                  <div className="panel-heading panel-heading--compact">
+                    <div>
+                      <p className="panel-kicker">Chat option</p>
+                      <h2>Minimised chat section</h2>
+                    </div>
+                    <div className="panel-meta panel-meta--chat">
+                      <span className="meta-pill">12 unread</span>
+                      <span className="meta-pill">3 online</span>
+                    </div>
+                  </div>
+
+                  <div className="chat-mini-feed">
+                    {chatPreview.map((message) => (
+                      <article key={message.id} className={`chat-mini-card chat-mini-card--${message.tone}`}>
+                        <div className="chat-mini-card__top">
+                          <strong>{message.name}</strong>
+                          <span>{message.time}</span>
+                        </div>
+                        <p>{message.message}</p>
+                      </article>
+                    ))}
+                  </div>
+
+                  <div className="chat-mini-compose" aria-label="Chat quick reply">
+                    <span className="chat-mini-compose__icon">✎</span>
+                    <input type="text" placeholder="Write a quick reply..." />
+                    <button type="button">Send</button>
+                  </div>
+                </section>
               </div>
-            </section>
+            </div>
           </div>
         </main>
       </div>

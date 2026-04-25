@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import "../styles/Navbar.css";
 
-const Navbar = ({ onSidebarToggle, onNotificationsToggle, userData }) => {
+const Navbar = ({ onNotificationsToggle, userData }) => {
   const [searchValue, setSearchValue] = useState("");
-  const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   const notifications = [
     {
@@ -29,7 +28,6 @@ const Navbar = ({ onSidebarToggle, onNotificationsToggle, userData }) => {
   return (
     <nav className="navbar">
       <div className="navbar-content">
-        {/* Left Section - Logo/Brand */}
         <div className="navbar-left">
           <div className="brand">
             <span className="brand-icon">🍽️</span>
@@ -37,7 +35,6 @@ const Navbar = ({ onSidebarToggle, onNotificationsToggle, userData }) => {
           </div>
         </div>
 
-        {/* Center Section - Search */}
         <div className="navbar-center">
           <div className="search-wrapper">
             <input
@@ -51,61 +48,27 @@ const Navbar = ({ onSidebarToggle, onNotificationsToggle, userData }) => {
           </div>
         </div>
 
-        {/* Right Section - Icons & Profile */}
         <div className="navbar-right">
-          {/* Notifications */}
-          <div className="notification-wrapper">
+          <div className="notification-wrapper" aria-label="Notification bar">
             <button
               className="icon-btn notification-btn"
               onClick={onNotificationsToggle}
+              type="button"
             >
               <span className="icon">🔔</span>
-              <span className="notification-badge">3</span>
+              <span className="notification-badge">{notifications.length}</span>
             </button>
-            <div className="notification-dropdown">
-              {notifications.map((notif) => (
-                <div key={notif.id} className="notification-item">
-                  <p>{notif.message}</p>
-                  <small>{notif.time}</small>
-                </div>
-              ))}
-              <button className="view-all-btn">View All Notifications</button>
-            </div>
           </div>
 
-          {/* Messages */}
-          <button className="icon-btn">
+          <button className="icon-btn" type="button" aria-label="Chat option">
             <span className="icon">💬</span>
-            <span className="notification-badge">2</span>
+            <span className="notification-badge">12</span>
           </button>
 
-          {/* Profile Dropdown */}
           <div className="profile-dropdown-wrapper">
-            <button
-              className="profile-pic-btn"
-              onClick={() => setShowProfileMenu(!showProfileMenu)}
-            >
+            <button className="profile-pic-btn" type="button" aria-label="Profile">
               <img src={userData.avatar} alt="Profile" />
             </button>
-            {showProfileMenu && (
-              <div className="profile-menu">
-                <div className="profile-menu-header">
-                  <img src={userData.avatar} alt="Profile" />
-                  <div>
-                    <p className="menu-name">{userData.name}</p>
-                    <p className="menu-email">user@college.edu</p>
-                  </div>
-                </div>
-                <hr />
-                <button className="menu-item">👤 My Profile</button>
-                <button className="menu-item">📝 My Reviews</button>
-                <button className="menu-item">📋 My Rewards</button>
-                <button className="menu-item">⚙️ Settings</button>
-                <button className="menu-item">🎨 Preferences</button>
-                <hr />
-                <button className="menu-item logout">🚪 Logout</button>
-              </div>
-            )}
           </div>
         </div>
       </div>
