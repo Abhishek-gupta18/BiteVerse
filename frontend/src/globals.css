@@ -201,6 +201,42 @@ button {
   background: none;
 }
 
+@keyframes buttonClickPulse {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  35% {
+    transform: scale(0.97);
+    filter: brightness(0.92);
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
+button.button-click-loading {
+  position: relative;
+  animation: buttonClickPulse 0.55s ease;
+}
+
+button.button-click-loading::after {
+  content: "";
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  margin-top: -6px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  opacity: 0.7;
+  animation: spin 0.65s linear infinite;
+  pointer-events: none;
+}
+
 /* Input Reset */
 input,
 textarea,
