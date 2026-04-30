@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import './Login.css'
+import { triggerPageTransition } from './Transition'
 
 function Login() {
   const [mode, setMode] = useState('password')
@@ -46,7 +47,19 @@ function Login() {
                 <label htmlFor="password-input">Password</label>
                 <input id="password-input" type="password" placeholder="Enter your password" />
 
-                <button type="button" className="primary-action">Log In</button>
+                <button
+                  type="button"
+                  className="primary-action"
+                  onClick={async (e) => {
+                    const rect = e.currentTarget.getBoundingClientRect()
+                    const x = rect.left + rect.width / 2
+                    const y = rect.top + rect.height / 2
+                    const color = getComputedStyle(document.documentElement).getPropertyValue('--accent-gradient') || 'linear-gradient(135deg,#0f172a,#0b2545)'
+                    await triggerPageTransition(x, y, { color, type: 'random', duration: 700 })
+                    // navigation after animation (adjust as needed)
+                    window.location.href = '/'
+                  }}
+                >Log In</button>
               </form>
             </div>
 
@@ -77,7 +90,20 @@ function Login() {
         </div>
 
         <p className="back-home">
-          <Link to="/register">Sign up for BiteVerse</Link>
+          <Link
+            to="/register"
+            onClick={(e) => {
+              // perform animated transition instead of instant nav
+              e.preventDefault()
+              const rect = e.currentTarget.getBoundingClientRect()
+              const x = rect.left + rect.width / 2
+              const y = rect.top + rect.height / 2
+              const color = getComputedStyle(document.documentElement).getPropertyValue('--accent-gradient') || 'linear-gradient(135deg,#0f172a,#0b2545)'
+              triggerPageTransition(x, y, { color, type: 'random', duration: 700 }).then(() => {
+                window.location.href = '/register'
+              })
+            }}
+          >Sign up for BiteVerse</Link>
         </p>
       </div>
     </main>

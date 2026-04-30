@@ -1,5 +1,6 @@
 import './App.css'
 import { useNavigate } from 'react-router-dom'
+import { triggerPageTransition } from './Transition'
 
 function App() {
   const navigate = useNavigate()
@@ -42,7 +43,17 @@ function App() {
             <span>Contact</span>
           </a>
         </nav>
-        <button className="login-btn" onClick={() => navigate('/login')}>Get Started</button>
+          <button
+            className="login-btn"
+            onClick={async (e) => {
+              const rect = e.currentTarget.getBoundingClientRect()
+              const x = rect.left + rect.width / 2
+              const y = rect.top + rect.height / 2
+              const color = getComputedStyle(document.documentElement).getPropertyValue('--accent-gradient') || 'linear-gradient(135deg,#0f172a,#0b2545)'
+              await triggerPageTransition(x, y, { color, type: 'random', duration: 700 })
+              navigate('/login')
+            }}
+          >Get Started</button>
       </header>
 
       <section className="hero" id="home">

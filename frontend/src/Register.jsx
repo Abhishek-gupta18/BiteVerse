@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import './Register.css'
+import { triggerPageTransition } from './Transition'
 import { collegeOptions } from './collegeOptions'
 
 const takenUsernames = ['bitechef', 'student42', 'teacherpro', 'alexverse']
@@ -104,7 +105,7 @@ function Register() {
     setDefaultAvatarSeed(Math.random().toString(36).slice(2, 12))
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
     setTouched({
       role: true,
@@ -120,7 +121,13 @@ function Register() {
     })
 
     if (!hasErrors) {
-      window.alert('Register form is ready for backend integration.')
+      // show transition then navigate home or desired route
+      const rect = event.currentTarget.getBoundingClientRect()
+      const x = rect.left + rect.width / 2
+      const y = rect.top + rect.height / 2
+      const color = getComputedStyle(document.documentElement).getPropertyValue('--accent-gradient') || 'linear-gradient(135deg,#0f172a,#0b2545)'
+      await triggerPageTransition(x, y, { color, type: 'random', duration: 700 })
+      window.location.href = '/'
     }
   }
 
@@ -450,7 +457,19 @@ function Register() {
             <button type="submit" className="primary-action register-submit">
               Create Account
             </button>
-            <Link to="/login" className="secondary-link">Back to login</Link>
+            <button
+              type="button"
+              className="secondary-link"
+              onClick={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect()
+                const x = rect.left + rect.width / 2
+                const y = rect.top + rect.height / 2
+                const color = getComputedStyle(document.documentElement).getPropertyValue('--accent-gradient') || 'linear-gradient(135deg,#0f172a,#0b2545)'
+                triggerPageTransition(x, y, { color, type: 'random', duration: 700 }).then(() => {
+                  window.location.href = '/login'
+                })
+              }}
+            >Back to login</button>
           </div>
         </form>
       </section>
