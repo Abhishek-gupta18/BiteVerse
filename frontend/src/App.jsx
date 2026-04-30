@@ -46,11 +46,7 @@ function App() {
           <button
             className="login-btn"
             onClick={async (e) => {
-              const rect = e.currentTarget.getBoundingClientRect()
-              const x = rect.left + rect.width / 2
-              const y = rect.top + rect.height / 2
-              const color = getComputedStyle(document.documentElement).getPropertyValue('--accent-gradient') || 'linear-gradient(135deg,#0f172a,#0b2545)'
-              await triggerPageTransition(x, y, { color, type: 'random', duration: 700 })
+              await triggerPageTransition(0, 0, { duration: 700 })
               navigate('/login')
             }}
           >Get Started</button>
