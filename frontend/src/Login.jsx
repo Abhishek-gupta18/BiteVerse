@@ -51,11 +51,7 @@ function Login() {
                   type="button"
                   className="primary-action"
                   onClick={async (e) => {
-                    const rect = e.currentTarget.getBoundingClientRect()
-                    const x = rect.left + rect.width / 2
-                    const y = rect.top + rect.height / 2
-                    const color = getComputedStyle(document.documentElement).getPropertyValue('--accent-gradient') || 'linear-gradient(135deg,#0f172a,#0b2545)'
-                    await triggerPageTransition(x, y, { color, type: 'random', duration: 700 })
+                    await triggerPageTransition(0, 0, { duration: 700 })
                     // navigation after animation (adjust as needed)
                     window.location.href = '/'
                   }}
@@ -95,11 +91,7 @@ function Login() {
             onClick={(e) => {
               // perform animated transition instead of instant nav
               e.preventDefault()
-              const rect = e.currentTarget.getBoundingClientRect()
-              const x = rect.left + rect.width / 2
-              const y = rect.top + rect.height / 2
-              const color = getComputedStyle(document.documentElement).getPropertyValue('--accent-gradient') || 'linear-gradient(135deg,#0f172a,#0b2545)'
-              triggerPageTransition(x, y, { color, type: 'random', duration: 700 }).then(() => {
+              triggerPageTransition(0, 0, { duration: 700 }).then(() => {
                 window.location.href = '/register'
               })
             }}

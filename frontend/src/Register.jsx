@@ -122,11 +122,7 @@ function Register() {
 
     if (!hasErrors) {
       // show transition then navigate home or desired route
-      const rect = event.currentTarget.getBoundingClientRect()
-      const x = rect.left + rect.width / 2
-      const y = rect.top + rect.height / 2
-      const color = getComputedStyle(document.documentElement).getPropertyValue('--accent-gradient') || 'linear-gradient(135deg,#0f172a,#0b2545)'
-      await triggerPageTransition(x, y, { color, type: 'random', duration: 700 })
+      await triggerPageTransition(0, 0, { duration: 700 })
       window.location.href = '/'
     }
   }
@@ -461,11 +457,7 @@ function Register() {
               type="button"
               className="secondary-link"
               onClick={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect()
-                const x = rect.left + rect.width / 2
-                const y = rect.top + rect.height / 2
-                const color = getComputedStyle(document.documentElement).getPropertyValue('--accent-gradient') || 'linear-gradient(135deg,#0f172a,#0b2545)'
-                triggerPageTransition(x, y, { color, type: 'random', duration: 700 }).then(() => {
+                triggerPageTransition(0, 0, { duration: 700 }).then(() => {
                   window.location.href = '/login'
                 })
               }}
