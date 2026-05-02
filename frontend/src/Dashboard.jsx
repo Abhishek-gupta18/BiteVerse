@@ -270,7 +270,12 @@ const Dashboard = () => {
               key={item.id}
               type="button"
               className={`sidebar-nav-item ${activeNav === item.id ? 'active' : ''}`}
-              onClick={() => setActiveNav(item.id)}
+              onClick={() => {
+                setActiveNav(item.id);
+                if (item.id === 'messages') {
+                  navigate('/chat');
+                }
+              }}
               aria-label={item.label}
             >
               <span className="nav-icon">{item.icon}</span>
@@ -301,7 +306,7 @@ const Dashboard = () => {
               🔔
               <span className="red-dot" aria-hidden="true" />
             </button>
-            <button type="button" className="icon-btn badge-btn" aria-label="Messages">
+            <button type="button" className="icon-btn badge-btn" aria-label="Messages" onClick={() => navigate('/chat')}>
               💬
               <span className="red-dot" aria-hidden="true" />
             </button>

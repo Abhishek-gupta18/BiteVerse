@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/Navbar.css";
 
 const Navbar = ({ onNotificationsToggle, userData }) => {
+  const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
 
   const notifications = [
@@ -60,7 +62,12 @@ const Navbar = ({ onNotificationsToggle, userData }) => {
             </button>
           </div>
 
-          <button className="icon-btn" type="button" aria-label="Chat option">
+          <button
+            className="icon-btn"
+            type="button"
+            aria-label="Chat option"
+            onClick={() => navigate("/chat")}
+          >
             <span className="icon">💬</span>
             <span className="notification-badge">12</span>
           </button>

@@ -39,10 +39,33 @@
   gap: 18px;
   box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.02);
   z-index: 40;
+  transition: width 0.38s ease-in-out, padding 0.38s ease-in-out, gap 0.38s ease-in-out;
 }
 
 .biteverse-sidebar.collapsed {
   width: 88px;
+  padding: 18px 8px;
+}
+
+.biteverse-sidebar.collapsed .sidebar-profile strong,
+.biteverse-sidebar.collapsed .sidebar-profile p,
+.biteverse-sidebar.collapsed .sidebar-profile span,
+.biteverse-sidebar.collapsed .sidebar-nav-item span:not(.nav-icon),
+.biteverse-sidebar.collapsed .review-cta {
+  opacity: 0;
+  visibility: hidden;
+  max-width: 0;
+  transition: opacity 0.38s ease-in-out, visibility 0.38s ease-in-out, max-width 0.38s ease;
+}
+
+.biteverse-sidebar:not(.collapsed) .sidebar-profile strong,
+.biteverse-sidebar:not(.collapsed) .sidebar-profile p,
+.biteverse-sidebar:not(.collapsed) .sidebar-profile span,
+.biteverse-sidebar:not(.collapsed) .sidebar-nav-item span:not(.nav-icon),
+.biteverse-sidebar:not(.collapsed) .review-cta {
+  opacity: 1;
+  visibility: visible;
+  max-width: 500px;
 }
 
 .sidebar-collapse-btn {
@@ -56,6 +79,17 @@
   background: #1e293b;
   color: #f8fafc;
   box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+  transition: transform 0.3s ease-in-out, background 0.3s ease;
+  cursor: pointer;
+}
+
+.sidebar-collapse-btn:hover {
+  transform: scale(1.12);
+  background: #334155;
+}
+
+.sidebar-collapse-btn:active {
+  transform: scale(0.95);
 }
 
 .sidebar-profile {
@@ -64,6 +98,7 @@
   gap: 12px;
   padding: 8px 8px 14px;
   border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  transition: gap 0.38s ease-in-out, padding 0.38s ease-in-out;
 }
 
 .sidebar-avatar {
@@ -72,11 +107,21 @@
   border-radius: 50%;
   border: 2px solid rgba(6, 182, 212, 0.5);
   box-shadow: 0 0 24px rgba(124, 58, 237, 0.4);
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-avatar:hover {
+  transform: scale(1.08);
 }
 
 .sidebar-profile strong {
   display: block;
   font-size: 0.96rem;
+  transition: opacity 0.38s ease-in-out, max-width 0.38s ease-in-out;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sidebar-profile p,
@@ -84,6 +129,10 @@
   margin: 0;
   color: #94a3b8;
   font-size: 0.78rem;
+  transition: opacity 0.38s ease-in-out, max-width 0.38s ease-in-out;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .level-badge {
@@ -101,12 +150,14 @@
   flex-direction: column;
   gap: 8px;
   flex: 1;
+  transition: gap 0.38s ease-in-out;
 }
 
 .sidebar-nav-item {
   width: 100%;
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 12px;
   border: 0;
   border-radius: 14px;
@@ -114,13 +165,23 @@
   color: #cbd5e1;
   background: transparent;
   text-align: left;
-  transition: all 0.24s ease;
+  transition: all 0.3s ease-in-out, background 0.3s ease-in-out, justify-content 0.38s ease-in-out;
+  white-space: nowrap;
+}
+
+.biteverse-sidebar.collapsed .sidebar-nav-item {
+  justify-content: center;
+  padding: 12px 8px;
 }
 
 .sidebar-nav-item:hover {
   background: rgba(30, 41, 59, 0.9);
   color: #f8fafc;
   transform: translateX(2px);
+}
+
+.biteverse-sidebar.collapsed .sidebar-nav-item:hover {
+  transform: scale(1.1);
 }
 
 .sidebar-nav-item.active {
@@ -133,6 +194,8 @@
   width: 20px;
   text-align: center;
   color: #06b6d4;
+  flex-shrink: 0;
+  transition: font-size 0.3s ease;
 }
 
 .review-cta {
@@ -143,11 +206,19 @@
   color: #f8fafc;
   background: linear-gradient(90deg, #7c3aed 0%, #06b6d4 100%);
   box-shadow: 0 0 24px rgba(124, 58, 237, 0.25);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease, opacity 0.38s ease-in-out, visibility 0.38s ease-in-out;
+  cursor: pointer;
+  white-space: nowrap;
 }
 
 .review-cta:hover {
   transform: scale(1.05);
+  box-shadow: 0 0 32px rgba(124, 58, 237, 0.35);
+}
+
+.review-cta:active {
+  transform: scale(0.95);
+}
   box-shadow: 0 0 30px rgba(124, 58, 237, 0.45);
 }
 
@@ -155,6 +226,16 @@
   width: 100%;
   padding-left: 240px;
   min-height: 100vh;
+  transition: padding-left 0.38s ease-in-out;
+  box-sizing: border-box;
+}
+
+.biteverse-sidebar:not(.collapsed) ~ .biteverse-main-wrap {
+  padding-left: 240px;
+}
+
+.biteverse-sidebar.collapsed ~ .biteverse-main-wrap {
+  padding-left: 88px;
 }
 
 .biteverse-navbar {
@@ -167,6 +248,7 @@
   align-items: center;
   gap: 18px;
   padding: 16px 22px;
+  margin: 0;
   background: rgba(2, 6, 23, 0.82);
   backdrop-filter: blur(18px);
   border-bottom: 1px solid rgba(148, 163, 184, 0.12);
