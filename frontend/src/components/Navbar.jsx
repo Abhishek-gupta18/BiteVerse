@@ -74,16 +74,6 @@ const Navbar = ({ onNotificationsToggle, userData }) => {
             </button>
           </div>
 
-          <button
-            className="icon-btn"
-            type="button"
-            aria-label="Chat option"
-            onClick={() => navigate("/chat")}
-          >
-            <span className="icon">💬</span>
-            <span className="notification-badge">12</span>
-          </button>
-
           <div className="profile-dropdown-wrapper">
             <button className="profile-pic-btn" type="button" aria-label="Profile">
               <img src={userData.avatar} alt="Profile" />

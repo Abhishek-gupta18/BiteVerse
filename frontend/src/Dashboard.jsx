@@ -317,10 +317,6 @@ const Dashboard = () => {
               🔔
               <span className="red-dot" aria-hidden="true" />
             </button>
-            <button type="button" className="icon-btn badge-btn" aria-label="Messages" onClick={() => navigate('/chat')}>
-              💬
-              <span className="red-dot" aria-hidden="true" />
-            </button>
             <div className="profile-dropdown" ref={profileMenuRef}>
               <button
                 type="button"

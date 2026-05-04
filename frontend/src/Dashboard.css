@@ -515,6 +515,8 @@ html[data-theme="dark"] .biteverse-shell {
   padding: 22px;
   display: grid;
   gap: 22px;
+  background: var(--bg);
+  transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .hero-card {
@@ -523,6 +525,15 @@ html[data-theme="dark"] .biteverse-shell {
   border-radius: 28px;
   padding: 30px;
   min-height: 240px;
+  background: linear-gradient(135deg, var(--bg-secondary), rgba(15, 23, 42, 0.98));
+  transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html[data-theme="light"] .hero-card {
+  background: linear-gradient(135deg, #e8e4df 0%, #f5f0eb 100%);
+}
+
+html[data-theme="dark"] .hero-card {
   background: linear-gradient(135deg, rgba(30, 41, 59, 1), rgba(15, 23, 42, 0.98));
 }
 
@@ -546,7 +557,7 @@ html[data-theme="dark"] .biteverse-shell {
 .kicker,
 .section-title .kicker {
   margin: 0 0 8px;
-  color: #94a3b8;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.14em;
   font-size: 0.76rem;
@@ -562,8 +573,9 @@ html[data-theme="dark"] .biteverse-shell {
 .hero-subtext {
   max-width: 540px;
   margin: 14px 0 0;
-  color: #94a3b8;
+  color: var(--text-secondary);
   line-height: 1.65;
+  transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .hero-stats {
@@ -576,22 +588,25 @@ html[data-theme="dark"] .biteverse-shell {
 .hero-stat {
   border-radius: 18px;
   padding: 16px;
-  background: rgba(2, 6, 23, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-secondary);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .hero-stat span,
 .hero-stat small {
   display: block;
-  color: #94a3b8;
+  color: var(--text-secondary);
+  transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .hero-stat strong {
   display: block;
   margin: 8px 0 4px;
   font-size: clamp(1.55rem, 3vw, 2.6rem);
-  color: #f8fafc;
+  color: var(--text);
   text-shadow: 0 0 22px rgba(124, 58, 237, 0.35);
+  transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dashboard-grid {
@@ -621,14 +636,17 @@ html[data-theme="dark"] .biteverse-shell {
 .bv-section-title h2 {
   margin: 0;
   font-size: 1.5rem;
+  color: var(--text);
+  transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .ghost-btn {
-  border: 1px solid rgba(148, 163, 184, 0.16);
-  background: rgba(30, 41, 59, 0.7);
-  color: #cbd5e1;
+  border: 1px solid var(--border-secondary);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
   border-radius: 999px;
   padding: 10px 14px;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .recommendation-grid {
@@ -679,17 +697,20 @@ html[data-theme="dark"] .biteverse-shell {
   align-items: center;
   border-radius: 999px;
   padding: 6px 10px;
-  background: rgba(2, 6, 23, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-secondary);
   font-size: 0.72rem;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .food-tag-row span:first-child {
-  color: #c4b5fd;
+  color: var(--accent);
+  transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .food-tag-row span:last-child {
-  color: #67e8f9;
+  color: var(--accent);
+  transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .food-card-body {
@@ -700,13 +721,16 @@ html[data-theme="dark"] .biteverse-shell {
 .review-content h3 {
   margin: 0;
   font-size: 1.05rem;
+  color: var(--text);
+  transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .food-card-body p,
 .review-content p,
 .chat-message-body p {
   margin: 8px 0 0;
-  color: #94a3b8;
+  color: var(--text-secondary);
+  transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .food-meta,
@@ -724,13 +748,15 @@ html[data-theme="dark"] .biteverse-shell {
 
 .food-meta strong {
   font-size: 1.1rem;
-  color: #f8fafc;
+  color: var(--text);
+  transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .bv-stars {
   display: flex;
   gap: 2px;
-  color: #334155;
+  color: var(--text-secondary);
+  transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .bv-stars .filled {
@@ -763,15 +789,17 @@ html[data-theme="dark"] .biteverse-shell {
 }
 
 .tab-btn {
-  background: rgba(15, 23, 42, 0.8);
-  color: #94a3b8;
-  border: 1px solid rgba(148, 163, 184, 0.14);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-secondary);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, background 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .tab-btn.active {
-  color: #f8fafc;
+  color: var(--text);
   background: linear-gradient(90deg, rgba(124, 58, 237, 0.35), rgba(6, 182, 212, 0.2));
   box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.16), 0 0 24px rgba(124, 58, 237, 0.22);
+  transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .review-list {
@@ -812,20 +840,24 @@ html[data-theme="dark"] .biteverse-shell {
 .review-content small {
   display: inline-block;
   margin-top: 10px;
-  color: #64748b;
+  color: var(--text-secondary);
+  transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .rewards-card h3 {
   margin: 0 0 16px;
   font-size: 1.8rem;
+  color: var(--text);
+  transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .progress-shell {
   height: 14px;
   border-radius: 999px;
-  background: #0f172a;
+  background: var(--bg-secondary);
   overflow: hidden;
-  border: 1px solid rgba(148, 163, 184, 0.14);
+  border: 1px solid var(--border-secondary);
+  transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .progress-fill {
@@ -842,10 +874,11 @@ html[data-theme="dark"] .biteverse-shell {
 }
 
 .gradient-btn {
-  color: #f8fafc;
+  color: var(--text);
   font-weight: 700;
   background: linear-gradient(90deg, #7c3aed 0%, #06b6d4 100%);
   box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.18), 0 18px 30px rgba(124, 58, 237, 0.24);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .gradient-btn:hover,
@@ -857,9 +890,10 @@ html[data-theme="dark"] .biteverse-shell {
 }
 
 .secondary-btn {
-  color: #e2e8f0;
-  background: rgba(30, 41, 59, 0.95);
-  border: 1px solid rgba(148, 163, 184, 0.16);
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-secondary);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .gradient-btn.small {
@@ -877,9 +911,10 @@ html[data-theme="dark"] .biteverse-shell {
   gap: 12px;
   border-radius: 18px;
   padding: 14px 16px;
-  background: rgba(15, 23, 42, 0.9);
-  border: 1px solid rgba(6, 182, 212, 0.22);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-secondary);
   box-shadow: inset 0 0 0 1px rgba(124, 58, 237, 0.08);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .achievement-pill span {
@@ -887,7 +922,8 @@ html[data-theme="dark"] .biteverse-shell {
 }
 
 .achievement-pill strong {
-  color: #f8fafc;
+  color: var(--text);
+  transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .status-card {
@@ -901,8 +937,9 @@ html[data-theme="dark"] .biteverse-shell {
   gap: 12px;
   padding: 14px;
   border-radius: 14px;
-  background: rgba(15, 23, 42, 0.82);
-  color: #cbd5e1;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .status-row.success .status-dot {
@@ -927,9 +964,10 @@ html[data-theme="dark"] .biteverse-shell {
 .chat-widget {
   position: sticky;
   top: 98px;
-  background: rgba(30, 41, 59, 0.62);
+  background: var(--bg-secondary);
   backdrop-filter: blur(18px);
-  border: 1px solid rgba(124, 58, 237, 0.16);
+  border: 1px solid var(--border-secondary);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .chat-header {
@@ -942,6 +980,8 @@ html[data-theme="dark"] .biteverse-shell {
 .chat-header h2 {
   margin: 0;
   font-size: 1.6rem;
+  color: var(--text);
+  transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .chat-badges {
