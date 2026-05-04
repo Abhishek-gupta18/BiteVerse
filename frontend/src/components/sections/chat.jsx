@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { useTheme } from "../../context/ThemeContext";
 import "../../styles/chat.css";
 
 const channelData = [
@@ -115,6 +116,7 @@ const seedMessages = {
 const quickReplies = ["On my way", "Saved it", "Count me in", "Need the menu"];
 
 const Chat = () => {
+  const { theme, toggleTheme } = useTheme();
   const [activeChannel, setActiveChannel] = useState(channelData[0].id);
   const [draft, setDraft] = useState("");
   const [messages, setMessages] = useState(seedMessages);
@@ -164,6 +166,12 @@ const Chat = () => {
             Jump between channels, follow the latest food talk, and keep the conversation
             feeling warm, useful, and alive.
           </p>
+        </div>
+
+        <div className="chat-section__actions">
+          <button className={`theme-toggle ${theme}`} onClick={toggleTheme} aria-label="Toggle theme">
+            {theme === 'light' ? '🌙' : '☀️'}
+          </button>
         </div>
 
         <div className="chat-section__stats">

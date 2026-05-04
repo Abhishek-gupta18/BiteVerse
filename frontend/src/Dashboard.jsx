@@ -497,9 +497,14 @@ const Dashboard = () => {
                   <p className="kicker">Community</p>
                   <h2>Messages</h2>
                 </div>
-                <div className="chat-badges">
-                  <span className="online-count">24 online</span>
-                  <span className="unread-pill">3 unread</span>
+                <div className="chat-header-actions">
+                  <button className={`theme-toggle-sm ${theme}`} onClick={toggleTheme} aria-label="Toggle theme">
+                    {theme === 'light' ? '🌙' : '☀️'}
+                  </button>
+                  <div className="chat-badges">
+                    <span className="online-count">24 online</span>
+                    <span className="unread-pill">3 unread</span>
+                  </div>
                 </div>
               </div>
 

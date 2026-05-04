@@ -991,6 +991,39 @@ html[data-theme="dark"] .hero-card {
   justify-content: flex-end;
 }
 
+.chat-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.theme-toggle-sm {
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border-secondary);
+  background: var(--input-bg);
+  color: var(--text);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-toggle-sm:hover {
+  border-color: var(--accent);
+  transform: scale(1.05);
+}
+
+.theme-toggle-sm.light {
+  animation: moonRise 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.theme-toggle-sm.dark {
+  animation: sunRise 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
 .chat-feed {
   display: flex;
   flex-direction: column;
@@ -1004,8 +1037,9 @@ html[data-theme="dark"] .hero-card {
   gap: 12px;
   padding: 12px;
   border-radius: 16px;
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-secondary);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .chat-message.online {
@@ -1041,10 +1075,11 @@ html[data-theme="dark"] .hero-card {
   min-width: 0;
   border-radius: 14px;
   padding: 14px 16px;
-  border: 1px solid rgba(148, 163, 184, 0.16);
-  background: rgba(2, 6, 23, 0.8);
-  color: #f8fafc;
+  border: 1px solid var(--border-secondary);
+  background: var(--input-bg);
+  color: var(--text);
   outline: none;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .chat-input-row input:focus {
@@ -1064,6 +1099,7 @@ html[data-theme="dark"] .hero-card {
   place-items: center;
   background: rgba(2, 6, 23, 0.65);
   backdrop-filter: blur(10px);
+  transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .logout-message-container {
