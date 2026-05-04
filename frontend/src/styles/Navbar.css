@@ -1,12 +1,13 @@
 .navbar {
-  background: #f2eee7;
-  border: 2px solid rgba(65, 54, 45, 0.26);
+  background: var(--navbar-bg);
+  border: 2px solid var(--border);
   border-radius: 18px;
   padding: 0.55rem 0.8rem;
   position: sticky;
   top: 0.55rem;
   z-index: 150;
   margin: 0.55rem 0.9rem 0;
+  transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .navbar-content {
@@ -24,9 +25,10 @@
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
-  color: #5a5550;
+  color: var(--text-secondary);
   font-weight: 700;
   font-size: 1.05rem;
+  transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .brand-icon {
@@ -34,7 +36,8 @@
 }
 
 .brand-text {
-  color: #c97a3a;
+  color: var(--accent);
+  transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .navbar-center {
@@ -44,9 +47,10 @@
 .search-wrapper {
   display: flex;
   align-items: center;
-  border: 1px solid rgba(65, 54, 45, 0.24);
+  border: 1px solid var(--border-secondary);
   border-radius: 10px;
-  background: #efe7da;
+  background: var(--input-bg);
+  transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .search-input {
@@ -54,22 +58,25 @@
   background: transparent;
   border: none;
   padding: 0.62rem 0.75rem;
-  color: #5a5550;
+  color: var(--text);
   font-size: 0.92rem;
   outline: none;
+  transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .search-input::placeholder {
   color: rgba(90, 85, 80, 0.58);
+  transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .search-btn {
   background: transparent;
   border: none;
-  color: rgba(90, 85, 80, 0.7);
+  color: var(--text-secondary);
   cursor: pointer;
   padding: 0 0.8rem;
   font-size: 1rem;
+  transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .navbar-right {
@@ -78,14 +85,10 @@
   gap: 0.55rem;
 }
 
-.notification-wrapper {
-  position: relative;
-}
-
-.icon-btn {
-  background: #efe7da;
-  border: 1px solid rgba(65, 54, 45, 0.24);
-  color: rgba(90, 85, 80, 0.78);
+/* Theme Toggle Button Styles */
+.theme-toggle {
+  background: var(--input-bg);
+  border: 1px solid var(--border-secondary);
   width: 38px;
   height: 38px;
   border-radius: 10px;
@@ -95,6 +98,95 @@
   justify-content: center;
   position: relative;
   font-size: 1rem;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.05);
+  border-color: var(--accent);
+}
+
+.toggle-icon {
+  display: inline-block;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.theme-toggle.light .toggle-icon {
+  animation: moonRise 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.theme-toggle.dark .toggle-icon {
+  animation: sunRise 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes moonRise {
+  0% {
+    transform: rotate(0deg) scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: rotate(-30deg) scale(1.1);
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes sunRise {
+  0% {
+    transform: rotate(0deg) scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: rotate(30deg) scale(1.1);
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Ripple effect on theme toggle */
+@keyframes themeToggleRipple {
+  0% {
+    box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(124, 58, 237, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(124, 58, 237, 0);
+  }
+}
+
+.theme-toggle:active {
+  animation: themeToggleRipple 0.6s ease-out;
+}
+
+.notification-wrapper {
+  position: relative;
+}
+
+.icon-btn {
+  background: var(--input-bg);
+  border: 1px solid var(--border-secondary);
+  color: var(--text-secondary);
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-size: 1rem;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.icon-btn:hover {
+  transform: translateY(-2px);
 }
 
 .notification-badge {
@@ -112,7 +204,8 @@
   font-size: 0.66rem;
   font-weight: 700;
   padding: 0 0.2rem;
-  border: 2px solid #f2eee7;
+  border: 2px solid var(--navbar-bg);
+  transition: border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .profile-dropdown-wrapper {
@@ -123,13 +216,18 @@
   width: 38px;
   height: 38px;
   border-radius: 10px;
-  border: 1px solid rgba(65, 54, 45, 0.24);
-  background: #efe7da;
+  border: 1px solid var(--border-secondary);
+  background: var(--input-bg);
   cursor: pointer;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.profile-pic-btn:hover {
+  transform: scale(1.05);
 }
 
 .profile-pic-btn img {

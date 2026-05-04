@@ -9,6 +9,7 @@ import Login from './Login.jsx'
 import Register from './Register.jsx'
 import Dashboard from './Dashboard.jsx'
 import Chat from './components/sections/chat'
+import { ThemeProvider } from './context/ThemeContext'
 
 function ButtonClickFeedback() {
   useEffect(() => {
@@ -56,15 +57,17 @@ function ButtonClickFeedback() {
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter>
-      <ButtonClickFeedback />
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={<Dashboard userRole="student" />} />
-        <Route path="/chat" element={<Chat />} />
-      </Routes>
-    </BrowserRouter>
+    <ThemeProvider>
+      <BrowserRouter>
+        <ButtonClickFeedback />
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/dashboard" element={<Dashboard userRole="student" />} />
+          <Route path="/chat" element={<Chat />} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   </StrictMode>,
 )

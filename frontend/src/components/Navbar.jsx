@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../context/ThemeContext";
 import "../styles/Navbar.css";
 
 const Navbar = ({ onNotificationsToggle, userData }) => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
+  const { theme, toggleTheme } = useTheme();
 
   const notifications = [
     {
@@ -51,6 +53,16 @@ const Navbar = ({ onNotificationsToggle, userData }) => {
         </div>
 
         <div className="navbar-right">
+          <button
+            className={`theme-toggle ${theme}`}
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+            type="button"
+            title={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+          >
+            <span className="toggle-icon">{theme === 'light' ? '🌙' : '☀️'}</span>
+          </button>
+
           <div className="notification-wrapper" aria-label="Notification bar">
             <button
               className="icon-btn notification-btn"

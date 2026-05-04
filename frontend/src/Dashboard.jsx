@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from './context/ThemeContext';
 import './Dashboard.css';
 
 const avatarSvg = (label, primary, secondary) =>
@@ -164,6 +165,7 @@ function SectionTitle({ kicker, title, action }) {
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
   const [activeNav, setActiveNav] = useState('dashboard');
   const [reviewTab, setReviewTab] = useState('latest');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -302,6 +304,15 @@ const Dashboard = () => {
           </div>
 
           <div className="navbar-actions">
+            <button 
+              type="button" 
+              className={`theme-toggle-btn ${theme}`}
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+              title={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+            >
+              <span className="toggle-icon">{theme === 'light' ? '🌙' : '☀️'}</span>
+            </button>
             <button type="button" className="icon-btn badge-btn" aria-label="Notifications">
               🔔
               <span className="red-dot" aria-hidden="true" />
