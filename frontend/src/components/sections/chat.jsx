@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "../../styles/chat.css";
 
 const navItems = [
@@ -37,6 +37,60 @@ const activitySummary = [
   { label: "Channels", value: "4" },
   { label: "Replies today", value: "18" },
 ];
+
+const paletteSets = [
+  {
+    sentBg: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
+    sentFg: "#f8fbff",
+    receivedBg: "rgba(227, 239, 255, 0.95)",
+    receivedFg: "#16335d",
+  },
+  {
+    sentBg: "linear-gradient(135deg, #ec4899 0%, #db2777 100%)",
+    sentFg: "#fff8fd",
+    receivedBg: "rgba(252, 232, 243, 0.96)",
+    receivedFg: "#6b123f",
+  },
+  {
+    sentBg: "linear-gradient(135deg, #0f766e 0%, #14b8a6 100%)",
+    sentFg: "#f2fffd",
+    receivedBg: "rgba(225, 245, 243, 0.96)",
+    receivedFg: "#164e4c",
+  },
+  {
+    sentBg: "linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%)",
+    sentFg: "#fbf8ff",
+    receivedBg: "rgba(237, 230, 255, 0.96)",
+    receivedFg: "#3b1670",
+  },
+  {
+    sentBg: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+    sentFg: "#fffaf6",
+    receivedBg: "rgba(255, 240, 224, 0.98)",
+    receivedFg: "#7c2d12",
+  },
+  {
+    sentBg: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
+    sentFg: "#f6fcff",
+    receivedBg: "rgba(224, 244, 255, 0.96)",
+    receivedFg: "#0c4a6e",
+  },
+];
+
+const getLocalDayKey = () => {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+};
+
+const getPaletteForDay = (dayKey) => {
+  let hash = 0;
+
+  for (const character of dayKey) {
+    hash = (hash * 31 + character.charCodeAt(0)) >>> 0;
+  }
+
+  return paletteSets[hash % paletteSets.length];
+};
 
 const initialMessages = [
   {
@@ -90,6 +144,55 @@ const initialMessages = [
 const Chat = () => {
   const [messages, setMessages] = useState(initialMessages);
   const [draft, setDraft] = useState("");
+  const [dayKey, setDayKey] = useState(() => getLocalDayKey());
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    let timeoutId;
+
+    const scheduleNextUpdate = () => {
+      if (cancelled) {
+        return;
+      }
+
+      const now = new Date();
+      const nextMidnight = new Date(now);
+      nextMidnight.setHours(24, 0, 0, 0);
+
+      timeoutId = window.setTimeout(() => {
+        if (cancelled) {
+          return;
+        }
+
+        setDayKey(getLocalDayKey());
+        scheduleNextUpdate();
+      }, nextMidnight.getTime() - now.getTime());
+    };
+
+    scheduleNextUpdate();
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeoutId);
+    };
+  }, []);
+
+  const chatPalette = useMemo(() => getPaletteForDay(dayKey), [dayKey]);
+
+  const chatPaletteStyle = {
+    "--chat-sent-bg": chatPalette.sentBg,
+    "--chat-sent-fg": chatPalette.sentFg,
+    "--chat-received-bg": chatPalette.receivedBg,
+    "--chat-received-fg": chatPalette.receivedFg,
+  };
 
   const handleSend = (text = draft) => {
     const trimmed = text.trim();
@@ -115,7 +218,7 @@ const Chat = () => {
   };
 
   return (
-    <section className="chat-hub-shell" aria-label="Chat hub">
+    <section className="chat-hub-shell" aria-label="Chat hub" style={chatPaletteStyle}>
       <aside className="chat-hub-sidebar">
         <div className="chat-branding">
           <h1>EduHub</h1>
