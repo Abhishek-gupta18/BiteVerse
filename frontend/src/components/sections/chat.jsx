@@ -185,6 +185,13 @@ const Chat = () => {
   const [draft, setDraft] = useState("");
   const [dayKey, setDayKey] = useState(() => getLocalDayKey());
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isDark, setIsDark] = useState(() => {
+    try {
+      return localStorage.getItem("eduhub-dark") === "1";
+    } catch (e) {
+      return false;
+    }
+  });
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -194,6 +201,14 @@ const Chat = () => {
       document.body.style.overflow = previousOverflow;
     };
   }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("eduhub-dark", isDark ? "1" : "0");
+    } catch (e) {
+      /* ignore */
+    }
+  }, [isDark]);
 
   useEffect(() => {
     let cancelled = false;
@@ -259,7 +274,7 @@ const Chat = () => {
 
   return (
     <section
-      className={`chat-hub-shell ${isSidebarCollapsed ? "chat-hub-shell--sidebar-collapsed" : ""}`}
+      className={`chat-hub-shell ${isSidebarCollapsed ? "chat-hub-shell--sidebar-collapsed" : ""} ${isDark ? "dark" : ""}`}
       aria-label="Chat hub"
       style={chatPaletteStyle}
     >
@@ -320,6 +335,15 @@ const Chat = () => {
               ))}
               <span className="chat-avatar-stack__more">+12</span>
             </div>
+            <button
+              type="button"
+              className="chat-icon-button chat-theme-toggle"
+              aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
+              aria-pressed={isDark}
+              onClick={() => setIsDark((p) => !p)}
+            >
+              {isDark ? "☀" : "🌙"}
+            </button>
             <button type="button" className="chat-icon-button" aria-label="Notifications">⌁</button>
             <button type="button" className="chat-icon-button" aria-label="Add person">⌄</button>
             <button type="button" className="chat-icon-button" aria-label="More options">⋮</button>
