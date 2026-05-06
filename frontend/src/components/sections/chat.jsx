@@ -145,6 +145,7 @@ const Chat = () => {
   const [messages, setMessages] = useState(initialMessages);
   const [draft, setDraft] = useState("");
   const [dayKey, setDayKey] = useState(() => getLocalDayKey());
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -218,11 +219,26 @@ const Chat = () => {
   };
 
   return (
-    <section className="chat-hub-shell" aria-label="Chat hub" style={chatPaletteStyle}>
+    <section
+      className={`chat-hub-shell ${isSidebarCollapsed ? "chat-hub-shell--sidebar-collapsed" : ""}`}
+      aria-label="Chat hub"
+      style={chatPaletteStyle}
+    >
       <aside className="chat-hub-sidebar">
-        <div className="chat-branding">
-          <h1>EduHub</h1>
-          <p>Student Account</p>
+        <div className="chat-branding chat-branding--with-toggle">
+          <div className="chat-branding__text">
+            <h1>EduHub</h1>
+            <p>Student Account</p>
+          </div>
+          <button
+            type="button"
+            className="chat-sidebar-toggle"
+            onClick={() => setIsSidebarCollapsed((previous) => !previous)}
+            aria-label={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-pressed={isSidebarCollapsed}
+          >
+            {isSidebarCollapsed ? "▸" : "◂"}
+          </button>
         </div>
 
         <nav className="chat-nav" aria-label="Primary">
