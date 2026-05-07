@@ -20,6 +20,7 @@ import Community from './Community.jsx'
 import Sidebar from './components/Sidebar.jsx'
 import Navbar from './components/Navbar.jsx'
 import Footer from './components/Footer.jsx'
+import PremiumLeaderboard from './PremiumLeaderboard.jsx'
 import { ThemeProvider, useTheme } from './context/ThemeContext'
 
 // Leaderboard Page Component
@@ -289,7 +290,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/explore-food" element={<ExpFood />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/rewards" element={<Reward />} />
-          <Route path="/leaderboard" element={<LeaderboardPage />} />
+          <Route path="/leaderboard" element={<PremiumLeaderboard />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
