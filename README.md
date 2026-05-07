@@ -1,4 +1,4 @@
-# EduHub — Full-Stack Learning & Chat Platform
+# BiteVerse — Full-Stack Foodie & Chat Platform
 
 > A modern, glassmorphic full-stack application for student collaboration, messaging, and community learning. Built with React (Vite), Node.js Express backend, MySQL database, and a refined **Fluid Expression** design system.
 
