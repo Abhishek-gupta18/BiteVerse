@@ -16,6 +16,9 @@ const Sidebar = ({ isOpen, userData, onToggle }) => {
     if (location.pathname === "/dashboard") {
       setActiveNav("dashboard");
     }
+    if (location.pathname === "/leaderboard") {
+      setActiveNav("leaderboard");
+    }
   }, [location.pathname]);
 
   const navItems = [
@@ -24,6 +27,7 @@ const Sidebar = ({ isOpen, userData, onToggle }) => {
     { id: "stalls", label: "Dining Halls", icon: "🏪" },
     { id: "reviews", label: "Reviews", icon: "⭐" },
     { id: "rewards", label: "Rewards", icon: "🏆" },
+    { id: "leaderboard", label: "Leaderboard", icon: "🏅" },
     { id: "community", label: "Community", icon: "👥" },
     { id: "chats", label: "Messages", icon: "💬" },
   ];
@@ -63,6 +67,9 @@ const Sidebar = ({ isOpen, userData, onToggle }) => {
 
                 if (item.id === "chats") {
                   navigate("/chat");
+                }
+                if (item.id === "leaderboard") {
+                  navigate("/leaderboard");
                 }
               }}
             >

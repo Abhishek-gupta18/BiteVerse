@@ -1,52 +1,17 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import "../../styles/chat.css";
 
 const navItems = [
-  { id: "dashboard", label: "Dashboard", active: true },
-  { id: "messages", label: "Messages" },
-  { id: "groups", label: "Groups" },
-  { id: "library", label: "Library" },
-  { id: "settings", label: "Settings" },
+  { id: "dashboard", label: "Dashboard", icon: "📊", route: "/dashboard" },
+  { id: "explore", label: "Explore Food", icon: "🍽️" },
+  { id: "stalls", label: "Dining Halls", icon: "🏪" },
+  { id: "reviews", label: "Reviews", icon: "⭐" },
+  { id: "rewards", label: "Rewards", icon: "🏆" },
+  { id: "leaderboard", label: "Leaderboard", icon: "🏅", route: "/leaderboard" },
+  { id: "community", label: "Community", icon: "👥" },
+  { id: "chats", label: "Messages", icon: "💬", route: "/chat" },
 ];
-
-function Icon({ name }) {
-  // simple inline SVGs to ensure consistent visibility across platforms
-  switch (name) {
-    case "dashboard":
-      return (
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor">
-          <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zM13 21h8v-10h-8v10zm0-18v6h8V3h-8z" />
-        </svg>
-      );
-    case "messages":
-      return (
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor">
-          <path d="M4 4h16v10H7l-3 3V4z" />
-        </svg>
-      );
-    case "groups":
-      return (
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor">
-          <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C13 14.17 8.33 13 6 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
-        </svg>
-      );
-    case "library":
-      return (
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor">
-          <path d="M4 19V5a1 1 0 0 1 1-1h3v16H5a1 1 0 0 1-1-1zM10 4h9v16h-9V4z" />
-        </svg>
-      );
-    case "settings":
-      return (
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor">
-          <path d="M12 15.5A3.5 3.5 0 1 0 12 8.5a3.5 3.5 0 0 0 0 7z" />
-          <path d="M19.4 15a1.8 1.8 0 0 0 .2 1.9l.1.1a1 1 0 0 1-1.4 1.4l-.1-.1a1.8 1.8 0 0 0-1.9-.2 1.8 1.8 0 0 0-1 1.6V20a1 1 0 0 1-2 0v-.2a1.8 1.8 0 0 0-1-1.6 1.8 1.8 0 0 0-1.9.2l-.1.1a1 1 0 0 1-1.4-1.4l.1-.1a1.8 1.8 0 0 0 .2-1.9 1.8 1.8 0 0 0-1.6-1H4a1 1 0 0 1 0-2h.2a1.8 1.8 0 0 0 1.6-1 1.8 1.8 0 0 0-.2-1.9l-.1-.1A1 1 0 0 1 6.6 4l.1.1a1.8 1.8 0 0 0 1.9.2h.1A1.8 1.8 0 0 0 10 3.2V3a1 1 0 0 1 2 0v.2c.2.6.6 1 1 1.2h.1a1.8 1.8 0 0 0 1.9-.2l.1-.1A1 1 0 0 1 18 4.6l-.1.1a1.8 1.8 0 0 0-.2 1.9v.1c.3.4.8.8 1.4 1H20a1 1 0 0 1 0 2h-.2c-.6.2-1 .6-1.4 1v.1c.2.6.6 1 1 1.6z" />
-        </svg>
-      );
-    default:
-      return null;
-  }
-}
 
 const people = [
   { id: 1, name: "Alex P.", status: "online", accent: "#ff7a1a" },
@@ -181,6 +146,8 @@ const initialMessages = [
 ];
 
 const Chat = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [messages, setMessages] = useState(initialMessages);
   const [draft, setDraft] = useState("");
   const [dayKey, setDayKey] = useState(() => getLocalDayKey());
@@ -280,10 +247,12 @@ const Chat = () => {
     >
       <aside className="chat-hub-sidebar">
         <div className="chat-branding chat-branding--with-toggle">
-          <div className="chat-branding__text">
-            <h1>EduHub</h1>
-            <p>Student Account</p>
-          </div>
+          {!isSidebarCollapsed && (
+            <div className="chat-branding__text">
+              <h1>BiteVerse</h1>
+              <p>Student Account</p>
+            </div>
+          )}
           <button
             type="button"
             className="chat-sidebar-toggle"
@@ -297,16 +266,29 @@ const Chat = () => {
 
         <nav className="chat-nav" aria-label="Primary">
           {navItems.map((item) => (
-            <button key={item.id} type="button" className={`chat-nav-item ${item.active ? "active" : ""}`} aria-label={item.label} data-label={item.label}>
-              <span aria-hidden="true" className="chat-nav-item__icon"><Icon name={item.id} /></span>
-              <span>{item.label}</span>
+            <button
+              key={item.id}
+              type="button"
+              className={`chat-nav-item ${location.pathname === item.route ? "active" : ""}`}
+              aria-label={item.label}
+              data-label={item.label}
+              onClick={() => {
+                if (item.route) {
+                  navigate(item.route);
+                }
+              }}
+            >
+              <span aria-hidden="true" className="chat-nav-item__icon">{item.icon}</span>
+              {!isSidebarCollapsed && <span>{item.label}</span>}
             </button>
           ))}
         </nav>
 
-        <button className="chat-sidebar-cta" type="button">
-          New Conversation
-        </button>
+        {!isSidebarCollapsed && (
+          <button className="chat-sidebar-cta" type="button">
+            New Conversation
+          </button>
+        )}
       </aside>
 
       <main className="chat-hub-main">

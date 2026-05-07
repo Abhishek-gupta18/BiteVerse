@@ -1,0 +1,107 @@
+/* Leaderboard page styles for BiteVerse
+   Dark neon + glassmorphism aesthetic
+*/
+:root{
+  --bg: #020617;
+  --bg2: #0F172A;
+  --purple: #7C3AED;
+  --cyan: #06B6D4;
+  --gold: #FACC15;
+  --silver: #CBD5E1;
+  --bronze: #D97706;
+  --text: #F8FAFC;
+  --muted: #64748B;
+}
+
+body{background: var(--bg); color:var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;}
+
+.bv-leaderboard-page{padding:28px; min-height:100vh; background:linear-gradient(180deg,var(--bg) 0%, #030922 60%);}
+
+.glass{background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.04); backdrop-filter: blur(8px); border-radius:12px;}
+
+.neon{box-shadow: 0 6px 20px rgba(6,182,212,0.06), inset 0 1px 0 rgba(255,255,255,0.02);}
+
+.bv-hero{display:flex; gap:18px; align-items:stretch; margin-bottom:22px}
+.bv-hero-left{flex:1; padding:20px}
+.bv-hero-right{width:260px; padding:18px; display:flex; flex-direction:column; align-items:flex-start; gap:8px}
+
+.hero-title{font-size:20px; font-weight:800; letter-spacing:0.2px}
+.hero-sub{color:var(--muted); margin-top:6px}
+
+.hero-stat{background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:10px 12px; border-radius:10px; width:100%; display:flex; justify-content:space-between; align-items:center; color:var(--text);}
+.hero-stat.rank{font-size:20px; font-weight:900; color:var(--gold);}
+
+.tabs button{background:transparent; border:1px solid rgba(255,255,255,0.04); color:var(--secondary); padding:6px 10px; margin-right:6px; border-radius:8px; cursor:pointer}
+.tabs button.active{background:linear-gradient(90deg,var(--purple),var(--cyan)); color:#020617; box-shadow:0 6px 18px rgba(124,58,237,0.12); border:0}
+
+.bv-main-grid{display:grid; grid-template-columns: 1fr 320px; gap:18px}
+
+.bv-podium-wrap .section-title, .bv-table-wrap .section-title, .bv-college-ranks .section-title{margin:0 0 12px; font-weight:700}
+
+.bv-podium{display:flex; gap:18px; align-items:flex-end; justify-content:center; padding:12px}
+.podium-card{width:140px; height:220px; display:flex; flex-direction:column; align-items:center; padding:12px; transition:transform .28s ease, box-shadow .28s ease;}
+.podium-card .avatar{width:64px;height:64px;border-radius:999px;background:linear-gradient(135deg,var(--purple),var(--cyan));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:22px;margin-top:6px;}
+.podium-card .pos{position:absolute; margin-top:6px; font-weight:800}
+.podium-card.first{transform:translateY(-14px) scale(1.06); width:180px; height:260px}
+.podium-card.first .crown{font-size:20px; margin-bottom:6px}
+.podium-card:hover{transform:translateY(-6px) scale(1.02); box-shadow:0 12px 40px rgba(124,58,237,0.14), 0 0 18px rgba(6,182,212,0.06);}
+
+.neon-gold{border:1px solid rgba(250,204,21,0.12); box-shadow: 0 12px 40px rgba(250,204,21,0.06), 0 0 28px rgba(250,204,21,0.08);}
+
+.leaderboard-card{padding:12px; margin-top:6px}
+.leaderboard-table{width:100%; border-collapse:collapse; color:var(--text)}
+.leaderboard-table thead th{font-size:12px; text-align:left; padding:10px 8px; color:var(--muted); font-weight:600}
+.leaderboard-table tbody tr{border-radius:10px; transition:transform .18s ease, box-shadow .18s ease, background .18s ease;}
+.leaderboard-table tbody tr:hover{transform:translateY(-6px); box-shadow:0 8px 30px rgba(7,89,133,0.06); background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(6,182,212,0.02));}
+
+.lb-row{border-bottom:1px solid rgba(255,255,255,0.03)}
+.lb-row.top10{box-shadow:0 6px 20px rgba(124,58,237,0.06)}
+.lb-row.you{outline:2px solid rgba(124,58,237,0.18); box-shadow: 0 8px 30px rgba(124,58,237,0.12); transform:scale(1.01)}
+
+.rank-cell{width:90px; padding:12px 8px}
+.rank-num{font-weight:800}
+.movement{font-size:12px; color:var(--muted); margin-top:6px}
+.movement.up{color:var(--gold)}
+.movement.down{color:var(--bronze)}
+
+.user-cell{display:flex; align-items:center; gap:10px; padding:8px}
+.row-avatar{width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,var(--purple),var(--cyan)); display:flex;align-items:center;justify-content:center; color:#fff; font-weight:700}
+.row-name{font-weight:700}
+.row-level{font-size:12px; color:var(--muted)}
+
+.xp-bar{height:8px; background:rgba(255,255,255,0.03); border-radius:999px; margin-top:6px; overflow:hidden}
+.xp-fill{height:100%; background:linear-gradient(90deg,var(--purple),var(--cyan));}
+
+.your-position{margin-top:12px}
+.you-row{display:flex; gap:12px; align-items:center; padding:10px}
+.you-row .you-rank{font-weight:900; color:var(--purple);}
+.neon-you{box-shadow:0 10px 30px rgba(124,58,237,0.12); border:1px solid rgba(124,58,237,0.12)}
+
+.side-widget{padding:12px; margin-bottom:12px}
+.campus-cards{display:flex; gap:8px}
+.campus-card{padding:12px; min-width:120px}
+
+/* Skeletons */
+.table-skeleton, .podium-skeleton{height:120px; display:flex; align-items:center; justify-content:center; color:var(--muted)}
+
+/* Responsive */
+@media(max-width:1000px){
+  .bv-main-grid{grid-template-columns:1fr 300px}
+  .bv-hero-right{width:220px}
+}
+@media(max-width:800px){
+  .bv-main-grid{grid-template-columns:1fr}
+  .bv-right-column{order:2}
+  .bv-left-column{order:1}
+  .bv-hero{flex-direction:column}
+  .bv-hero-right{width:100%}
+  .podium-card{width:120px; height:200px}
+}
+@media(max-width:480px){
+  .podium-card{min-width:220px}
+  .bv-podium{overflow-x:auto; padding:6px}
+  .leaderboard-table thead{display:none}
+  .leaderboard-table tbody tr{display:block; margin-bottom:10px; background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02)); padding:12px}
+  .leaderboard-table tbody tr td{display:flex; justify-content:space-between; padding:6px 0}
+  .rank-cell{width:auto}
+}

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import "../styles/Navbar.css";
 
-const Navbar = ({ onNotificationsToggle, userData }) => {
+const Navbar = ({ onNotificationsToggle, userData, isSidebarOpen = false }) => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
   const { theme, toggleTheme } = useTheme();
@@ -30,7 +30,13 @@ const Navbar = ({ onNotificationsToggle, userData }) => {
   ];
 
   return (
-    <nav className="navbar">
+    <nav 
+      className="navbar"
+      style={{
+        marginLeft: isSidebarOpen ? '220px' : '90px',
+        transition: 'margin-left 0.38s ease-in-out'
+      }}
+    >
       <div className="navbar-content">
         <div className="navbar-left">
           <div className="brand">

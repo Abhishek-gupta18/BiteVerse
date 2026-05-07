@@ -22,6 +22,19 @@
   --light-accent: #c97a3a;
   --light-navbar-bg: #f2eee7;
   
+  /* Light Theme Sidebar Colors */
+  --light-sidebar-bg: linear-gradient(180deg, #f9f6f1 0%, #f2eee7 100%);
+  --light-sidebar-border: rgba(65, 54, 45, 0.15);
+  --light-sidebar-brand-bg: linear-gradient(135deg, #ede5d9 0%, #e9ddcd 100%);
+  --light-sidebar-brand-color: #5b4a3a;
+  --light-sidebar-text: #4f4337;
+  --light-sidebar-text-secondary: #8a6b4f;
+  --light-sidebar-nav-text: rgba(90, 85, 80, 0.8);
+  --light-sidebar-nav-hover-bg: rgba(210, 140, 80, 0.08);
+  --light-sidebar-nav-active-bg: linear-gradient(135deg, rgba(210, 140, 80, 0.2), rgba(210, 140, 80, 0.12));
+  --light-sidebar-nav-active-color: #c97a3a;
+  --light-sidebar-toggle-bg: linear-gradient(135deg, #ece3d7, #e8dcc7);
+  
   /* Dark Theme Colors */
   --dark-bg: #020617;
   --dark-bg-secondary: #1e293b;
@@ -33,6 +46,19 @@
   --dark-input-bg: #0f172a;
   --dark-accent: #06b6d4;
   --dark-navbar-bg: #0f172a;
+  
+  /* Dark Theme Sidebar Colors */
+  --dark-sidebar-bg: linear-gradient(180deg, #020617 0%, #0F172A 100%);
+  --dark-sidebar-border: rgba(255, 255, 255, 0.04);
+  --dark-sidebar-brand-bg: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(6, 182, 212, 0.1));
+  --dark-sidebar-brand-color: #06B6D4;
+  --dark-sidebar-text: #F8FAFC;
+  --dark-sidebar-text-secondary: #94A3B8;
+  --dark-sidebar-nav-text: #94A3B8;
+  --dark-sidebar-nav-hover-bg: rgba(124, 58, 237, 0.1);
+  --dark-sidebar-nav-active-bg: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(6, 182, 212, 0.1));
+  --dark-sidebar-nav-active-color: #06B6D4;
+  --dark-sidebar-toggle-bg: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(6, 182, 212, 0.08));
 }
 
 /* Light Theme (Default) */
@@ -48,6 +74,19 @@ html:not([data-theme]) {
   --input-bg: var(--light-input-bg);
   --accent: var(--light-accent);
   --navbar-bg: var(--light-navbar-bg);
+  
+  /* Sidebar */
+  --sidebar-bg: var(--light-sidebar-bg);
+  --sidebar-border: var(--light-sidebar-border);
+  --sidebar-brand-bg: var(--light-sidebar-brand-bg);
+  --sidebar-brand-color: var(--light-sidebar-brand-color);
+  --sidebar-text: var(--light-sidebar-text);
+  --sidebar-text-secondary: var(--light-sidebar-text-secondary);
+  --sidebar-nav-text: var(--light-sidebar-nav-text);
+  --sidebar-nav-hover-bg: var(--light-sidebar-nav-hover-bg);
+  --sidebar-nav-active-bg: var(--light-sidebar-nav-active-bg);
+  --sidebar-nav-active-color: var(--light-sidebar-nav-active-color);
+  --sidebar-toggle-bg: var(--light-sidebar-toggle-bg);
 }
 
 /* Dark Theme */
@@ -62,6 +101,19 @@ html[data-theme="dark"] {
   --input-bg: var(--dark-input-bg);
   --accent: var(--dark-accent);
   --navbar-bg: var(--dark-navbar-bg);
+  
+  /* Sidebar */
+  --sidebar-bg: var(--dark-sidebar-bg);
+  --sidebar-border: var(--dark-sidebar-border);
+  --sidebar-brand-bg: var(--dark-sidebar-brand-bg);
+  --sidebar-brand-color: var(--dark-sidebar-brand-color);
+  --sidebar-text: var(--dark-sidebar-text);
+  --sidebar-text-secondary: var(--dark-sidebar-text-secondary);
+  --sidebar-nav-text: var(--dark-sidebar-nav-text);
+  --sidebar-nav-hover-bg: var(--dark-sidebar-nav-hover-bg);
+  --sidebar-nav-active-bg: var(--dark-sidebar-nav-active-bg);
+  --sidebar-nav-active-color: var(--dark-sidebar-nav-active-color);
+  --sidebar-toggle-bg: var(--dark-sidebar-toggle-bg);
 }
 
 html,
