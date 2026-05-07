@@ -9,6 +9,7 @@ import App from './App.jsx'
 import Login from './Login.jsx'
 import Register from './Register.jsx'
 import Dashboard from './Dashboard.jsx'
+import ExpFood from './Exp-Food.jsx'
 import Chat from './components/sections/chat'
 import Sidebar from './components/Sidebar.jsx'
 import Navbar from './components/Navbar.jsx'
@@ -273,6 +274,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard userRole="student" />} />
+          <Route path="/explore-food" element={<ExpFood />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
         </Routes>

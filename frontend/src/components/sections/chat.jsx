@@ -5,7 +5,7 @@ import "../../styles/chat.css";
 
 const navItems = [
   { id: "dashboard", label: "Dashboard", icon: "📊", route: "/dashboard" },
-  { id: "explore", label: "Explore Food", icon: "🍽️" },
+  { id: "explore", label: "Explore Food", icon: "🍽️", route: "/explore-food" },
   { id: "stalls", label: "Dining Halls", icon: "🏪" },
   { id: "reviews", label: "Reviews", icon: "⭐" },
   { id: "rewards", label: "Rewards", icon: "🏆" },
@@ -156,7 +156,7 @@ const Chat = () => {
   const [isDark, setIsDark] = useState(() => {
     try {
       return localStorage.getItem("eduhub-dark") === "1";
-    } catch (e) {
+    } catch {
       return false;
     }
   });
@@ -173,7 +173,7 @@ const Chat = () => {
   useEffect(() => {
     try {
       localStorage.setItem("eduhub-dark", isDark ? "1" : "0");
-    } catch (e) {
+    } catch {
       /* ignore */
     }
   }, [isDark]);

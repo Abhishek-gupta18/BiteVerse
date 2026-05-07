@@ -140,6 +140,37 @@ const messages = [
   { name: 'You', text: 'I am heading there after class.', time: 'now', online: false },
 ];
 
+const notificationSeed = [
+  {
+    id: 1,
+    title: 'Budget alert nearby',
+    text: 'Crisp Seoul Bowl dropped to $7.20 at Midnight Kitchen.',
+    time: '2m ago',
+    unread: true,
+  },
+  {
+    id: 2,
+    title: 'New review reaction',
+    text: 'Maya replied to your Inferno Ramen review.',
+    time: '8m ago',
+    unread: true,
+  },
+  {
+    id: 3,
+    title: 'Reward progress',
+    text: 'You are 28 points away from a 50% meal coupon.',
+    time: '25m ago',
+    unread: false,
+  },
+  {
+    id: 4,
+    title: 'Campus feed trend',
+    text: 'Noodle Hub is trending across your college this hour.',
+    time: '1h ago',
+    unread: false,
+  },
+];
+
 const biteVerseAvatar = avatarSvg('Abhishek', '#7C3AED', '#06B6D4');
 
 function Stars({ rating }) {
@@ -172,8 +203,11 @@ const Dashboard = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [messageDraft, setMessageDraft] = useState('');
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [notificationItems, setNotificationItems] = useState(notificationSeed);
   const [logoutPhase, setLogoutPhase] = useState(null);
   const profileMenuRef = useRef(null);
+  const notificationMenuRef = useRef(null);
   const logoutTimersRef = useRef([]);
 
   const heroStats = useMemo(
@@ -193,16 +227,26 @@ const Dashboard = () => {
     return reviews;
   }, [reviewTab]);
 
+  const unreadNotificationCount = useMemo(
+    () => notificationItems.filter((item) => item.unread).length,
+    [notificationItems],
+  );
+
   useEffect(() => {
     const handlePointerDown = (event) => {
       if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
         setProfileMenuOpen(false);
+      }
+
+      if (notificationMenuRef.current && !notificationMenuRef.current.contains(event.target)) {
+        setNotificationsOpen(false);
       }
     };
 
     const handleEscape = (event) => {
       if (event.key === 'Escape') {
         setProfileMenuOpen(false);
+        setNotificationsOpen(false);
       }
     };
 
@@ -220,6 +264,10 @@ const Dashboard = () => {
   const clearLogoutTimers = () => {
     logoutTimersRef.current.forEach((timerId) => window.clearTimeout(timerId));
     logoutTimersRef.current = [];
+  };
+
+  const markAllNotificationsAsRead = () => {
+    setNotificationItems((items) => items.map((item) => ({ ...item, unread: false })));
   };
 
   const handleLogout = () => {
@@ -278,6 +326,9 @@ const Dashboard = () => {
                 if (item.id === 'messages') {
                   navigate('/chat');
                 }
+                if (item.id === 'explore') {
+                  navigate('/explore-food');
+                }
               }}
               aria-label={item.label}
             >
@@ -314,10 +365,45 @@ const Dashboard = () => {
             >
               <span className="toggle-icon">{theme === 'light' ? '🌙' : '☀️'}</span>
             </button>
-            <button type="button" className="icon-btn badge-btn" aria-label="Notifications">
-              🔔
-              <span className="red-dot" aria-hidden="true" />
-            </button>
+            <div className="notification-dropdown" ref={notificationMenuRef}>
+              <button
+                type="button"
+                className={`icon-btn badge-btn ${notificationsOpen ? 'active' : ''}`}
+                aria-label="Notifications"
+                aria-expanded={notificationsOpen}
+                aria-haspopup="menu"
+                onClick={() => {
+                  setNotificationsOpen((value) => !value);
+                  setProfileMenuOpen(false);
+                }}
+              >
+                🔔
+                {unreadNotificationCount > 0 ? <span className="red-dot" aria-hidden="true" /> : null}
+              </button>
+
+              {notificationsOpen && (
+                <div className="notification-menu" role="menu" aria-label="Notifications">
+                  <div className="notification-menu-head">
+                    <strong>Notifications</strong>
+                    <button type="button" onClick={markAllNotificationsAsRead}>
+                      Mark all read
+                    </button>
+                  </div>
+
+                  <div className="notification-list">
+                    {notificationItems.map((notification) => (
+                      <article key={notification.id} className={`notification-item ${notification.unread ? 'unread' : ''}`}>
+                        <div className="notification-item-copy">
+                          <h4>{notification.title}</h4>
+                          <p>{notification.text}</p>
+                        </div>
+                        <time>{notification.time}</time>
+                      </article>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
             <div className="profile-dropdown" ref={profileMenuRef}>
               <button
                 type="button"
@@ -325,7 +411,10 @@ const Dashboard = () => {
                 aria-label="Profile dropdown"
                 aria-expanded={profileMenuOpen}
                 aria-haspopup="menu"
-                onClick={() => setProfileMenuOpen((value) => !value)}
+                onClick={() => {
+                  setProfileMenuOpen((value) => !value);
+                  setNotificationsOpen(false);
+                }}
               >
                 <img src={biteVerseAvatar} alt="Profile" />
                 <span>Abhishek</span>

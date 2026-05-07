@@ -1,25 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/Sidebar.css";
 
 const Sidebar = ({ isOpen, userData, onToggle }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [activeNav, setActiveNav] = useState("dashboard");
-
-  useEffect(() => {
-    if (location.pathname === "/chat") {
-      setActiveNav("chats");
-      return;
-    }
-
-    if (location.pathname === "/dashboard") {
-      setActiveNav("dashboard");
-    }
-    if (location.pathname === "/leaderboard") {
-      setActiveNav("leaderboard");
-    }
-  }, [location.pathname]);
+  const activeNavByPath = {
+    "/chat": "chats",
+    "/dashboard": "dashboard",
+    "/explore-food": "explore",
+    "/leaderboard": "leaderboard",
+  };
+  const activeNav = activeNavByPath[location.pathname] || "dashboard";
 
   const navItems = [
     { id: "dashboard", label: "Dashboard", icon: "📊" },
@@ -59,10 +51,11 @@ const Sidebar = ({ isOpen, userData, onToggle }) => {
               key={item.id}
               className={`nav-item ${activeNav === item.id ? "active" : ""}`}
               onClick={() => {
-                setActiveNav(item.id);
-
                 if (item.id === "dashboard") {
                   navigate("/dashboard");
+                }
+                if (item.id === "explore") {
+                  navigate("/explore-food");
                 }
 
                 if (item.id === "chats") {
