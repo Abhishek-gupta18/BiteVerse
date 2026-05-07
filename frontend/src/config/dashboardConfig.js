@@ -274,7 +274,6 @@ export const NAVIGATION_ITEMS = {
   [USER_ROLES.STUDENT]: [
     { id: "dashboard", label: "Dashboard", icon: "📊" },
     { id: "explore", label: "Explore Food", icon: "🍽️" },
-    { id: "stalls", label: "Dining Halls", icon: "🏪" },
     { id: "reviews", label: "Reviews", icon: "⭐" },
     { id: "rewards", label: "Rewards", icon: "🏆" },
     { id: "leaderboard", label: "Leaderboard", icon: "🥇" },

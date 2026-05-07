@@ -51,7 +51,6 @@ const buildDishArt = (title, accentA, accentB) =>
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: '◉' },
   { id: 'explore', label: 'Explore Food', icon: '⌂' },
-  { id: 'dining', label: 'Dining Halls', icon: '◫' },
   { id: 'reviews', label: 'Reviews', icon: '★' },
   { id: 'rewards', label: 'Rewards', icon: '⬢' },
   { id: 'leaderboard', label: 'Leaderboard', icon: '↟' },
@@ -171,7 +170,7 @@ const notificationSeed = [
   },
 ];
 
-const biteVerseAvatar = avatarSvg('Abhishek', '#7C3AED', '#06B6D4');
+const biteVerseAvatar = avatarSvg('user', '#7C3AED', '#06B6D4');
 
 function Stars({ rating }) {
   return (
@@ -305,10 +304,10 @@ const Dashboard = () => {
         </button>
 
         <div className="sidebar-profile">
-          <img className="sidebar-avatar" src={biteVerseAvatar} alt="Abhishek" />
+          <img className="sidebar-avatar" src={biteVerseAvatar} alt="user" />
           {!sidebarCollapsed && (
             <div>
-              <strong>Abhishek</strong>
+              <strong>user</strong>
               <p>Campus Explorer</p>
               <span className="level-badge">Level 5 Food Explorer</span>
             </div>
@@ -417,7 +416,7 @@ const Dashboard = () => {
                 }}
               >
                 <img src={biteVerseAvatar} alt="Profile" />
-                <span>Abhishek</span>
+                <span>user</span>
                 <span className={`profile-caret ${profileMenuOpen ? 'open' : ''}`}>▾</span>
               </button>
 
@@ -445,7 +444,7 @@ const Dashboard = () => {
           <section className="hero-card glow-card">
             <div className="hero-overlay" />
             <div className="hero-content">
-              <p className="hero-greeting">Good Evening, Abhishek 👋</p>
+              <p className="hero-greeting">Good Evening, user 👋</p>
               <h1>Ready to explore something spicy today?</h1>
               <p className="hero-subtext">
                 BiteVerse keeps track of the best food stalls, trending dishes, and the reviews that matter most.

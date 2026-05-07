@@ -6,7 +6,6 @@ import "../../styles/chat.css";
 const navItems = [
   { id: "dashboard", label: "Dashboard", icon: "📊", route: "/dashboard" },
   { id: "explore", label: "Explore Food", icon: "🍽️", route: "/explore-food" },
-  { id: "stalls", label: "Dining Halls", icon: "🏪" },
   { id: "reviews", label: "Reviews", icon: "⭐" },
   { id: "rewards", label: "Rewards", icon: "🏆" },
   { id: "leaderboard", label: "Leaderboard", icon: "🏅", route: "/leaderboard" },
