@@ -12,6 +12,7 @@ import Dashboard from './Dashboard.jsx'
 import Chat from './components/sections/chat'
 import Sidebar from './components/Sidebar.jsx'
 import Navbar from './components/Navbar.jsx'
+import Footer from './components/Footer.jsx'
 import { ThemeProvider, useTheme } from './context/ThemeContext'
 
 // Leaderboard Page Component
@@ -212,6 +213,7 @@ function LeaderboardPage() {
           </div>
         </aside>
       </div>
+      <Footer variant="leaderboard" />
       </div>
     </>
   );

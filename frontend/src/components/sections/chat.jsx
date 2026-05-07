@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import Footer from "../Footer";
 import "../../styles/chat.css";
 
 const navItems = [
@@ -411,6 +412,8 @@ const Chat = () => {
             </button>
           </div>
         </footer>
+
+        <Footer variant="chat" compact />
       </main>
 
       <aside className="chat-hub-right">

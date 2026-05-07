@@ -231,7 +231,6 @@ html[data-theme="dark"] .biteverse-shell {
 
 .review-cta:active {
   transform: scale(0.95);
-}
   box-shadow: 0 0 30px rgba(124, 58, 237, 0.45);
 }
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from './context/ThemeContext';
+import Footer from './components/Footer';
 import './Dashboard.css';
 
 const avatarSvg = (label, primary, secondary) =>
@@ -534,6 +535,8 @@ const Dashboard = () => {
               </div>
             </aside>
           </section>
+
+          <Footer variant="dashboard" />
         </main>
       </div>
 
