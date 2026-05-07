@@ -75,7 +75,7 @@ function App() {
         </nav>
           <button
             className="login-btn"
-            onClick={async (e) => {
+            onClick={async () => {
               await triggerPageTransition(0, 0, { duration: 700 })
               navigate('/login')
             }}

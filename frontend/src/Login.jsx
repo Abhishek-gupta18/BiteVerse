@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import './Login.css'
 import { triggerPageTransition } from './Transition'
 
@@ -50,7 +50,7 @@ function Login() {
                 <button
                   type="button"
                   className="primary-action"
-                  onClick={async (e) => {
+                  onClick={async () => {
                     await triggerPageTransition(0, 0, { duration: 700 })
                     // navigation after animation (adjust as needed)
                     window.location.href = '/'

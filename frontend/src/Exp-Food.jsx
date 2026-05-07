@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import Sidebar from './components/Sidebar';
 import Footer from './components/Footer';
 import './styles/Exp-Food.css';
@@ -141,7 +141,7 @@ const ExpFood = () => {
     [activeFilter, normalizedSearch],
   );
 
-  const updateSlider = () => {
+  const updateSlider = useCallback(() => {
     const rowElement = filterRowRef.current;
     const activeButton = filterButtonRefs.current[activeFilter];
 
@@ -154,11 +154,11 @@ const ExpFood = () => {
       width: `${activeButton.offsetWidth}px`,
       transform: `translateX(${activeButton.offsetLeft}px)`,
     });
-  };
+  }, [activeFilter]);
 
   useLayoutEffect(() => {
     updateSlider();
-  }, [activeFilter]);
+  }, [activeFilter, updateSlider]);
 
   useEffect(() => {
     window.addEventListener('resize', updateSlider);
@@ -166,7 +166,7 @@ const ExpFood = () => {
     return () => {
       window.removeEventListener('resize', updateSlider);
     };
-  }, [activeFilter]);
+  }, [activeFilter, updateSlider]);
 
   return (
     <main className="exp-food-page" aria-label="Explore food">

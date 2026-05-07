@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import "../styles/Navbar.css";
 
 const Navbar = ({ onNotificationsToggle, userData, isSidebarOpen = false }) => {
-  const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
   const { theme, toggleTheme } = useTheme();
 

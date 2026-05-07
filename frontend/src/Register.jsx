@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import './Register.css'
 import { triggerPageTransition } from './Transition'
 import { collegeOptions } from './collegeOptions'
@@ -456,7 +456,7 @@ function Register() {
             <button
               type="button"
               className="secondary-link"
-              onClick={(e) => {
+              onClick={() => {
                 triggerPageTransition(0, 0, { duration: 700 }).then(() => {
                   window.location.href = '/login'
                 })

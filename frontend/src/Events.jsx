@@ -5,7 +5,6 @@ import './styles/Events.css';
 
 export default function Events() {
   const navigate = useNavigate();
-  const [selectedMonth, setSelectedMonth] = useState('current');
   const [expandedEvent, setExpandedEvent] = useState(null);
 
   const upcomingEvents = [
@@ -242,7 +241,7 @@ export default function Events() {
       <section className="upcoming-events-section">
         <h2 className="section-title">🗓️ Upcoming Events</h2>
         <div className="events-grid">
-          {upcomingEvents.map((event, idx) => (
+          {upcomingEvents.map((event) => (
             <div
               key={event.id}
               className="event-card"

@@ -13,7 +13,6 @@ const Leaderboard = ({ apiUrl = '/api/leaderboard', limit = 10 }) => {
 
   useEffect(() => {
     let mounted = true;
-    setLoading(true);
     fetch(apiUrl)
       .then((res) => {
         if (!res.ok) throw new Error(res.statusText || 'Failed to fetch');

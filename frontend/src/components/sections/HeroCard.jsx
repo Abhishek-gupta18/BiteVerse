@@ -1,7 +1,7 @@
 import React from "react";
 import "../../styles/HeroCard.css";
 
-const HeroCard = ({ stats, userData }) => {
+const HeroCard = ({ stats }) => {
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return "Good Morning";

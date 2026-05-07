@@ -23,6 +23,7 @@ import Footer from './components/Footer.jsx'
 import { ThemeProvider, useTheme } from './context/ThemeContext'
 
 // Leaderboard Page Component
+// eslint-disable-next-line react-refresh/only-export-components
 function LeaderboardPage() {
   const { theme } = useTheme();
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
@@ -86,7 +87,6 @@ function LeaderboardPage() {
 
   const top100 = users.slice(0,100);
   const top3 = users.slice(0,3);
-  const youInTop100 = currentUser.rank <= 100;
 
   return (
     <>
@@ -226,6 +226,7 @@ function LeaderboardPage() {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 function ButtonClickFeedback() {
   useEffect(() => {
     const timers = new Map()
