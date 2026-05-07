@@ -9,6 +9,7 @@ const Sidebar = ({ isOpen, userData, onToggle }) => {
     "/chat": "chats",
     "/dashboard": "dashboard",
     "/explore-food": "explore",
+    "/rewards": "rewards",
     "/leaderboard": "leaderboard",
   };
   const activeNav = activeNavByPath[location.pathname] || "dashboard";
@@ -56,7 +57,9 @@ const Sidebar = ({ isOpen, userData, onToggle }) => {
                 if (item.id === "explore") {
                   navigate("/explore-food");
                 }
-
+                if (item.id === "rewards") {
+                  navigate("/rewards");
+                }
                 if (item.id === "chats") {
                   navigate("/chat");
                 }

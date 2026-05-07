@@ -11,6 +11,7 @@ import Register from './Register.jsx'
 import Dashboard from './Dashboard.jsx'
 import ExpFood from './Exp-Food.jsx'
 import Chat from './components/sections/chat'
+import Reward from './Reward.jsx'
 import Sidebar from './components/Sidebar.jsx'
 import Navbar from './components/Navbar.jsx'
 import Footer from './components/Footer.jsx'
@@ -276,6 +277,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/dashboard" element={<Dashboard userRole="student" />} />
           <Route path="/explore-food" element={<ExpFood />} />
           <Route path="/chat" element={<Chat />} />
+          <Route path="/rewards" element={<Reward />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
         </Routes>
       </BrowserRouter>

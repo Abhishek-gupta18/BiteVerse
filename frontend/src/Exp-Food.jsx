@@ -1,4 +1,5 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import Sidebar from './components/Sidebar';
 import Footer from './components/Footer';
 import './styles/Exp-Food.css';
 
@@ -109,9 +110,20 @@ const matchesFilter = (item, activeFilter, searchTerm) => {
 const ExpFood = () => {
   const [activeFilter, setActiveFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const filterRowRef = useRef(null);
   const filterButtonRefs = useRef({});
   const [sliderStyle, setSliderStyle] = useState({ opacity: 0, width: 0, transform: 'translateX(0px)' });
+
+  const sidebarUserData = useMemo(
+    () => ({
+      name: 'user',
+      college: 'Campus Explorer',
+      avatar:
+        'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80',
+    }),
+    [],
+  );
 
   const normalizedSearch = searchTerm.trim().toLowerCase();
   const filteredTrendingItems = useMemo(
@@ -158,8 +170,10 @@ const ExpFood = () => {
 
   return (
     <main className="exp-food-page" aria-label="Explore food">
-      <section className="exp-food-shell">
-        <div className="exp-search" role="search">
+      <Sidebar isOpen={isSidebarOpen} userData={sidebarUserData} onToggle={() => setIsSidebarOpen((value) => !value)} />
+      <div className={`exp-food-content ${isSidebarOpen ? 'exp-food-content--open' : 'exp-food-content--collapsed'}`}>
+        <section className="exp-food-shell">
+          <div className="exp-search" role="search">
           <span aria-hidden="true" className="exp-search__icon">⌕</span>
           <input
             type="search"
@@ -275,7 +289,8 @@ const ExpFood = () => {
         </button>
 
         <Footer variant="dashboard" />
-      </section>
+        </section>
+      </div>
     </main>
   );
 };
