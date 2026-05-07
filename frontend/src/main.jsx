@@ -12,6 +12,10 @@ import Dashboard from './Dashboard.jsx'
 import ExpFood from './Exp-Food.jsx'
 import Chat from './components/sections/chat'
 import Reward from './Reward.jsx'
+import Features from './Features.jsx'
+import Work from './Work.jsx'
+import Contact from './Contact.jsx'
+import Events from './Events.jsx'
 import Sidebar from './components/Sidebar.jsx'
 import Navbar from './components/Navbar.jsx'
 import Footer from './components/Footer.jsx'
@@ -272,6 +276,10 @@ createRoot(document.getElementById('root')).render(
         <ButtonClickFeedback />
         <Routes>
           <Route path="/" element={<App />} />
+          <Route path="/features" element={<Features />} />
+          <Route path="/work" element={<Work />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/events" element={<Events />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard userRole="student" />} />

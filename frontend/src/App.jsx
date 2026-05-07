@@ -18,6 +18,30 @@ function App() {
     window.setTimeout(() => ripple.remove(), 700)
   }
 
+  const handleFeaturesClick = async (e) => {
+    handleNavClick(e);
+    await triggerPageTransition(0, 0, { duration: 700 });
+    navigate('/features');
+  };
+
+  const handleWorkClick = async (e) => {
+    handleNavClick(e);
+    await triggerPageTransition(0, 0, { duration: 700 });
+    navigate('/work');
+  };
+
+  const handleContactClick = async (e) => {
+    handleNavClick(e);
+    await triggerPageTransition(0, 0, { duration: 700 });
+    navigate('/contact');
+  };
+
+  const handleEventsClick = async (e) => {
+    handleNavClick(e);
+    await triggerPageTransition(0, 0, { duration: 700 });
+    navigate('/events');
+  };
+
   return (
     <main className="landing">
       <div className="sky-layer"></div>
@@ -27,21 +51,21 @@ function App() {
       <header className="topbar">
         <div className="brand">BiteVerse</div>
         <nav className="nav-links" aria-label="Primary">
-          <a className="nav-item" href="#features" onClick={handleNavClick}>
+          <button className="nav-item" onClick={handleFeaturesClick}>
             <span>Features</span>
-          </a>
-          <a className="nav-item" href="#how" onClick={handleNavClick}>
+          </button>
+          <button className="nav-item" onClick={handleWorkClick}>
             <span>How it Works</span>
-          </a>
+          </button>
           <a className="nav-item" href="#community" onClick={handleNavClick}>
             <span>Community</span>
           </a>
-          <a className="nav-item" href="#events" onClick={handleNavClick}>
+          <button className="nav-item" onClick={handleEventsClick}>
             <span>Events</span>
-          </a>
-          <a className="nav-item" href="#contact" onClick={handleNavClick}>
+          </button>
+          <button className="nav-item" onClick={handleContactClick}>
             <span>Contact</span>
-          </a>
+          </button>
         </nav>
           <button
             className="login-btn"
