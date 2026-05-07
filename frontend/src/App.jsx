@@ -42,6 +42,12 @@ function App() {
     navigate('/events');
   };
 
+  const handleCommunityClick = async (e) => {
+    handleNavClick(e);
+    await triggerPageTransition(0, 0, { duration: 700 });
+    navigate('/community');
+  };
+
   return (
     <main className="landing">
       <div className="sky-layer"></div>
@@ -57,9 +63,9 @@ function App() {
           <button className="nav-item" onClick={handleWorkClick}>
             <span>How it Works</span>
           </button>
-          <a className="nav-item" href="#community" onClick={handleNavClick}>
+          <button className="nav-item" onClick={handleCommunityClick}>
             <span>Community</span>
-          </a>
+          </button>
           <button className="nav-item" onClick={handleEventsClick}>
             <span>Events</span>
           </button>

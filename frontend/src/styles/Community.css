@@ -1,0 +1,280 @@
+.community-page {
+  min-height: 100vh;
+  color: #f8fafc;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background:
+    radial-gradient(circle at 12% 10%, rgba(236, 72, 153, 0.2), transparent 38%),
+    radial-gradient(circle at 88% 8%, rgba(6, 182, 212, 0.2), transparent 42%),
+    linear-gradient(180deg, #020617 0%, #030922 45%, #101a34 100%);
+  padding-bottom: 72px;
+}
+
+.community-hero {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 56px 24px 28px;
+  text-align: center;
+}
+
+.community-back {
+  margin-bottom: 18px;
+  border: 1px solid rgba(6, 182, 212, 0.35);
+  background: rgba(6, 182, 212, 0.12);
+  color: #67e8f9;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.community-back:hover {
+  transform: translateX(-3px);
+  background: rgba(6, 182, 212, 0.2);
+}
+
+.community-hero h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4.8vw, 3.4rem);
+  line-height: 1.15;
+  background: linear-gradient(130deg, #f9a8d4 0%, #67e8f9 50%, #c4b5fd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.community-hero > p {
+  max-width: 760px;
+  margin: 16px auto 0;
+  color: #cbd5e1;
+  font-size: 1.04rem;
+  line-height: 1.7;
+}
+
+.community-stats {
+  margin-top: 32px;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+}
+
+.community-stat-card {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(12px);
+  padding: 18px 14px;
+}
+
+.community-stat-card h3 {
+  margin: 0;
+  font-size: 1.75rem;
+  color: #67e8f9;
+}
+
+.community-stat-card span {
+  margin-top: 7px;
+  display: block;
+  color: #cbd5e1;
+  font-size: 0.9rem;
+}
+
+.circle-section,
+.community-challenges,
+.community-voices,
+.community-cta {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 26px 24px;
+}
+
+.circle-head h2,
+.community-challenges h2,
+.community-voices h2,
+.community-cta h2 {
+  margin: 0;
+  font-size: clamp(1.5rem, 3.3vw, 2.15rem);
+}
+
+.circle-head p,
+.community-cta p {
+  color: #cbd5e1;
+  margin-top: 8px;
+}
+
+.circle-tabs {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.circle-tab {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.04);
+  color: #e2e8f0;
+  padding: 9px 14px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.circle-tab.active {
+  background: linear-gradient(130deg, #ec4899, #06b6d4);
+  border-color: transparent;
+  color: #02121f;
+}
+
+.circle-detail {
+  margin-top: 18px;
+  border: 1px solid color-mix(in srgb, var(--vibe-color) 52%, white 18%);
+  border-radius: 18px;
+  background: linear-gradient(140deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+  backdrop-filter: blur(10px);
+  padding: 22px;
+}
+
+.circle-detail__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.circle-detail__header h3 {
+  margin: 0;
+}
+
+.circle-detail__header span {
+  color: var(--vibe-color);
+  font-weight: 700;
+}
+
+.circle-detail p {
+  color: #dbe5f3;
+  margin: 10px 0 14px;
+  line-height: 1.65;
+}
+
+.circle-detail ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #e2e8f0;
+}
+
+.circle-detail li {
+  margin: 8px 0;
+}
+
+.challenge-grid {
+  margin-top: 16px;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+}
+
+.challenge-card {
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(8, 14, 28, 0.72);
+  animation: challengeRise 0.5s ease forwards;
+  opacity: 0;
+}
+
+.challenge-card h3 {
+  margin: 0;
+  color: #f9a8d4;
+}
+
+.challenge-card p {
+  color: #cbd5e1;
+  line-height: 1.6;
+  margin: 10px 0;
+}
+
+.challenge-reward {
+  font-size: 0.9rem;
+  color: #67e8f9;
+  font-weight: 700;
+}
+
+.voice-grid {
+  margin-top: 16px;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.voice-card {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 18px;
+  background: rgba(15, 23, 42, 0.6);
+}
+
+.voice-card p {
+  margin: 0;
+  color: #e2e8f0;
+  line-height: 1.7;
+}
+
+.voice-card h4 {
+  margin: 14px 0 4px;
+}
+
+.voice-card span {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.community-cta {
+  text-align: center;
+}
+
+.community-cta button {
+  margin-top: 10px;
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 22px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: linear-gradient(130deg, #06b6d4, #ec4899);
+  color: #04121d;
+  transition: transform 0.25s ease;
+}
+
+.community-cta button:hover {
+  transform: translateY(-2px);
+}
+
+@keyframes challengeRise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .community-page {
+    padding-bottom: 44px;
+  }
+
+  .community-hero {
+    padding-top: 38px;
+  }
+
+  .circle-detail {
+    padding: 16px;
+  }
+}
