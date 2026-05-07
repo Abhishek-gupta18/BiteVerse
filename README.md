@@ -203,12 +203,16 @@ npm run start       # Node.js production server
 
 | Date | Day | Work Done | Files |
 |------|-----|-----------|-------|
-| 2026-04-21 | Day 1 | Rebuilt dashboard layout, replaced old card system with preference/reward/achievement/chat panels | `Dashboard.jsx`, `Dashboard.css` |
-| 2026-04-21 | Day 1 | Updated search bar and left navigation to match new layout | `Navbar.jsx`, `Sidebar.jsx` |
-| 2026-04-22 | Day 2 | Fixed grid overlap between food & achievements panels | `Dashboard.css` |
-| 2026-05-03 | Day 12 | Wired chat button to `/chat` route, redesigned sidebar with smooth transitions | `Navbar.jsx`, `Sidebar.jsx` |
-| 2026-05-04 | Day 13 | Updated registration, college dropdown, avatar customization | `Register.jsx` |
-| 2026-05-05 | Day 14 | Implemented glassmorphic chat hub UI, applied Fluid Expression design system, embedded screenshots in README | `chat.jsx`, `chat.css`, `globals.css`, `README.md` |
+| 2026-04-21 | Day 1 | Rebuilt dashboard layout and replaced old mixed cards with preference/reward/achievement/chat panels | `frontend/src/Dashboard.jsx`, `frontend/src/Dashboard.css` |
+| 2026-04-21 | Day 1 | Updated top search and left navigation to match the new dashboard wireframe | `frontend/src/components/Navbar.jsx`, `frontend/src/components/Sidebar.jsx`, `frontend/src/styles/Navbar.css`, `frontend/src/styles/Sidebar.css` |
+| 2026-04-22 | Day 2 | Fixed grid overlap between food preference and achievements panels | `frontend/src/Dashboard.css` |
+| 2026-05-03 | Day 12 | Wired chat navigation to `/chat` and refined sidebar behavior and transitions | `frontend/src/components/Navbar.jsx`, `frontend/src/components/Sidebar.jsx`, `frontend/src/styles/Sidebar.css` |
+| 2026-05-04 | Day 13 | Updated registration flow with college dropdown and avatar customization polish | `frontend/src/Register.jsx`, `frontend/src/Login.jsx`, `frontend/src/collegeOptions.js` |
+| 2026-05-05 | Day 14 | Implemented glassmorphic chat hub and finalized Fluid Expression base styling | `frontend/src/components/sections/chat.jsx`, `frontend/src/styles/chat.css`, `frontend/src/globals.css` |
+| 2026-05-07 | Day 16 | Added Explore Food route and wired navigation from dashboard, sidebar, and chat | `frontend/src/main.jsx`, `frontend/src/Dashboard.jsx`, `frontend/src/components/Sidebar.jsx`, `frontend/src/components/sections/chat.jsx` |
+| 2026-05-07 | Day 16 | Implemented Explore Food functional filters and search with dynamic result states and shared footer integration | `frontend/src/Exp-Food.jsx`, `frontend/src/styles/Exp-Food.css` |
+| 2026-05-08 | Day 17 | Added sliding transitions to Explore Food sections and filter interactions (horizontal reveal + active slider) | `frontend/src/Exp-Food.jsx`, `frontend/src/styles/Exp-Food.css` |
+| 2026-05-08 | Day 17 | Added notifications dropdown in dashboard header with unread indicator, outside-click close, and mark-all-read action | `frontend/src/Dashboard.jsx`, `frontend/src/Dashboard.css` |
 
 ---
 
@@ -241,19 +245,3 @@ npm run start       # Node.js production server
 - **[React Vite Docs](https://vitejs.dev/)** — Build tool documentation
 - **[Express.js Docs](https://expressjs.com/)** — Backend framework
 - **Plus Jakarta Sans** — [Google Fonts](https://fonts.google.com/specimen/Plus+Jakarta+Sans)
-
-## Project Timeline
-
-| Date | Day No. | Work Done | Files |
-| --- | --- | --- | --- |
-| 2026-04-21 | Day 1 | Rebuilt the user dashboard around the new wireframe, replacing the old mixed card layout with dedicated food preference, reward, achievements, and minimized chat panels. | `frontend/src/Dashboard.jsx`, `frontend/src/Dashboard.css` |
-| 2026-04-21 | Day 1 | Updated the top search bar and the left rail so the dashboard header and navigation match the new layout. | `frontend/src/components/Navbar.jsx`, `frontend/src/components/Sidebar.jsx`, `frontend/src/styles/Navbar.css`, `frontend/src/styles/Sidebar.css` |
-| 2026-04-22 | Day 2 | Fixed the overlap between the food preference panel and the achievements panel by separating their grid placement. | `frontend/src/Dashboard.css` |
-| 2026-05-03 | Day 12 | Wired the chat button in the Navbar and "Messages" in the Sidebar to redirect to the chat section (`/chat`). | `frontend/src/components/Navbar.jsx`, `frontend/src/components/Sidebar.jsx` |
-| 2026-05-03 | Day 12 | Redesigned and animated the sidebar with smooth expand/collapse transitions, improved spacing, larger closed state (90px), and cleaned up abnormal styling. | `frontend/src/styles/Sidebar.css` |
-| 2026-05-04 | Day 13 | Updated timeline and minor fixes | `frontend/src/Register.jsx` |
-
-> The timeline below should be updated as new project work lands.
-
-## Next Step
-- Implement full auth flow in Node backend: user table, OTP storage, OTP verification, JWT issuance, and protected routes.
