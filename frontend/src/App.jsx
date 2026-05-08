@@ -48,6 +48,18 @@ function App() {
     navigate('/community');
   };
 
+  const handleExploreWebClick = async (e) => {
+    handleNavClick(e);
+    await triggerPageTransition(0, 0, { duration: 700 });
+    navigate('/explore-food');
+  };
+
+  const handleMobileAppClick = async (e) => {
+    handleNavClick(e);
+    await triggerPageTransition(0, 0, { duration: 700 });
+    navigate('/features');
+  };
+
   return (
     <main className="landing">
       <div className="sky-layer"></div>
@@ -91,8 +103,8 @@ function App() {
         </p>
 
         <div className="cta-row">
-          <button className="cta secondary">Mobile App Coming Soon</button>
-          <button className="cta primary">Explore in Web</button>
+          <button className="cta secondary" onClick={handleMobileAppClick}>Mobile App Coming Soon</button>
+          <button className="cta primary" onClick={handleExploreWebClick}>Explore in Web</button>
         </div>
       </section>
 

@@ -1,8 +1,11 @@
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import './Register.css'
 import { triggerPageTransition } from './Transition'
 import { collegeOptions } from './collegeOptions'
+import axios from 'axios'
+
+const API_BASE = 'http://localhost:5000/api'
 
 const takenUsernames = ['bitechef', 'student42', 'teacherpro', 'alexverse']
 
@@ -10,6 +13,7 @@ const createCartoonAvatar = (seed) =>
   `https://api.dicebear.com/7.x/adventurer/svg?seed=${encodeURIComponent(seed)}&radius=18&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf`
 
 function Register() {
+  const navigate = useNavigate()
   const [role, setRole] = useState('student')
   const [fullName, setFullName] = useState('')
   const [username, setUsername] = useState('')
@@ -29,6 +33,9 @@ function Register() {
   const [documentPreview, setDocumentPreview] = useState('')
   const [usernameStatus, setUsernameStatus] = useState('idle')
   const [touched, setTouched] = useState({})
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
   const avatarPreview = profileImage || createCartoonAvatar(defaultAvatarSeed)
 
   const passwordRules = useMemo(
@@ -107,6 +114,9 @@ function Register() {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
+    setError('')
+    setSuccess('')
+    
     setTouched({
       role: true,
       fullName: true,
@@ -121,12 +131,33 @@ function Register() {
     })
 
     if (!hasErrors) {
-      // show transition then navigate home or desired route
-      await triggerPageTransition(0, 0, { duration: 700 })
-      window.location.href = '/'
+      setLoading(true)
+      try {
+        const response = await axios.post(`${API_BASE}/auth/register`, {
+          username,
+          email,
+          phone: phone ? `${countryCode}${phone}` : null,
+          password,
+          fullName,
+          dob: dob || null,
+          college: college || newCollege,
+          role,
+          avatar: profileImage || createCartoonAvatar(defaultAvatarSeed),
+        })
+
+        setSuccess('Registration successful!')
+        localStorage.setItem('token', response.data.token)
+        localStorage.setItem('userId', response.data.userId)
+        localStorage.setItem('username', response.data.username)
+
+        await triggerPageTransition(0, 0, { duration: 700 })
+        navigate('/dashboard')
+      } catch (err) {
+        setError(err.response?.data?.error || 'Registration failed')
+        setLoading(false)
+      }
     }
   }
-
   return (
     <main className="register-shell">
       <div className="register-stars"></div>
@@ -139,6 +170,9 @@ function Register() {
           <h1>BiteVerse</h1>
           <p className="register-subtitle">Create your account and step into the foodverse.</p>
         </div>
+
+        {error && <div style={{ color: '#ef4444', marginBottom: '1rem', padding: '0.75rem', background: 'rgba(239,68,68,0.1)', borderRadius: '8px' }}>{error}</div>}
+        {success && <div style={{ color: '#22c55e', marginBottom: '1rem', padding: '0.75rem', background: 'rgba(34,197,94,0.1)', borderRadius: '8px' }}>{success}</div>}
 
         <form className="register-form" onSubmit={handleSubmit} noValidate>
           <section className="register-section">
@@ -450,17 +484,18 @@ function Register() {
           </section>
 
           <div className="register-actions">
-            <button type="submit" className="primary-action register-submit">
-              Create Account
+            <button type="submit" className="primary-action register-submit" disabled={loading}>
+              {loading ? 'Creating Account...' : 'Create Account'}
             </button>
             <button
               type="button"
               className="secondary-link"
               onClick={() => {
                 triggerPageTransition(0, 0, { duration: 700 }).then(() => {
-                  window.location.href = '/login'
+                  navigate('/login')
                 })
               }}
+              disabled={loading}
             >Back to login</button>
           </div>
         </form>

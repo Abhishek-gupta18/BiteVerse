@@ -6,6 +6,7 @@ const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const cookieParser = require("cookie-parser");
 const { checkDbConnection } = require("./config/db");
+const authRoutes = require("./routes/auth");
 
 const app = express();
 
@@ -35,13 +36,8 @@ app.get("/api/health", async (req, res) => {
   }
 });
 
-app.post("/api/auth/request-otp", (req, res) => {
-  res.json({ message: "OTP module installed. Implement persistence/email provider next." });
-});
-
-app.post("/api/auth/verify-otp", (req, res) => {
-  res.json({ message: "JWT module installed. Implement OTP verification and JWT issuance next." });
-});
+// Auth routes
+app.use("/api/auth", authRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

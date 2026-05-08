@@ -5,13 +5,21 @@ import React, { useEffect, useState } from 'react';
  * Props:
  *  - apiUrl: string (endpoint returning an array of { id?, name, points })
  *  - limit: number
+ *  - data: array (optional mock data to display instead of fetching)
  */
-const Leaderboard = ({ apiUrl = '/api/leaderboard', limit = 10 }) => {
+const Leaderboard = ({ apiUrl = '/api/leaderboard', limit = 10, data }) => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (data) {
+      // Use provided mock data
+      setItems(Array.isArray(data) ? data : []);
+      setLoading(false);
+      return;
+    }
+
     let mounted = true;
     fetch(apiUrl)
       .then((res) => {
@@ -33,7 +41,7 @@ const Leaderboard = ({ apiUrl = '/api/leaderboard', limit = 10 }) => {
     return () => {
       mounted = false;
     };
-  }, [apiUrl]);
+  }, [apiUrl, data]);
 
   return (
     <div className="leaderboard" style={{ maxWidth: 360 }}>

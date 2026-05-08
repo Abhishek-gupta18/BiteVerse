@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from './context/ThemeContext';
 import Footer from './components/Footer';
+import Leaderboard from './leaderboard.jsx';
 import './Dashboard.css';
 
 const avatarSvg = (label, primary, secondary) =>
@@ -137,6 +138,19 @@ const messages = [
   { name: 'Aarav', text: 'The ramen line is moving fast right now.', time: '2m', online: true },
   { name: 'Maya', text: 'Try the spicy tofu rice bowl. It is underrated.', time: '8m', online: true },
   { name: 'You', text: 'I am heading there after class.', time: 'now', online: false },
+];
+
+const leaderboardData = [
+  { id: 1, name: 'FoodCritic123', points: 2450 },
+  { id: 2, name: 'SpiceHunter', points: 2230 },
+  { id: 3, name: 'CampusEater', points: 2100 },
+  { id: 4, name: 'TasteTester', points: 1980 },
+  { id: 5, name: 'ReviewMaster', points: 1850 },
+  { id: 6, name: 'FlavorFinder', points: 1720 },
+  { id: 7, name: 'DishDiscoverer', points: 1650 },
+  { id: 8, name: 'MealReviewer', points: 1580 },
+  { id: 9, name: 'FoodExplorer', points: 1520 },
+  { id: 10, name: 'BiteVersePro', points: 1490 },
 ];
 
 const notificationSeed = [
@@ -441,188 +455,199 @@ const Dashboard = () => {
         </header>
 
         <main className="biteverse-main">
-          <section className="hero-card glow-card">
-            <div className="hero-overlay" />
-            <div className="hero-content">
-              <p className="hero-greeting">Good Evening, user 👋</p>
-              <h1>Ready to explore something spicy today?</h1>
-              <p className="hero-subtext">
-                BiteVerse keeps track of the best food stalls, trending dishes, and the reviews that matter most.
-              </p>
-
-              <div className="hero-stats">
-                {heroStats.map((stat) => (
-                  <article key={stat.label} className="hero-stat">
-                    <span>{stat.label}</span>
-                    <strong>{stat.value}</strong>
-                    <small>{stat.hint}</small>
-                  </article>
-                ))}
+          {activeNav === 'leaderboard' ? (
+            <section className="leaderboard-section">
+              <SectionTitle kicker="Competition" title="Campus Food Leaderboard 🏆" />
+              <div className="leaderboard-container">
+                <Leaderboard data={leaderboardData} limit={20} />
               </div>
-            </div>
-          </section>
+            </section>
+          ) : (
+            <>
+              <section className="hero-card glow-card">
+                <div className="hero-overlay" />
+                <div className="hero-content">
+                  <p className="hero-greeting">Good Evening, user 👋</p>
+                  <h1>Ready to explore something spicy today?</h1>
+                  <p className="hero-subtext">
+                    BiteVerse keeps track of the best food stalls, trending dishes, and the reviews that matter most.
+                  </p>
 
-          <section className="dashboard-grid">
-            <div className="dashboard-column">
-              <SectionTitle kicker="Smart recommendations" title="Recommended for You 🔥" />
-              <div className="recommendation-grid">
-                {recommendationCards.length ? (
-                  recommendationCards.map((card) => (
-                    <article key={card.id} className="food-card glow-card">
-                      <div
-                        className="food-image"
-                        style={{ backgroundImage: `url(${buildDishArt(card.title, card.accentA, card.accentB)})` }}
-                      >
-                        <div className="food-tag-row">
-                          <span>{card.tag}</span>
-                          <span>{card.subtitle}</span>
-                        </div>
-                      </div>
-                      <div className="food-card-body">
-                        <h3>{card.title}</h3>
-                        <p>{card.stall}</p>
-                        <div className="food-meta">
-                          <strong>{card.price}</strong>
-                          <Stars rating={card.rating} />
-                        </div>
-                      </div>
-                    </article>
-                  ))
-                ) : (
-                  <div className="empty-state glow-card">
-                    No recommendations yet. Start exploring 🍔
+                  <div className="hero-stats">
+                    {heroStats.map((stat) => (
+                      <article key={stat.label} className="hero-stat">
+                        <span>{stat.label}</span>
+                        <strong>{stat.value}</strong>
+                        <small>{stat.hint}</small>
+                      </article>
+                    ))}
                   </div>
-                )}
-              </div>
+                </div>
+              </section>
 
-              <section className="review-history glow-card">
-                <SectionTitle kicker="History" title="Review History" />
-                <div className="tabs">
-                  {[
-                    { id: 'latest', label: 'Latest' },
-                    { id: 'top', label: 'Top Rated' },
-                  ].map((tab) => (
-                    <button
-                      key={tab.id}
-                      type="button"
-                      className={`tab-btn ${reviewTab === tab.id ? 'active' : ''}`}
-                      onClick={() => setReviewTab(tab.id)}
-                    >
-                      {tab.label}
-                    </button>
-                  ))}
+              <section className="dashboard-grid">
+                <div className="dashboard-column">
+                  <SectionTitle kicker="Smart recommendations" title="Recommended for You 🔥" />
+                  <div className="recommendation-grid">
+                    {recommendationCards.length ? (
+                      recommendationCards.map((card) => (
+                        <article key={card.id} className="food-card glow-card">
+                          <div
+                            className="food-image"
+                            style={{ backgroundImage: `url(${buildDishArt(card.title, card.accentA, card.accentB)})` }}
+                          >
+                            <div className="food-tag-row">
+                              <span>{card.tag}</span>
+                              <span>{card.subtitle}</span>
+                            </div>
+                          </div>
+                          <div className="food-card-body">
+                            <h3>{card.title}</h3>
+                            <p>{card.stall}</p>
+                            <div className="food-meta">
+                              <strong>{card.price}</strong>
+                              <Stars rating={card.rating} />
+                            </div>
+                          </div>
+                        </article>
+                      ))
+                    ) : (
+                      <div className="empty-state glow-card">
+                        No recommendations yet. Start exploring 🍔
+                      </div>
+                    )}
+                  </div>
+
+                  <section className="review-history glow-card">
+                    <SectionTitle kicker="History" title="Review History" />
+                    <div className="tabs">
+                      {[
+                        { id: 'latest', label: 'Latest' },
+                        { id: 'top', label: 'Top Rated' },
+                      ].map((tab) => (
+                        <button
+                          key={tab.id}
+                          type="button"
+                          className={`tab-btn ${reviewTab === tab.id ? 'active' : ''}`}
+                          onClick={() => setReviewTab(tab.id)}
+                        >
+                          {tab.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="review-list">
+                      {filteredReviews.length ? (
+                        filteredReviews.map((review) => (
+                          <article key={review.id} className="review-card glow-card">
+                            <div className="review-image" style={{ backgroundImage: `url(${buildDishArt(review.title, review.accentA, review.accentB)})` }} />
+                            <div className="review-content">
+                              <div className="review-top-row">
+                                <div>
+                                  <h3>{review.title}</h3>
+                                  <p>{review.stall}</p>
+                                </div>
+                                <Stars rating={review.rating} />
+                              </div>
+                              <p className="review-text">{review.text}</p>
+                              <small>{review.time}</small>
+                            </div>
+                          </article>
+                        ))
+                      ) : (
+                        <div className="empty-state">No reviews yet. Start exploring 🍔</div>
+                      )}
+                    </div>
+                  </section>
                 </div>
 
-                <div className="review-list">
-                  {filteredReviews.length ? (
-                    filteredReviews.map((review) => (
-                      <article key={review.id} className="review-card glow-card">
-                        <div className="review-image" style={{ backgroundImage: `url(${buildDishArt(review.title, review.accentA, review.accentB)})` }} />
-                        <div className="review-content">
-                          <div className="review-top-row">
-                            <div>
-                              <h3>{review.title}</h3>
-                              <p>{review.stall}</p>
-                            </div>
-                            <Stars rating={review.rating} />
+                <div className="dashboard-column dashboard-column-middle">
+                  <section className="rewards-card glow-card">
+                    <SectionTitle kicker="Rewards" title="Next Reward" />
+                    <h3>50% Off Meal</h3>
+                    <div className="progress-shell" aria-label="Reward progress">
+                      <div className="progress-fill" style={{ width: '72%' }} />
+                    </div>
+                    <div className="rewards-actions">
+                      <button className="gradient-btn" type="button">Earn More</button>
+                      <button className="secondary-btn" type="button">Redeem</button>
+                    </div>
+                  </section>
+
+                  <section className="achievements-card glow-card">
+                    <SectionTitle kicker="Badges" title="Achievements" />
+                    <div className="achievement-grid">
+                      {achievements.map((achievement) => (
+                        <article key={achievement.label} className="achievement-pill">
+                          <span>{achievement.icon}</span>
+                          <strong>{achievement.label}</strong>
+                        </article>
+                      ))}
+                    </div>
+                  </section>
+
+                  <section className="status-card glow-card">
+                    <SectionTitle kicker="Activity" title="Live Campus Status" />
+                    <div className="status-row success">
+                      <span className="status-dot" />
+                      Commons West · 5 min wait
+                    </div>
+                    <div className="status-row warning">
+                      <span className="status-dot" />
+                      Union Grill · 15 min wait
+                    </div>
+                    <div className="status-row error">
+                      <span className="status-dot" />
+                      Northside Bistro · 35 min wait
+                    </div>
+                  </section>
+                </div>
+
+                <aside className="chat-widget glow-card">
+                  <div className="chat-header">
+                    <div>
+                      <p className="kicker">Community</p>
+                      <h2>Messages</h2>
+                    </div>
+                    <div className="chat-header-actions">
+                      <button className={`theme-toggle-sm ${theme}`} onClick={toggleTheme} aria-label="Toggle theme">
+                        {theme === 'light' ? '🌙' : '☀️'}
+                      </button>
+                      <div className="chat-badges">
+                        <span className="online-count">24 online</span>
+                        <span className="unread-pill">3 unread</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="chat-feed">
+                    {messages.map((message) => (
+                      <article key={message.name} className={`chat-message ${message.online ? 'online' : ''}`}>
+                        <div className="chat-avatar">{message.name.slice(0, 1)}</div>
+                        <div className="chat-message-body">
+                          <div className="chat-meta">
+                            <strong>{message.name}</strong>
+                            <small>{message.time}</small>
                           </div>
-                          <p className="review-text">{review.text}</p>
-                          <small>{review.time}</small>
+                          <p>{message.text}</p>
                         </div>
                       </article>
-                    ))
-                  ) : (
-                    <div className="empty-state">No reviews yet. Start exploring 🍔</div>
-                  )}
-                </div>
-              </section>
-            </div>
-
-            <div className="dashboard-column dashboard-column-middle">
-              <section className="rewards-card glow-card">
-                <SectionTitle kicker="Rewards" title="Next Reward" />
-                <h3>50% Off Meal</h3>
-                <div className="progress-shell" aria-label="Reward progress">
-                  <div className="progress-fill" style={{ width: '72%' }} />
-                </div>
-                <div className="rewards-actions">
-                  <button className="gradient-btn" type="button">Earn More</button>
-                  <button className="secondary-btn" type="button">Redeem</button>
-                </div>
-              </section>
-
-              <section className="achievements-card glow-card">
-                <SectionTitle kicker="Badges" title="Achievements" />
-                <div className="achievement-grid">
-                  {achievements.map((achievement) => (
-                    <article key={achievement.label} className="achievement-pill">
-                      <span>{achievement.icon}</span>
-                      <strong>{achievement.label}</strong>
-                    </article>
-                  ))}
-                </div>
-              </section>
-
-              <section className="status-card glow-card">
-                <SectionTitle kicker="Activity" title="Live Campus Status" />
-                <div className="status-row success">
-                  <span className="status-dot" />
-                  Commons West · 5 min wait
-                </div>
-                <div className="status-row warning">
-                  <span className="status-dot" />
-                  Union Grill · 15 min wait
-                </div>
-                <div className="status-row error">
-                  <span className="status-dot" />
-                  Northside Bistro · 35 min wait
-                </div>
-              </section>
-            </div>
-
-            <aside className="chat-widget glow-card">
-              <div className="chat-header">
-                <div>
-                  <p className="kicker">Community</p>
-                  <h2>Messages</h2>
-                </div>
-                <div className="chat-header-actions">
-                  <button className={`theme-toggle-sm ${theme}`} onClick={toggleTheme} aria-label="Toggle theme">
-                    {theme === 'light' ? '🌙' : '☀️'}
-                  </button>
-                  <div className="chat-badges">
-                    <span className="online-count">24 online</span>
-                    <span className="unread-pill">3 unread</span>
+                    ))}
                   </div>
-                </div>
-              </div>
 
-              <div className="chat-feed">
-                {messages.map((message) => (
-                  <article key={message.name} className={`chat-message ${message.online ? 'online' : ''}`}>
-                    <div className="chat-avatar">{message.name.slice(0, 1)}</div>
-                    <div className="chat-message-body">
-                      <div className="chat-meta">
-                        <strong>{message.name}</strong>
-                        <small>{message.time}</small>
-                      </div>
-                      <p>{message.text}</p>
-                    </div>
-                  </article>
-                ))}
-              </div>
-
-              <div className="chat-input-row">
-                <input
-                  value={messageDraft}
-                  onChange={(event) => setMessageDraft(event.target.value)}
-                  placeholder="Type a message..."
-                  aria-label="Type a message"
-                />
-                <button type="button" className="gradient-btn small">Send</button>
-              </div>
-            </aside>
-          </section>
+                  <div className="chat-input-row">
+                    <input
+                      value={messageDraft}
+                      onChange={(event) => setMessageDraft(event.target.value)}
+                      placeholder="Type a message..."
+                      aria-label="Type a message"
+                    />
+                    <button type="button" className="gradient-btn small">Send</button>
+                  </div>
+                </aside>
+              </section>
+            </>
+          )}
 
           <Footer variant="dashboard" />
         </main>
