@@ -1329,6 +1329,26 @@ html[data-theme="dark"] .hero-card {
   color: var(--text-secondary);
 }
 
+/* Leaderboard item refinements */
+.leaderboard-list { list-style: none; margin: 0; padding: 0; }
+.leaderboard-item { display:flex; align-items:center; gap:12px; padding:12px; background:var(--bg); border-radius:12px; border:1px solid var(--border-secondary); transition:all .18s ease; }
+.leader-rank { width:56px; height:56px; flex:0 0 56px; display:flex; align-items:center; justify-content:center; border-radius:12px; background:linear-gradient(135deg,#7c3aed,#06b6d4); color:#fff; font-weight:800; font-size:18px; }
+.leader-avatar { width:100%; height:100%; object-fit:cover; border-radius:10px; }
+.leader-meta { flex:1; min-width:0; }
+.leader-name { font-weight:700; font-size:15px; color:var(--text); margin-bottom:4px; }
+.leader-points { font-size:13px; color:var(--text-secondary); }
+
+/* Podium highlights */
+.podium-1 { box-shadow:0 8px 28px rgba(250,204,21,0.12); background: linear-gradient(180deg,#fff8e6,#fff3d6); color:#b45309; }
+.podium-2 { box-shadow:0 8px 22px rgba(124,58,237,0.08); background: linear-gradient(180deg,#f0eefc,#efe8fb); color:#6b21a8; }
+.podium-3 { box-shadow:0 8px 18px rgba(148,163,184,0.06); background: linear-gradient(180deg,#f7f7f9,#f2f2f5); color:#334155; }
+
+@media (max-width: 700px) {
+  .leaderboard-section { padding: 18px; }
+  .leader-rank { width:48px; height:48px; flex:0 0 48px; }
+  .leader-name { font-size:14px; }
+}
+
 @media (max-width: 960px) {
   .biteverse-sidebar {
     width: 88px;

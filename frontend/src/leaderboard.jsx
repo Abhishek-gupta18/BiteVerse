@@ -44,48 +44,27 @@ const Leaderboard = ({ apiUrl = '/api/leaderboard', limit = 10, data }) => {
   }, [apiUrl, data]);
 
   return (
-    <div className="leaderboard" style={{ maxWidth: 360 }}>
-      <h3 style={{ margin: '0 0 8px' }}>Leaderboard</h3>
+    <div className="leaderboard">
+      <h3>Leaderboard</h3>
       {loading ? (
         <p>Loading...</p>
       ) : error ? (
         <p style={{ color: 'var(--danger, #b00020)' }}>Error: {error}</p>
       ) : (
-        <ol style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+        <ol className="leaderboard-list">
           {items.slice(0, limit).map((user, idx) => (
-            <li
-              key={user.id ?? user.name ?? idx}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                padding: '8px 6px',
-                borderBottom: '1px solid rgba(0,0,0,0.06)'
-              }}
-            >
-              <div
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: 8,
-                  background: 'linear-gradient(135deg,#4f46e5,#06b6d4)',
-                  color: '#fff',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: 700,
-                  marginRight: 10,
-                }}
-              >
-                {idx + 1}
+            <li key={user.id ?? user.name ?? idx} className={`leaderboard-item ${idx < 3 ? 'podium' : ''}`}>
+              <div className={`leader-rank ${idx < 3 ? `podium-${idx + 1}` : ''}`} aria-hidden>
+                {user.avatar ? (
+                  <img src={user.avatar} alt="avatar" className="leader-avatar" />
+                ) : (
+                  <span className="rank-number">{idx + 1}</span>
+                )}
               </div>
 
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontWeight: 600, fontSize: 14 }}>
-                  {user.name ?? user.username ?? 'Unknown'}
-                </div>
-                <div style={{ fontSize: 12, color: 'rgba(0,0,0,0.6)' }}>
-                  {user.points ?? user.score ?? 0} pts
-                </div>
+              <div className="leader-meta">
+                <div className="leader-name">{user.name ?? user.username ?? 'Unknown'}</div>
+                <div className="leader-points">{user.points ?? user.score ?? 0} pts</div>
               </div>
             </li>
           ))}

@@ -100,7 +100,10 @@ const PremiumLeaderboard = () => {
   }, [selectedTab])
 
   const top3 = leaderboardData.slice(0, 3)
-  const top100 = leaderboardData.slice(0, 100)
+  // render podium as [rank2, rank1, rank3]
+  const orderedTop3 = top3.length === 3 ? [top3[1], top3[0], top3[2]] : top3
+  // table should start from rank 4
+  const top100 = leaderboardData.slice(3, 103)
 
   const handleTabSelect = (tab) => {
     if (tab !== selectedTab) {
@@ -172,9 +175,11 @@ const PremiumLeaderboard = () => {
             <div className="podium-section">
               <div className="podium-label">Top Podium</div>
               <div className="podium-stage">
-                {top3.map((player) => {
+                {orderedTop3.map((player, idx) => {
                   const isSelected = selectedRank === player.rank
-                  const barHeight = Math.max(72, Math.round((player.xp / top3[0].xp) * 158))
+                  // compute height relative to the top xp (top3[0] is original rank1)
+                  const baseXp = top3[0] ? top3[0].xp : player.xp
+                  const barHeight = Math.max(72, Math.round((player.xp / baseXp) * 158))
                   return (
                     <button
                       key={player.rank}
@@ -183,18 +188,25 @@ const PremiumLeaderboard = () => {
                       onClick={() => setSelectedRank(player.rank)}
                     >
                       <div className={`podium-info ${isSelected ? 'visible' : ''}`}>
-                        <div className="rank-badge">{player.rank === 1 ? '👑' : player.rank}</div>
+                        <div className="rank-badge">{player.rank === 1 ? '👑' : `#${player.rank}`}</div>
                         <div className="avatar">{getInitials(player.name)}</div>
                         <div className="pname">{player.name}</div>
                         <div className="pcollege">{player.college}</div>
-                        <div className="pxp">{player.xp.toLocaleString()} XP</div>
                       </div>
-                      <div className="podium-bar" style={{ height: `${barHeight}px` }}>
+                      <div className="podium-bar" style={{ height: `${barHeight}px` }} aria-hidden>
                         <div className="podium-rank-num">{player.rank}</div>
                       </div>
                     </button>
                   )
                 })}
+              </div>
+              <div className="podium-points">
+                {orderedTop3.map((p) => (
+                  <div key={p.rank} className={`points-box rank-${p.rank}`}>
+                    <div className="points-num">{p.xp.toLocaleString()}</div>
+                    <div className="points-label">pts</div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
