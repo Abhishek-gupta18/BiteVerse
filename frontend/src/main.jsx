@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { useEffect } from 'react'
 import React from 'react'
-import { createRoot } from 'react-dom/client'
+import * as ReactDOMClient from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './index.css'
 import './globals.css'
@@ -22,6 +22,8 @@ import Navbar from './components/Navbar.jsx'
 import Footer from './components/Footer.jsx'
 import PremiumLeaderboard from './PremiumLeaderboard.jsx'
 import { ThemeProvider, useTheme } from './context/ThemeContext'
+
+const { createRoot } = ReactDOMClient
 
 // Leaderboard Page Component
 // eslint-disable-next-line react-refresh/only-export-components

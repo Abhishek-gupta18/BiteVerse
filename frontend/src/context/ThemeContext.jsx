@@ -2,23 +2,41 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const ThemeContext = createContext();
 
-export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState(() => {
-    // Check localStorage for saved theme
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) return savedTheme;
-    
-    // Check system preference
+const getStoredTheme = () => {
+  try {
+    return localStorage.getItem('theme');
+  } catch {
+    return null;
+  }
+};
+
+const getSystemTheme = () => {
+  try {
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       return 'dark';
     }
-    return 'light';
+  } catch {
+    // Ignore browsers or environments that block media queries.
+  }
+
+  return 'light';
+};
+
+export const ThemeProvider = ({ children }) => {
+  const [theme, setTheme] = useState(() => {
+    const savedTheme = getStoredTheme();
+    if (savedTheme) return savedTheme;
+
+    return getSystemTheme();
   });
 
   useEffect(() => {
-    // Apply theme to document root
     document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
+    try {
+      localStorage.setItem('theme', theme);
+    } catch {
+      // Ignore storage failures and keep rendering.
+    }
   }, [theme]);
 
   const toggleTheme = () => {
