@@ -1,8 +1,7 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from './context/ThemeContext';
 import Footer from './components/Footer';
-import Leaderboard from './leaderboard.jsx';
 import './Dashboard.css';
 
 const avatarSvg = (label, primary, secondary) =>
@@ -14,10 +13,10 @@ const avatarSvg = (label, primary, secondary) =>
           <stop offset="100%" stop-color="${secondary}" />
         </linearGradient>
       </defs>
-      <rect width="128" height="128" rx="32" fill="#020617"/>
-      <circle cx="64" cy="52" r="24" fill="url(#g)" opacity="0.95"/>
-      <path d="M28 112c6-24 24-36 36-36s30 12 36 36" fill="url(#g)" opacity="0.85"/>
-      <text x="64" y="58" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#F8FAFC">${label
+      <rect width="128" height="128" rx="34" fill="#0b0f16"/>
+      <circle cx="64" cy="48" r="25" fill="url(#g)"/>
+      <path d="M24 116c8-27 27-42 40-42s32 15 40 42" fill="url(#g)" opacity="0.85"/>
+      <text x="64" y="56" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" font-weight="800" fill="#f8fafc">${label
         .split(' ')
         .map((part) => part[0])
         .join('')
@@ -26,184 +25,133 @@ const avatarSvg = (label, primary, secondary) =>
     </svg>
   `)}`;
 
-const buildDishArt = (title, accentA, accentB) =>
+const buildFoodArt = (title, accentA, accentB, kind = 'bowl') =>
   `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="${title}">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 440" role="img" aria-label="${title}">
       <defs>
         <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stop-color="${accentA}" />
           <stop offset="100%" stop-color="${accentB}" />
         </linearGradient>
+        <radialGradient id="glow" cx="68%" cy="28%" r="62%">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.28"/>
+          <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+        </radialGradient>
       </defs>
-      <rect width="640" height="360" rx="32" fill="url(#bg)"/>
-      <circle cx="500" cy="86" r="74" fill="#FFFFFF" opacity="0.08"/>
-      <circle cx="560" cy="290" r="98" fill="#FFFFFF" opacity="0.06"/>
-      <ellipse cx="250" cy="230" rx="180" ry="92" fill="#020617" opacity="0.38"/>
-      <ellipse cx="256" cy="210" rx="154" ry="74" fill="#F8FAFC" opacity="0.9"/>
-      <ellipse cx="256" cy="204" rx="112" ry="48" fill="#F59E0B" opacity="0.28"/>
-      <path d="M170 160c32-30 84-36 124-18 30 14 50 40 62 66" fill="none" stroke="#F8FAFC" stroke-width="8" stroke-linecap="round" opacity="0.5"/>
-      <path d="M186 174c20-14 42-18 66-10" fill="none" stroke="#22C55E" stroke-width="12" stroke-linecap="round" opacity="0.7"/>
-      <path d="M236 156c20 8 38 18 54 30" fill="none" stroke="#06B6D4" stroke-width="12" stroke-linecap="round" opacity="0.7"/>
-      <path d="M306 160c18 14 28 28 36 48" fill="none" stroke="#7C3AED" stroke-width="12" stroke-linecap="round" opacity="0.7"/>
-      <text x="44" y="68" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#F8FAFC">${title}</text>
+      <rect width="720" height="440" rx="34" fill="url(#bg)"/>
+      <rect width="720" height="440" fill="url(#glow)"/>
+      <circle cx="584" cy="96" r="86" fill="#ffffff" opacity="0.07"/>
+      <circle cx="112" cy="352" r="120" fill="#020617" opacity="0.24"/>
+      ${
+        kind === 'burger'
+          ? '<ellipse cx="364" cy="286" rx="182" ry="34" fill="#020617" opacity="0.35"/><path d="M212 210c22-62 286-62 308 0" fill="#f59e0b"/><rect x="214" y="204" width="304" height="42" rx="18" fill="#f8fafc" opacity="0.9"/><rect x="230" y="238" width="272" height="42" rx="16" fill="#7c2d12"/><path d="M236 278h260c-18 48-242 48-260 0z" fill="#fbbf24"/>'
+          : '<ellipse cx="360" cy="296" rx="190" ry="56" fill="#020617" opacity="0.35"/><ellipse cx="360" cy="252" rx="154" ry="82" fill="#f8fafc" opacity="0.92"/><ellipse cx="360" cy="246" rx="112" ry="52" fill="#f97316" opacity="0.38"/><path d="M276 222c44-24 102-24 168 0" stroke="#22c55e" stroke-width="14" stroke-linecap="round" fill="none"/><path d="M294 250c42-28 86-30 132-6" stroke="#06b6d4" stroke-width="12" stroke-linecap="round" fill="none"/><circle cx="406" cy="218" r="21" fill="#f8fafc" opacity="0.95"/><circle cx="406" cy="218" r="10" fill="#f59e0b"/>'
+      }
+      <text x="40" y="78" font-family="Arial, sans-serif" font-size="32" font-weight="800" fill="#f8fafc">${title}</text>
     </svg>
   `)}`;
 
 const navItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: '◉' },
-  { id: 'explore', label: 'Explore Food', icon: '⌂' },
-  { id: 'reviews', label: 'Reviews', icon: '★' },
-  { id: 'rewards', label: 'Rewards', icon: '⬢' },
-  { id: 'leaderboard', label: 'Leaderboard', icon: '↟' },
-  { id: 'community', label: 'Community', icon: '◌' },
-  { id: 'messages', label: 'Messages', icon: '✉' },
+  { id: 'dashboard', label: 'Feed', icon: 'FD' },
+  { id: 'explore', label: 'Explore', icon: 'EX', route: '/explore-food' },
+  { id: 'reviews', label: 'Reviews', icon: 'RV' },
+  { id: 'quests', label: 'Quests', icon: 'QS', route: '/rewards' },
+  { id: 'leaderboard', label: 'Leaderboard', icon: 'LB', route: '/leaderboard' },
+  { id: 'messages', label: 'Inbox', icon: 'IN', route: '/chat' },
 ];
 
-const recommendationCards = [
+const trendingItems = [
+  { title: 'Ghost Pepper Wings', stall: 'The Hub', orders: '1.2k orders', art: buildFoodArt('Ghost Pepper Wings', '#121820', '#b45309', 'burger') },
+  { title: 'Double Fudge Melt', stall: 'Sweet Treats', orders: '850 orders', art: buildFoodArt('Double Fudge Melt', '#111827', '#7c3aed') },
+  { title: 'Beef Smash Burger', stall: 'Grill House', orders: '2.1k orders', art: buildFoodArt('Beef Smash Burger', '#101419', '#dc2626', 'burger') },
+  { title: 'Nitro Cold Brew', stall: 'Library Cafe', orders: '640 orders', art: buildFoodArt('Nitro Cold Brew', '#0f172a', '#0284c7') },
+];
+
+const filters = ['Near Me', 'Trending', 'Spicy', 'Budget', 'Open Now'];
+const moods = [
+  { id: 'stressed', icon: '!!', label: 'Stressed' },
+  { id: 'broke', icon: '$', label: 'Budget' },
+  { id: 'wild', icon: 'W', label: 'Wild' },
+  { id: 'healthy', icon: '+', label: 'Healthy' },
+  { id: 'chill', icon: '~', label: 'Chill' },
+  { id: 'hype', icon: '*', label: 'Hype' },
+];
+
+const outlets = [
   {
-    id: 1,
-    title: 'Inferno Ramen',
-    stall: 'Torch Noodle Bar',
-    price: '$8.50',
-    rating: 5,
-    tag: 'Trending',
-    subtitle: 'Spicy',
-    accentA: '#111827',
-    accentB: '#7C3AED',
+    name: 'The Gourmet Hub',
+    cuisine: 'Continental',
+    location: 'Blocks away from Library',
+    status: 'BUSY',
+    wait: '~8 MIN',
+    rating: '4.8',
+    tags: ['#MustTryPizza', '#VibeCheck'],
+    tone: 'busy',
+    art: buildFoodArt('The Gourmet Hub', '#121820', '#ea580c', 'burger'),
   },
   {
-    id: 2,
-    title: 'Crisp Seoul Bowl',
-    stall: 'Midnight Kitchen',
-    price: '$7.20',
-    rating: 5,
-    tag: 'Budget',
-    subtitle: 'Fresh',
-    accentA: '#0F172A',
-    accentB: '#06B6D4',
-  },
-  {
-    id: 3,
-    title: 'Miso Smash Burger',
-    stall: 'Campus Grill',
-    price: '$9.10',
-    rating: 5,
-    tag: 'Trending',
-    subtitle: 'Popular',
-    accentA: '#1E293B',
-    accentB: '#22C55E',
+    name: 'Burger Nation',
+    cuisine: 'Fast Food',
+    location: 'Central Plaza',
+    status: 'JAMMED',
+    wait: '~35 MIN',
+    rating: '4.2',
+    tags: ['#StudentFavorite', '#BestFries'],
+    tone: 'jammed',
+    art: buildFoodArt('Burger Nation', '#0b0f16', '#991b1b', 'burger'),
   },
 ];
 
-const achievements = [
-  { label: 'Top Reviewer', icon: '🏆' },
-  { label: 'Early Bird', icon: '🌅' },
-  { label: 'Food Explorer', icon: '🧭' },
-];
-
-const reviews = [
+const feedPosts = [
   {
-    id: 1,
-    title: 'Miso Smash Burger',
-    stall: 'Campus Grill',
-    rating: 5,
-    text: 'Still one of the best late-night meals on campus. The sauce has a proper kick and the bun holds up.',
+    user: '@foodie_king_23',
     time: '2 mins ago',
-    accentA: '#7C3AED',
-    accentB: '#06B6D4',
+    channel: '#RamenHeads',
+    text: "The Hub's spicy ramen is serious today. If you can handle heat, go for Level 5.",
+    votes: 245,
+    comments: 18,
   },
   {
-    id: 2,
-    title: 'Crisp Seoul Bowl',
-    stall: 'Midnight Kitchen',
-    rating: 4,
-    text: 'Balanced, affordable, and quick. Perfect when you need to get back to the library fast.',
-    time: '18 mins ago',
-    accentA: '#06B6D4',
-    accentB: '#22C55E',
-  },
-  {
-    id: 3,
-    title: 'Inferno Ramen',
-    stall: 'Torch Noodle Bar',
-    rating: 5,
-    text: 'A clean heat, not just a gimmick. The broth is rich and the spice level is actually addictive.',
-    time: '1 hour ago',
-    accentA: '#F59E0B',
-    accentB: '#7C3AED',
+    user: '@caffeine_addict',
+    time: '15 mins ago',
+    channel: '#StudyVibes',
+    text: 'Library Cafe is quiet right now. Good window for a focused coffee break.',
+    votes: 512,
+    comments: 42,
+    art: buildFoodArt('Library Cafe', '#0f172a', '#0369a1'),
   },
 ];
 
-const messages = [
-  { name: 'Aarav', text: 'The ramen line is moving fast right now.', time: '2m', online: true },
-  { name: 'Maya', text: 'Try the spicy tofu rice bowl. It is underrated.', time: '8m', online: true },
-  { name: 'You', text: 'I am heading there after class.', time: 'now', online: false },
+const hiddenGems = [
+  { title: 'The Alchemist Brew', note: 'Secret menu available', art: buildFoodArt('Alchemist Brew', '#111827', '#166534') },
+  { title: "Luigi's Secret Loft", note: '98% student approval', art: buildFoodArt("Luigi's Loft", '#18181b', '#854d0e') },
 ];
 
-const leaderboardData = [
-  { id: 1, name: 'FoodCritic123', points: 2450 },
-  { id: 2, name: 'SpiceHunter', points: 2230 },
-  { id: 3, name: 'CampusEater', points: 2100 },
-  { id: 4, name: 'TasteTester', points: 1980 },
-  { id: 5, name: 'ReviewMaster', points: 1850 },
-  { id: 6, name: 'FlavorFinder', points: 1720 },
-  { id: 7, name: 'DishDiscoverer', points: 1650 },
-  { id: 8, name: 'MealReviewer', points: 1580 },
-  { id: 9, name: 'FoodExplorer', points: 1520 },
-  { id: 10, name: 'BiteVersePro', points: 1490 },
-];
+const biteVerseAvatar = avatarSvg('user', '#58a6ff', '#efa500');
 
-const notificationSeed = [
-  {
-    id: 1,
-    title: 'Budget alert nearby',
-    text: 'Crisp Seoul Bowl dropped to $7.20 at Midnight Kitchen.',
-    time: '2m ago',
-    unread: true,
-  },
-  {
-    id: 2,
-    title: 'New review reaction',
-    text: 'Maya replied to your Inferno Ramen review.',
-    time: '8m ago',
-    unread: true,
-  },
-  {
-    id: 3,
-    title: 'Reward progress',
-    text: 'You are 28 points away from a 50% meal coupon.',
-    time: '25m ago',
-    unread: false,
-  },
-  {
-    id: 4,
-    title: 'Campus feed trend',
-    text: 'Noodle Hub is trending across your college this hour.',
-    time: '1h ago',
-    unread: false,
-  },
-];
+function Icon({ name }) {
+  const paths = {
+    search: <path d="M10.5 18a7.5 7.5 0 1 1 5.3-2.2L21 21" />,
+    mic: <path d="M12 3v8m0 0a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v2a3 3 0 0 0 3 3Zm0 0v5m-5-5a5 5 0 0 0 10 0m-7 5h4" />,
+    tune: <path d="M4 7h9m4 0h3M4 17h3m4 0h9m-7-3v6M13 4v6" />,
+    bell: <path d="M18 16v-5a6 6 0 1 0-12 0v5l-2 2h20l-2-2Zm-5 5h-2" />,
+    moon: <path d="M20 14.5A8 8 0 0 1 9.5 4 8.8 8.8 0 1 0 20 14.5Z" />,
+    sun: <path d="M12 5V3m0 18v-2M5 12H3m18 0h-2M6.3 6.3 4.9 4.9m14.2 14.2-1.4-1.4m0-11.4 1.4-1.4M4.9 19.1l1.4-1.4M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />,
+    chevron: <path d="m9 6 6 6-6 6" />,
+  };
 
-const biteVerseAvatar = avatarSvg('user', '#7C3AED', '#06B6D4');
-
-function Stars({ rating }) {
   return (
-    <div className="bv-stars" aria-label={`Rating ${rating} out of 5`}>
-      {Array.from({ length: 5 }).map((_, index) => (
-        <span key={index} className={index < rating ? 'filled' : ''}>★</span>
-      ))}
-    </div>
+    <svg className="bv-icon" viewBox="0 0 24 24" aria-hidden="true">
+      {paths[name]}
+    </svg>
   );
 }
 
-function SectionTitle({ kicker, title, action }) {
+function SectionHeader({ title, action }) {
   return (
-    <div className="bv-section-title">
-      <div>
-        {kicker ? <p className="kicker">{kicker}</p> : null}
-        <h2>{title}</h2>
-      </div>
-      {action ? <button className="ghost-btn">{action}</button> : null}
+    <div className="dashboard-section-header">
+      <h2>{title}</h2>
+      {action ? <button type="button">{action}</button> : null}
     </div>
   );
 }
@@ -212,466 +160,334 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
   const [activeNav, setActiveNav] = useState('dashboard');
-  const [reviewTab, setReviewTab] = useState('latest');
+  const [activeFilter, setActiveFilter] = useState('Near Me');
+  const [activeMood, setActiveMood] = useState('wild');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [messageDraft, setMessageDraft] = useState('');
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
-  const [notificationItems, setNotificationItems] = useState(notificationSeed);
-  const [logoutPhase, setLogoutPhase] = useState(null);
-  const profileMenuRef = useRef(null);
-  const notificationMenuRef = useRef(null);
-  const logoutTimersRef = useRef([]);
 
-  const heroStats = useMemo(
+  const stats = useMemo(
     () => [
-      { label: 'Total Reviews', value: '128', hint: '+18 this week' },
-      { label: 'Avg Rating', value: '4.8', hint: 'Campus wide' },
-      { label: 'Points', value: '2,450', hint: 'Level 5 Food Explorer' },
+      { label: 'Campus wait', value: '8m' },
+      { label: 'Hot outlets', value: '14' },
+      { label: 'Quest XP', value: '+500' },
     ],
     [],
   );
 
-  const filteredReviews = useMemo(() => {
-    if (reviewTab === 'top') {
-      return [...reviews].sort((a, b) => b.rating - a.rating);
-    }
-
-    return reviews;
-  }, [reviewTab]);
-
-  const unreadNotificationCount = useMemo(
-    () => notificationItems.filter((item) => item.unread).length,
-    [notificationItems],
-  );
-
-  useEffect(() => {
-    const handlePointerDown = (event) => {
-      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
-        setProfileMenuOpen(false);
-      }
-
-      if (notificationMenuRef.current && !notificationMenuRef.current.contains(event.target)) {
-        setNotificationsOpen(false);
-      }
-    };
-
-    const handleEscape = (event) => {
-      if (event.key === 'Escape') {
-        setProfileMenuOpen(false);
-        setNotificationsOpen(false);
-      }
-    };
-
-    document.addEventListener('pointerdown', handlePointerDown);
-    document.addEventListener('keydown', handleEscape);
-
-    return () => {
-      document.removeEventListener('pointerdown', handlePointerDown);
-      document.removeEventListener('keydown', handleEscape);
-      logoutTimersRef.current.forEach((timerId) => window.clearTimeout(timerId));
-      logoutTimersRef.current = [];
-    };
-  }, []);
-
-  const clearLogoutTimers = () => {
-    logoutTimersRef.current.forEach((timerId) => window.clearTimeout(timerId));
-    logoutTimersRef.current = [];
-  };
-
-  const markAllNotificationsAsRead = () => {
-    setNotificationItems((items) => items.map((item) => ({ ...item, unread: false })));
-  };
-
-  const handleLogout = () => {
-    if (logoutPhase) {
-      return;
-    }
-
-    console.log('🚪 Logout started');
-    setProfileMenuOpen(false);
-    setLogoutPhase('content-fade');
-    clearLogoutTimers();
-
-    logoutTimersRef.current = [
-      window.setTimeout(() => {
-        console.log('📱 Content faded, showing message');
-        setLogoutPhase('message-in');
-      }, 450),
-      window.setTimeout(() => {
-        console.log('🌙 Message hiding');
-        setLogoutPhase('message-out');
-      }, 4450),
-      window.setTimeout(() => {
-        console.log('🔄 Redirecting to landing page');
-        navigate('/');
-      }, 4850),
-    ];
-  };
-
   return (
     <div className="biteverse-shell">
-      <div className={`dashboard-content ${logoutPhase ? 'fading-out' : ''}`}>
+      <div className="dashboard-content">
         <aside className={`biteverse-sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
-        <button className="sidebar-collapse-btn" type="button" onClick={() => setSidebarCollapsed((value) => !value)}>
-          {sidebarCollapsed ? '»' : '«'}
-        </button>
+          <button className="sidebar-collapse-btn" type="button" onClick={() => setSidebarCollapsed((value) => !value)}>
+            <Icon name="chevron" />
+          </button>
 
-        <div className="sidebar-profile">
-          <img className="sidebar-avatar" src={biteVerseAvatar} alt="user" />
-          {!sidebarCollapsed && (
-            <div>
-              <strong>user</strong>
-              <p>Campus Explorer</p>
-              <span className="level-badge">Level 5 Food Explorer</span>
-            </div>
-          )}
-        </div>
-
-        <nav className="sidebar-nav">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              className={`sidebar-nav-item ${activeNav === item.id ? 'active' : ''}`}
-              onClick={() => {
-                setActiveNav(item.id);
-                if (item.id === 'messages') {
-                  navigate('/chat');
-                }
-                if (item.id === 'explore') {
-                  navigate('/explore-food');
-                }
-              }}
-              aria-label={item.label}
-            >
-              <span className="nav-icon">{item.icon}</span>
-              {!sidebarCollapsed && <span>{item.label}</span>}
-            </button>
-          ))}
-        </nav>
-
-        <button className="review-cta" type="button">
-          + Write Review
-        </button>
-      </aside>
-
-      <div className="biteverse-main-wrap">
-        <header className="biteverse-navbar">
-          <div className="navbar-brand">
-            <div className="brand-mark">BV</div>
-            <strong>BiteVerse</strong>
+          <div className="sidebar-profile">
+            <img className="sidebar-avatar" src={biteVerseAvatar} alt="user" />
+            {!sidebarCollapsed && (
+              <div>
+                <strong>user</strong>
+                <p>Campus Explorer</p>
+                <span className="level-badge">Level 5 Food Explorer</span>
+              </div>
+            )}
           </div>
 
-          <div className="navbar-search">
-            <input type="text" placeholder="Search food, stalls, users..." aria-label="Search" />
-            <button type="button">⌕</button>
-          </div>
-
-          <div className="navbar-actions">
-            <button 
-              type="button" 
-              className={`theme-toggle-btn ${theme}`}
-              onClick={toggleTheme}
-              aria-label="Toggle theme"
-              title={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
-            >
-              <span className="toggle-icon">{theme === 'light' ? '🌙' : '☀️'}</span>
-            </button>
-            <div className="notification-dropdown" ref={notificationMenuRef}>
+          <nav className="sidebar-nav" aria-label="Dashboard navigation">
+            {navItems.map((item) => (
               <button
+                key={item.id}
                 type="button"
-                className={`icon-btn badge-btn ${notificationsOpen ? 'active' : ''}`}
-                aria-label="Notifications"
-                aria-expanded={notificationsOpen}
-                aria-haspopup="menu"
+                className={`sidebar-nav-item ${activeNav === item.id ? 'active' : ''}`}
                 onClick={() => {
-                  setNotificationsOpen((value) => !value);
-                  setProfileMenuOpen(false);
+                  setActiveNav(item.id);
+                  if (item.route) {
+                    navigate(item.route);
+                  }
                 }}
+                aria-label={item.label}
               >
-                🔔
-                {unreadNotificationCount > 0 ? <span className="red-dot" aria-hidden="true" /> : null}
+                <span className="nav-icon">{item.icon}</span>
+                {!sidebarCollapsed && <span>{item.label}</span>}
               </button>
+            ))}
+          </nav>
 
-              {notificationsOpen && (
-                <div className="notification-menu" role="menu" aria-label="Notifications">
-                  <div className="notification-menu-head">
-                    <strong>Notifications</strong>
-                    <button type="button" onClick={markAllNotificationsAsRead}>
-                      Mark all read
-                    </button>
-                  </div>
+          <button className="review-cta" type="button">
+            Write Review
+          </button>
+        </aside>
 
-                  <div className="notification-list">
-                    {notificationItems.map((notification) => (
-                      <article key={notification.id} className={`notification-item ${notification.unread ? 'unread' : ''}`}>
+        <div className="biteverse-main-wrap">
+          <header className="biteverse-navbar">
+            <div className="navbar-brand">
+              <div className="brand-mark">BV</div>
+              <strong>BiteVerse</strong>
+            </div>
+
+            <div className="navbar-actions">
+              <button type="button" className={`theme-toggle-btn ${theme}`} onClick={toggleTheme} aria-label="Toggle theme">
+                <span className="toggle-icon"><Icon name={theme === 'light' ? 'moon' : 'sun'} /></span>
+              </button>
+              <div className="notification-dropdown">
+                <button
+                  type="button"
+                  className={`icon-btn badge-btn ${notificationsOpen ? 'active' : ''}`}
+                  aria-label="Notifications"
+                  onClick={() => {
+                    setNotificationsOpen((value) => !value);
+                    setProfileMenuOpen(false);
+                  }}
+                >
+                  <Icon name="bell" />
+                  <span className="red-dot" aria-hidden="true" />
+                </button>
+                {notificationsOpen && (
+                  <div className="notification-menu" role="menu" aria-label="Notifications">
+                    <div className="notification-menu-head">
+                      <strong>Notifications</strong>
+                      <button type="button">Mark all read</button>
+                    </div>
+                    <div className="notification-list">
+                      <article className="notification-item unread">
                         <div className="notification-item-copy">
-                          <h4>{notification.title}</h4>
-                          <p>{notification.text}</p>
+                          <h4>Lunch rush started</h4>
+                          <p>The Hub crossed 1k orders and is trending near you.</p>
                         </div>
-                        <time>{notification.time}</time>
+                        <time>2m ago</time>
                       </article>
-                    ))}
+                      <article className="notification-item">
+                        <div className="notification-item-copy">
+                          <h4>Quest progress</h4>
+                          <p>You are 1 ramen review away from +500 XP.</p>
+                        </div>
+                        <time>18m ago</time>
+                      </article>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
+              <div className="profile-dropdown">
+                <button
+                  type="button"
+                  className="profile-pill"
+                  aria-label="Profile menu"
+                  onClick={() => {
+                    setProfileMenuOpen((value) => !value);
+                    setNotificationsOpen(false);
+                  }}
+                >
+                  <img src={biteVerseAvatar} alt="Profile" />
+                  <span>user</span>
+                  <span className={`profile-caret ${profileMenuOpen ? 'open' : ''}`}>v</span>
+                </button>
+                {profileMenuOpen && (
+                  <div className="profile-menu" role="menu" aria-label="Profile menu">
+                    <button type="button" className="profile-menu-item">Profile</button>
+                    <button type="button" className="profile-menu-item">Update Profile</button>
+                    <button type="button" className="profile-menu-item">Security</button>
+                    <button type="button" className="profile-menu-item danger" onClick={() => navigate('/')}>Logout</button>
+                  </div>
+                )}
+              </div>
             </div>
-            <div className="profile-dropdown" ref={profileMenuRef}>
-              <button
-                type="button"
-                className="profile-pill"
-                aria-label="Profile dropdown"
-                aria-expanded={profileMenuOpen}
-                aria-haspopup="menu"
-                onClick={() => {
-                  setProfileMenuOpen((value) => !value);
-                  setNotificationsOpen(false);
-                }}
-              >
-                <img src={biteVerseAvatar} alt="Profile" />
-                <span>user</span>
-                <span className={`profile-caret ${profileMenuOpen ? 'open' : ''}`}>▾</span>
-              </button>
+          </header>
 
-              {profileMenuOpen && (
-                <div className="profile-menu" role="menu" aria-label="Profile menu">
-                  <button type="button" role="menuitem" className="profile-menu-item">
-                    Profile
-                  </button>
-                  <button type="button" role="menuitem" className="profile-menu-item">
-                    Update Profile
-                  </button>
-                  <button type="button" role="menuitem" className="profile-menu-item">
-                    Security
-                  </button>
-                  <button type="button" role="menuitem" className="profile-menu-item danger" onClick={handleLogout}>
-                    Logout
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </header>
-
-        <main className="biteverse-main">
-          {activeNav === 'leaderboard' ? (
-            <section className="leaderboard-section">
-              <SectionTitle kicker="Competition" title="Campus Food Leaderboard 🏆" />
-              <div className="leaderboard-container">
-                <Leaderboard data={leaderboardData} limit={20} />
+          <main className="biteverse-main">
+            <section className="dashboard-hero">
+              <div className="dashboard-hero__copy">
+                <p className="kicker">Live campus food radar</p>
+                <h1>Explore what is worth eating right now.</h1>
+                <p>
+                  Track crowds, trending dishes, social proof, and quick quests from one focused BiteVerse dashboard.
+                </p>
+              </div>
+              <div className="dashboard-hero__stats">
+                {stats.map((item) => (
+                  <article key={item.label}>
+                    <strong>{item.value}</strong>
+                    <span>{item.label}</span>
+                  </article>
+                ))}
               </div>
             </section>
-          ) : (
-            <>
-              <section className="hero-card glow-card">
-                <div className="hero-overlay" />
-                <div className="hero-content">
-                  <p className="hero-greeting">Good Evening, user 👋</p>
-                  <h1>Ready to explore something spicy today?</h1>
-                  <p className="hero-subtext">
-                    BiteVerse keeps track of the best food stalls, trending dishes, and the reviews that matter most.
-                  </p>
 
-                  <div className="hero-stats">
-                    {heroStats.map((stat) => (
-                      <article key={stat.label} className="hero-stat">
-                        <span>{stat.label}</span>
-                        <strong>{stat.value}</strong>
-                        <small>{stat.hint}</small>
-                      </article>
-                    ))}
-                  </div>
-                </div>
-              </section>
-
-              <section className="dashboard-grid">
-                <div className="dashboard-column">
-                  <SectionTitle kicker="Smart recommendations" title="Recommended for You 🔥" />
-                  <div className="recommendation-grid">
-                    {recommendationCards.length ? (
-                      recommendationCards.map((card) => (
-                        <article key={card.id} className="food-card glow-card">
-                          <div
-                            className="food-image"
-                            style={{ backgroundImage: `url(${buildDishArt(card.title, card.accentA, card.accentB)})` }}
-                          >
-                            <div className="food-tag-row">
-                              <span>{card.tag}</span>
-                              <span>{card.subtitle}</span>
-                            </div>
-                          </div>
-                          <div className="food-card-body">
-                            <h3>{card.title}</h3>
-                            <p>{card.stall}</p>
-                            <div className="food-meta">
-                              <strong>{card.price}</strong>
-                              <Stars rating={card.rating} />
-                            </div>
-                          </div>
-                        </article>
-                      ))
-                    ) : (
-                      <div className="empty-state glow-card">
-                        No recommendations yet. Start exploring 🍔
-                      </div>
-                    )}
-                  </div>
-
-                  <section className="review-history glow-card">
-                    <SectionTitle kicker="History" title="Review History" />
-                    <div className="tabs">
-                      {[
-                        { id: 'latest', label: 'Latest' },
-                        { id: 'top', label: 'Top Rated' },
-                      ].map((tab) => (
-                        <button
-                          key={tab.id}
-                          type="button"
-                          className={`tab-btn ${reviewTab === tab.id ? 'active' : ''}`}
-                          onClick={() => setReviewTab(tab.id)}
-                        >
-                          {tab.label}
-                        </button>
-                      ))}
-                    </div>
-
-                    <div className="review-list">
-                      {filteredReviews.length ? (
-                        filteredReviews.map((review) => (
-                          <article key={review.id} className="review-card glow-card">
-                            <div className="review-image" style={{ backgroundImage: `url(${buildDishArt(review.title, review.accentA, review.accentB)})` }} />
-                            <div className="review-content">
-                              <div className="review-top-row">
-                                <div>
-                                  <h3>{review.title}</h3>
-                                  <p>{review.stall}</p>
-                                </div>
-                                <Stars rating={review.rating} />
-                              </div>
-                              <p className="review-text">{review.text}</p>
-                              <small>{review.time}</small>
-                            </div>
-                          </article>
-                        ))
-                      ) : (
-                        <div className="empty-state">No reviews yet. Start exploring 🍔</div>
-                      )}
-                    </div>
-                  </section>
-                </div>
-
-                <div className="dashboard-column dashboard-column-middle">
-                  <section className="rewards-card glow-card">
-                    <SectionTitle kicker="Rewards" title="Next Reward" />
-                    <h3>50% Off Meal</h3>
-                    <div className="progress-shell" aria-label="Reward progress">
-                      <div className="progress-fill" style={{ width: '72%' }} />
-                    </div>
-                    <div className="rewards-actions">
-                      <button className="gradient-btn" type="button">Earn More</button>
-                      <button className="secondary-btn" type="button">Redeem</button>
-                    </div>
-                  </section>
-
-                  <section className="achievements-card glow-card">
-                    <SectionTitle kicker="Badges" title="Achievements" />
-                    <div className="achievement-grid">
-                      {achievements.map((achievement) => (
-                        <article key={achievement.label} className="achievement-pill">
-                          <span>{achievement.icon}</span>
-                          <strong>{achievement.label}</strong>
-                        </article>
-                      ))}
-                    </div>
-                  </section>
-
-                  <section className="status-card glow-card">
-                    <SectionTitle kicker="Activity" title="Live Campus Status" />
-                    <div className="status-row success">
-                      <span className="status-dot" />
-                      Commons West · 5 min wait
-                    </div>
-                    <div className="status-row warning">
-                      <span className="status-dot" />
-                      Union Grill · 15 min wait
-                    </div>
-                    <div className="status-row error">
-                      <span className="status-dot" />
-                      Northside Bistro · 35 min wait
-                    </div>
-                  </section>
-                </div>
-
-                <aside className="chat-widget glow-card">
-                  <div className="chat-header">
-                    <div>
-                      <p className="kicker">Community</p>
-                      <h2>Messages</h2>
-                    </div>
-                    <div className="chat-header-actions">
-                      <button className={`theme-toggle-sm ${theme}`} onClick={toggleTheme} aria-label="Toggle theme">
-                        {theme === 'light' ? '🌙' : '☀️'}
-                      </button>
-                      <div className="chat-badges">
-                        <span className="online-count">24 online</span>
-                        <span className="unread-pill">3 unread</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="chat-feed">
-                    {messages.map((message) => (
-                      <article key={message.name} className={`chat-message ${message.online ? 'online' : ''}`}>
-                        <div className="chat-avatar">{message.name.slice(0, 1)}</div>
-                        <div className="chat-message-body">
-                          <div className="chat-meta">
-                            <strong>{message.name}</strong>
-                            <small>{message.time}</small>
-                          </div>
-                          <p>{message.text}</p>
-                        </div>
-                      </article>
-                    ))}
-                  </div>
-
-                  <div className="chat-input-row">
-                    <input
-                      value={messageDraft}
-                      onChange={(event) => setMessageDraft(event.target.value)}
-                      placeholder="Type a message..."
-                      aria-label="Type a message"
-                    />
-                    <button type="button" className="gradient-btn small">Send</button>
-                  </div>
-                </aside>
-              </section>
-            </>
-          )}
-
-          <Footer variant="dashboard" />
-        </main>
-      </div>
-
-        {logoutPhase && (
-          <>
-            <div className="logout-overlay" aria-live="polite" aria-busy="true" />
-            <div className={`logout-message-container ${logoutPhase === 'message-in' ? 'visible' : logoutPhase === 'message-out' ? 'hiding' : ''}`}>
-              <div className="logout-message">
-                Logging you out...
+            <section className="smart-search-panel">
+              <div className="smart-search">
+                <span aria-hidden="true"><Icon name="search" /></span>
+                <input placeholder="Craving something specific?" aria-label="Search food and outlets" />
+                <button type="button" aria-label="Voice search"><Icon name="mic" /></button>
+                <button type="button" className="search-filter-btn" aria-label="Tune filters"><Icon name="tune" /></button>
               </div>
-            </div>
-          </>
-        )}
+              <div className="search-suggestions">
+                <span>Trending:</span>
+                <button type="button">Spicy Ramen</button>
+                <button type="button">Nitro Brew</button>
+                <button type="button">Cheese Loaded Fries</button>
+              </div>
+              <div className="quick-filter-row">
+                {filters.map((filter) => (
+                  <button
+                    key={filter}
+                    type="button"
+                    className={activeFilter === filter ? 'active' : ''}
+                    onClick={() => setActiveFilter(filter)}
+                  >
+                    {filter}
+                  </button>
+                ))}
+              </div>
+            </section>
 
-        <nav className="mobile-bottom-drawer">
+            <section className="dashboard-section">
+              <SectionHeader title="Hot Now" action="View all" />
+              <div className="trending-strip">
+                {trendingItems.map((item) => (
+                  <article key={item.title} className="trending-card glass-card">
+                    <div className="trending-card__image" style={{ backgroundImage: `url(${item.art})` }}>
+                      <span>HOT</span>
+                    </div>
+                    <h3>{item.title}</h3>
+                    <p>{item.stall} - {item.orders}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
+
+            <section className="campus-map glass-card">
+              <div className="campus-map__head">
+                <div>
+                  <p className="kicker">Live map</p>
+                  <h2>Campus Food Map</h2>
+                </div>
+                <button type="button">Expand</button>
+              </div>
+              <div className="map-canvas">
+                <div className="map-grid" />
+                <div className="map-pin pin-free"><span />Main Hall</div>
+                <div className="map-pin pin-busy"><span />Library Cafe</div>
+                <div className="map-pin pin-jammed"><span />North Canteen</div>
+                <div className="map-legend">
+                  <span><i className="free" />Free</span>
+                  <span><i className="busy" />Busy</span>
+                  <span><i className="jammed" />Jammed</span>
+                </div>
+              </div>
+            </section>
+
+            <section className="dashboard-section">
+              <SectionHeader title="How's the vibe?" />
+              <div className="mood-row">
+                {moods.map((mood) => (
+                  <button
+                    key={mood.id}
+                    type="button"
+                    className={`mood-card glass-card ${activeMood === mood.id ? 'active' : ''}`}
+                    onClick={() => setActiveMood(mood.id)}
+                  >
+                    <strong>{mood.icon}</strong>
+                    <span>{mood.label}</span>
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            <section className="dashboard-section">
+              <SectionHeader title="Top Outlets" />
+              <div className="outlet-grid">
+                {outlets.map((outlet) => (
+                  <article key={outlet.name} className="outlet-card glass-card">
+                    <div className="outlet-card__media" style={{ backgroundImage: `url(${outlet.art})` }}>
+                      <span className={`status-badge ${outlet.tone}`}>{outlet.status}</span>
+                      <span className="wait-badge">WAIT: {outlet.wait}</span>
+                    </div>
+                    <div className="outlet-card__body">
+                      <div className="outlet-card__top">
+                        <div>
+                          <h3>{outlet.name}</h3>
+                          <p>{outlet.cuisine} - {outlet.location}</p>
+                        </div>
+                        <strong>{outlet.rating}</strong>
+                      </div>
+                      <div className="tag-row">
+                        {outlet.tags.map((tag) => <span key={tag}>{tag}</span>)}
+                      </div>
+                      <button type="button">Explore Menu</button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+
+            <section className="dashboard-lower-grid">
+              <div className="dashboard-section social-feed">
+                <SectionHeader title="Social Feed" />
+                {feedPosts.map((post) => (
+                  <article key={post.user} className="feed-card glass-card">
+                    <div className="feed-card__head">
+                      <img src={avatarSvg(post.user, '#58a6ff', '#efa500')} alt="" />
+                      <div>
+                        <strong>{post.user}</strong>
+                        <span>{post.time} - Post in {post.channel}</span>
+                      </div>
+                    </div>
+                    {post.art ? <div className="feed-card__image" style={{ backgroundImage: `url(${post.art})` }} /> : null}
+                    <p>{post.text}</p>
+                    <div className="feed-card__actions">
+                      <button type="button">Up {post.votes}</button>
+                      <button type="button">Comments {post.comments}</button>
+                      <button type="button">Share</button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+
+              <aside className="dashboard-side-stack">
+                <section className="quest-card glass-card">
+                  <p className="kicker">Daily challenge</p>
+                  <div className="quest-card__top">
+                    <div>
+                      <h2>The Ramen Run</h2>
+                      <p>Review 2 ramen places today</p>
+                    </div>
+                    <strong>+500 XP</strong>
+                  </div>
+                  <div className="progress-label">
+                    <span>Progress</span>
+                    <span>1 / 2</span>
+                  </div>
+                  <div className="progress-shell">
+                    <div className="progress-fill" style={{ width: '50%' }} />
+                  </div>
+                </section>
+
+                <section className="dashboard-section hidden-gems">
+                  <SectionHeader title="Hidden Gems" action="Reveal" />
+                  {hiddenGems.map((gem) => (
+                    <article key={gem.title} className="gem-card">
+                      <div style={{ backgroundImage: `url(${gem.art})` }} />
+                      <h3>{gem.title}</h3>
+                      <p>{gem.note}</p>
+                    </article>
+                  ))}
+                </section>
+              </aside>
+            </section>
+
+            <button className="floating-review-btn" type="button">Write a Review</button>
+            <Footer variant="dashboard" />
+          </main>
+        </div>
+
+        <nav className="mobile-bottom-drawer" aria-label="Mobile dashboard navigation">
           {[
-            ['Dashboard', '◉'],
-            ['Explore', '⌂'],
-            ['Reviews', '★'],
-            ['Chat', '✉'],
+            ['Feed', 'FD'],
+            ['Explore', 'EX'],
+            ['Quests', 'QS'],
+            ['Inbox', 'IN'],
           ].map(([label, icon]) => (
-            <button key={label} type="button" className="drawer-item">
+            <button key={label} type="button" className={label === 'Explore' ? 'drawer-item active' : 'drawer-item'}>
               <span>{icon}</span>
               <small>{label}</small>
             </button>

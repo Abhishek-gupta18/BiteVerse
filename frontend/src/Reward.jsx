@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import Sidebar from './components/Sidebar';
+import ThemeRippleButton from './components/ThemeRippleButton';
 import Footer from './components/Footer';
 import './styles/Reward.css';
 
@@ -113,6 +114,7 @@ export default function Reward() {
   return (
     <div className="reward-container">
       <Sidebar isOpen={isSidebarOpen} userData={sidebarUserData} onToggle={() => setIsSidebarOpen((value) => !value)} />
+      <ThemeRippleButton className="theme-ripple-button--floating reward-theme-toggle" />
       <div className={`reward-content ${isSidebarOpen ? 'reward-content--open' : 'reward-content--collapsed'}`}>
         <div className="reward-header">
           <h1>🏆 Your Rewards Hub</h1>

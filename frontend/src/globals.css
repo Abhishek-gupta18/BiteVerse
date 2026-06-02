@@ -189,19 +189,131 @@ a:hover {
   border: 1px solid rgba(148, 163, 184, 0.18);
 }
 
-/* Theme transition animation */
-@keyframes themeTransition {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.8;
-  }
-  100% {
-    opacity: 1;
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+}
+
+html.theme-ripple-active *,
+html.theme-ripple-active *::before,
+html.theme-ripple-active *::after {
+  transition: none !important;
+}
+
+.theme-ripple-fallback {
+  position: fixed;
+  z-index: 2147483647;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0.34;
+  background: radial-gradient(circle, rgba(88, 166, 255, 0.36), rgba(88, 166, 255, 0.18) 42%, transparent 68%);
+  transition: transform 0.72s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.72s ease;
+}
+
+.theme-ripple-fallback.active {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 0;
+}
+
+.theme-ripple-button {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--border-secondary);
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  color: var(--text);
+  background: var(--input-bg);
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(2, 6, 23, 0.16);
+}
+
+.theme-ripple-button:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  box-shadow: 0 16px 34px rgba(6, 182, 212, 0.16);
+}
+
+.theme-ripple-button svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.theme-ripple-button--floating {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 80;
+  backdrop-filter: blur(16px);
+}
+
+@media (max-width: 720px) {
+  .theme-ripple-button--floating {
+    top: 14px;
+    right: 14px;
   }
 }
 
-html[data-theme] {
-  animation: themeTransition 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+/* Responsive layout utilities to prevent overlap and enable safe scrolling */
+:root { --container-max-width: 1200px; }
+.container { max-width: var(--container-max-width); margin: 0 auto; padding: 0 16px; box-sizing: border-box; }
+main { display: block; padding-top: 64px; }
+.navbar { position: sticky; top: 0; z-index: 1000; width: 100%; }
+.sidebar { position: fixed; left: 0; top: 64px; bottom: 0; width: 260px; overflow-y: auto; z-index: 900; }
+.content { margin-left: 260px; transition: margin-left .22s ease; }
+
+/* Make content flow on small screens */
+@media (max-width: 980px) {
+  .sidebar { transform: translateX(-100%); position: fixed; left: 0; top: 64px; width: 280px; background: var(--bg); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+  .sidebar.open { transform: translateX(0); }
+  .content { margin-left: 0; padding-left: 0; padding-right: 0; }
+  .theme-ripple-button--floating { right: 18px; }
 }
+
+/* Ensure images and media don't overflow */
+img, video, canvas, svg { max-width: 100%; height: auto; display: block; }
+
+/* Tables and wide components scroll horizontally inside a shell */
+.table-shell { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* Prevent horizontal overflow globally but allow internal scroll where needed */
+html, body, #root { max-width: 100%; overflow-x: hidden; }
+
+/* Utility to avoid element overlap by raising z-index for popovers etc. */
+.overlay-top { position: relative; z-index: 1100; }
+
+/* Improve touch targets */
+button, a.button, .icon-btn { min-height: 40px; min-width: 40px; padding: 8px 12px; }
+
+/* Leaderboard specific safe rules */
+.premium-leaderboard .podium, .premium-leaderboard .leaderboard-table { width: 100%; box-sizing: border-box; }
+.premium-leaderboard .leaderboard-table { overflow: hidden; }
+
+/* Chat safe area */
+.chat-container { display: flex; flex-direction: column; gap: 12px; width: 100%; box-sizing: border-box; }
+.chat-messages { max-height: 60vh; overflow-y: auto; }
+
+/* Small devices typography adjustments */
+@media (max-width: 420px) {
+  :root { font-size: 14px; }
+  .navbar .title { font-size: 16px; }
+}
+
+

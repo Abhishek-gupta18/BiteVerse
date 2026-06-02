@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTheme } from "../../context/ThemeContext";
 import Footer from "../Footer";
 import "../../styles/chat.css";
 
@@ -73,33 +74,17 @@ const initialMessages = [
 const Chat = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { theme, toggleTheme } = useTheme();
   const [messages, setMessages] = useState(initialMessages);
   const [draft, setDraft] = useState("");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [isDark, setIsDark] = useState(() => {
-    try {
-      return localStorage.getItem("eduhub-dark") === "1";
-    } catch {
-      return false;
-    }
-  });
+  const isDark = theme === "dark";
+  const [notificationsCount] = useState(3);
 
   const activeParticipants = useMemo(
     () => participants.filter((person) => person.status === "online"),
     [],
   );
-
-  const handleThemeToggle = () => {
-    setIsDark((previous) => {
-      const next = !previous;
-      try {
-        localStorage.setItem("eduhub-dark", next ? "1" : "0");
-      } catch {
-        /* ignore */
-      }
-      return next;
-    });
-  };
 
   const handleSend = (text = draft) => {
     const trimmed = text.trim();
@@ -191,11 +176,27 @@ const Chat = () => {
               type="button"
               className="chat-icon-button"
               aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
-              onClick={handleThemeToggle}
+              onClick={toggleTheme}
+              title={isDark ? "Switch to light theme" : "Switch to dark theme"}
             >
-              {isDark ? "LT" : "DK"}
+              {isDark ? (
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" fill="currentColor" />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4M12 7a5 5 0 100 10 5 5 0 000-10z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              )}
             </button>
-            <button type="button" className="chat-icon-button" aria-label="Notifications">NT</button>
+
+            <button type="button" className="chat-icon-button" aria-label="Notifications" title="Notifications">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M13.73 21a2 2 0 01-3.46 0" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              {notificationsCount > 0 && <span className="notification-badge">{notificationsCount}</span>}
+            </button>
           </div>
         </header>
 

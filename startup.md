@@ -1,5 +1,6 @@
 # Startup Guide — Run the app (Frontend + Backend)
 
+
 This file contains the exact commands to install dependencies and start both the backend and frontend development servers on your machine.
 
 Notes:

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import Sidebar from './components/Sidebar';
+import ThemeRippleButton from './components/ThemeRippleButton';
 import Footer from './components/Footer';
 import './styles/Exp-Food.css';
 
@@ -171,6 +172,7 @@ const ExpFood = () => {
   return (
     <main className="exp-food-page" aria-label="Explore food">
       <Sidebar isOpen={isSidebarOpen} userData={sidebarUserData} onToggle={() => setIsSidebarOpen((value) => !value)} />
+      <ThemeRippleButton className="theme-ripple-button--floating exp-theme-toggle" />
       <div className={`exp-food-content ${isSidebarOpen ? 'exp-food-content--open' : 'exp-food-content--collapsed'}`}>
         <section className="exp-food-shell">
           <div className="exp-search" role="search">

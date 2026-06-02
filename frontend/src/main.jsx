@@ -107,7 +107,7 @@ function LeaderboardPage() {
       />
       <div
         style={{
-          marginLeft: isSidebarOpen ? '220px' : '90px',
+          marginLeft: (typeof window !== 'undefined' && window.innerWidth <= 980) ? 0 : (isSidebarOpen ? '220px' : '90px'),
           transition: 'margin-left 0.38s ease-in-out',
           padding: '28px',
           minHeight: '100vh',
