@@ -1,147 +1,72 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Footer from "../Footer";
 import "../../styles/chat.css";
 
 const navItems = [
-  { id: "dashboard", label: "Dashboard", icon: "📊", route: "/dashboard" },
-  { id: "explore", label: "Explore Food", icon: "🍽️", route: "/explore-food" },
-  { id: "reviews", label: "Reviews", icon: "⭐" },
-  { id: "rewards", label: "Rewards", icon: "🏆" },
-  { id: "leaderboard", label: "Leaderboard", icon: "🏅", route: "/leaderboard" },
-  { id: "community", label: "Community", icon: "👥" },
-  { id: "chats", label: "Messages", icon: "💬", route: "/chat" },
+  { id: "dashboard", label: "Dashboard", icon: "DB", route: "/dashboard" },
+  { id: "explore", label: "Explore Food", icon: "EF", route: "/explore-food" },
+  { id: "reviews", label: "Reviews", icon: "RV" },
+  { id: "rewards", label: "Rewards", icon: "RW" },
+  { id: "leaderboard", label: "Leaderboard", icon: "LB", route: "/leaderboard" },
+  { id: "community", label: "Community", icon: "CM" },
+  { id: "chats", label: "Messages", icon: "MS", route: "/chat" },
 ];
 
-const people = [
-  { id: 1, name: "Alex P.", status: "online", accent: "#ff7a1a" },
-  { id: 2, name: "Sarah M.", status: "online", accent: "#c46a2a" },
-  { id: 3, name: "Jordan K.", status: "away", accent: "#8b5cf6" },
-  { id: 4, name: "Leo W.", status: "online", accent: "#ff8d1f" },
+const channels = [
+  { id: "campus", name: "Campus Commons", meta: "24 online", active: true },
+  { id: "reviews", name: "Review Helpdesk", meta: "8 new" },
+  { id: "plans", name: "Lunch Plans", meta: "12 members" },
+  { id: "support", name: "BiteVerse Support", meta: "staff" },
 ];
 
 const participants = [
-  { id: 1, name: "Alex P.", avatar: "AP", active: true },
-  { id: 2, name: "Sarah M.", avatar: "SM", active: true },
-  { id: 3, name: "Jordan K.", avatar: "JK", active: false },
-  { id: 4, name: "Leo W.", avatar: "LW", active: true },
+  { id: 1, name: "Alex P.", avatar: "AP", status: "online", role: "Food critic" },
+  { id: 2, name: "Sarah M.", avatar: "SM", status: "online", role: "Reviewer" },
+  { id: 3, name: "Jordan K.", avatar: "JK", status: "away", role: "Explorer" },
+  { id: 4, name: "Leo W.", avatar: "LW", status: "online", role: "Moderator" },
 ];
 
-const quickReplies = ["Got it! 👍", "On my way 🏃‍♂️", "Can't talk now 🙊"];
-
-const memberCards = [
-  { id: 1, name: "Aarav", role: "Moderator", status: "online" },
-  { id: 2, name: "Meera", role: "Food Explorer", status: "online" },
-  { id: 3, name: "Zoya", role: "Reviewer", status: "away" },
-  { id: 4, name: "Karan", role: "Student", status: "offline" },
-];
+const quickReplies = ["Line update?", "Save me a seat", "I will join in 10"];
 
 const activitySummary = [
   { label: "Active now", value: "42" },
-  { label: "Channels", value: "4" },
-  { label: "Replies today", value: "18" },
+  { label: "Open threads", value: "6" },
+  { label: "Replies today", value: "118" },
 ];
-
-const paletteSets = [
-  {
-    sentBg: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
-    sentFg: "#f8fbff",
-    receivedBg: "rgba(227, 239, 255, 0.95)",
-    receivedFg: "#16335d",
-  },
-  {
-    sentBg: "linear-gradient(135deg, #ec4899 0%, #db2777 100%)",
-    sentFg: "#fff8fd",
-    receivedBg: "rgba(252, 232, 243, 0.96)",
-    receivedFg: "#6b123f",
-  },
-  {
-    sentBg: "linear-gradient(135deg, #0f766e 0%, #14b8a6 100%)",
-    sentFg: "#f2fffd",
-    receivedBg: "rgba(225, 245, 243, 0.96)",
-    receivedFg: "#164e4c",
-  },
-  {
-    sentBg: "linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%)",
-    sentFg: "#fbf8ff",
-    receivedBg: "rgba(237, 230, 255, 0.96)",
-    receivedFg: "#3b1670",
-  },
-  {
-    sentBg: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
-    sentFg: "#fffaf6",
-    receivedBg: "rgba(255, 240, 224, 0.98)",
-    receivedFg: "#7c2d12",
-  },
-  {
-    sentBg: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
-    sentFg: "#f6fcff",
-    receivedBg: "rgba(224, 244, 255, 0.96)",
-    receivedFg: "#0c4a6e",
-  },
-];
-
-const getLocalDayKey = () => {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-};
-
-const getPaletteForDay = (dayKey) => {
-  let hash = 0;
-
-  for (const character of dayKey) {
-    hash = (hash * 31 + character.charCodeAt(0)) >>> 0;
-  }
-
-  return paletteSets[hash % paletteSets.length];
-};
 
 const initialMessages = [
   {
     id: 1,
     author: "Alex P.",
     initials: "AP",
-    role: "ALEX P.",
     mine: false,
-    time: "",
-    bubble: "bubble-in",
-    accent: "#d28c50",
-    content:
-      "Hey everyone! Has anyone started on the Quantum Mechanics assignment? I'm stuck on the third problem. 🤯",
+    time: "10:36 AM",
+    content: "Anyone near Commons right now? Need a real line update before I leave class.",
   },
   {
     id: 2,
     author: "You",
     initials: "ME",
-    role: "You",
     mine: true,
     time: "10:42 AM",
-    bubble: "bubble-out",
-    accent: "#ff7400",
-    content:
-      "I just finished it! The trick is to use the Schrödinger equation in its time-independent form first. Want to jump in the voice room? 🚀",
+    content: "I just passed by. Noodle Hub is about 7 minutes, Grill is closer to 15.",
   },
   {
     id: 3,
     author: "Sarah M.",
     initials: "SM",
-    role: "SARAH M.",
     mine: false,
-    time: "",
-    bubble: "bubble-in",
-    accent: "#b56d4c",
-    content: "Omg yes please, I've been staring at it for hours.",
+    time: "10:44 AM",
+    content: "Perfect. Also the spicy tofu bowl is back today. It sold out yesterday.",
   },
   {
     id: 4,
-    author: "Sarah M.",
-    initials: "SM",
-    role: "SARAH M.",
+    author: "Leo W.",
+    initials: "LW",
     mine: false,
-    time: "",
-    bubble: "bubble-in",
-    accent: "#c07a4b",
-    content: "Is it the one about the potential barrier?",
+    time: "10:47 AM",
+    content: "Pinned this for lunch rush. Drop stall updates here and keep it specific.",
   },
 ];
 
@@ -150,7 +75,6 @@ const Chat = () => {
   const location = useLocation();
   const [messages, setMessages] = useState(initialMessages);
   const [draft, setDraft] = useState("");
-  const [dayKey, setDayKey] = useState(() => getLocalDayKey());
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isDark, setIsDark] = useState(() => {
     try {
@@ -160,60 +84,21 @@ const Chat = () => {
     }
   });
 
-  useEffect(() => {
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+  const activeParticipants = useMemo(
+    () => participants.filter((person) => person.status === "online"),
+    [],
+  );
 
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, []);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem("eduhub-dark", isDark ? "1" : "0");
-    } catch {
-      /* ignore */
-    }
-  }, [isDark]);
-
-  useEffect(() => {
-    let cancelled = false;
-    let timeoutId;
-
-    const scheduleNextUpdate = () => {
-      if (cancelled) {
-        return;
+  const handleThemeToggle = () => {
+    setIsDark((previous) => {
+      const next = !previous;
+      try {
+        localStorage.setItem("eduhub-dark", next ? "1" : "0");
+      } catch {
+        /* ignore */
       }
-
-      const now = new Date();
-      const nextMidnight = new Date(now);
-      nextMidnight.setHours(24, 0, 0, 0);
-
-      timeoutId = window.setTimeout(() => {
-        if (cancelled) {
-          return;
-        }
-
-        setDayKey(getLocalDayKey());
-        scheduleNextUpdate();
-      }, nextMidnight.getTime() - now.getTime());
-    };
-
-    scheduleNextUpdate();
-    return () => {
-      cancelled = true;
-      window.clearTimeout(timeoutId);
-    };
-  }, []);
-
-  const chatPalette = useMemo(() => getPaletteForDay(dayKey), [dayKey]);
-
-  const chatPaletteStyle = {
-    "--chat-sent-bg": chatPalette.sentBg,
-    "--chat-sent-fg": chatPalette.sentFg,
-    "--chat-received-bg": chatPalette.receivedBg,
-    "--chat-received-fg": chatPalette.receivedFg,
+      return next;
+    });
   };
 
   const handleSend = (text = draft) => {
@@ -228,11 +113,8 @@ const Chat = () => {
         id: Date.now(),
         author: "You",
         initials: "ME",
-        role: "You",
         mine: true,
-        time: "10:42 AM",
-        bubble: "bubble-out",
-        accent: "#ff7400",
+        time: "now",
         content: trimmed,
       },
     ]);
@@ -242,15 +124,15 @@ const Chat = () => {
   return (
     <section
       className={`chat-hub-shell ${isSidebarCollapsed ? "chat-hub-shell--sidebar-collapsed" : ""} ${isDark ? "dark" : ""}`}
-      aria-label="Chat hub"
-      style={chatPaletteStyle}
+      aria-label="BiteVerse chat"
     >
       <aside className="chat-hub-sidebar">
-        <div className="chat-branding chat-branding--with-toggle">
+        <div className="chat-branding">
+          <div className="chat-brand-mark">BV</div>
           {!isSidebarCollapsed && (
             <div className="chat-branding__text">
               <h1>BiteVerse</h1>
-              <p>Student Account</p>
+              <p>Campus account</p>
             </div>
           )}
           <button
@@ -258,9 +140,8 @@ const Chat = () => {
             className="chat-sidebar-toggle"
             onClick={() => setIsSidebarCollapsed((previous) => !previous)}
             aria-label={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            aria-pressed={isSidebarCollapsed}
           >
-            {isSidebarCollapsed ? "▸" : "◂"}
+            {isSidebarCollapsed ? ">" : "<"}
           </button>
         </div>
 
@@ -271,7 +152,7 @@ const Chat = () => {
               type="button"
               className={`chat-nav-item ${location.pathname === item.route ? "active" : ""}`}
               aria-label={item.label}
-              data-label={item.label}
+              title={item.label}
               onClick={() => {
                 if (item.route) {
                   navigate(item.route);
@@ -294,146 +175,142 @@ const Chat = () => {
       <main className="chat-hub-main">
         <header className="chat-topbar">
           <div className="chat-topbar__title-group">
+            <span className="chat-kicker">Messages</span>
             <div className="chat-topbar__title-row">
-              <h2>Chat Hub</h2>
-              <span className="chat-topic-pill">PHYSICS 101</span>
-            </div>
-
-            <div className="chat-search">
-              <span className="chat-search__icon" aria-hidden="true">⌕</span>
-              <input type="text" placeholder="Search in chat..." aria-label="Search in chat" />
+              <h2>Campus Commons</h2>
+              <span className="chat-topic-pill">Live lunch thread</span>
             </div>
           </div>
 
           <div className="chat-topbar__actions">
-            <div className="chat-avatar-stack" aria-label="Active participants">
-              {people.slice(0, 3).map((person) => (
-                <span key={person.id} className="chat-avatar-stack__item" style={{ borderColor: person.accent }}>
-                  {person.name
-                    .split(" ")
-                    .map((part) => part[0])
-                    .join("")}
-                </span>
-              ))}
-              <span className="chat-avatar-stack__more">+12</span>
+            <div className="chat-search">
+              <span className="chat-search__icon" aria-hidden="true">/</span>
+              <input type="text" placeholder="Search messages" aria-label="Search messages" />
             </div>
             <button
               type="button"
-              className="chat-icon-button chat-theme-toggle"
+              className="chat-icon-button"
               aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
-              aria-pressed={isDark}
-              onClick={() => setIsDark((p) => !p)}
+              onClick={handleThemeToggle}
             >
-              {isDark ? "☀" : "🌙"}
+              {isDark ? "LT" : "DK"}
             </button>
-            <button type="button" className="chat-icon-button" aria-label="Notifications">⌁</button>
-            <button type="button" className="chat-icon-button" aria-label="Add person">⌄</button>
-            <button type="button" className="chat-icon-button" aria-label="More options">⋮</button>
+            <button type="button" className="chat-icon-button" aria-label="Notifications">NT</button>
           </div>
         </header>
 
-        <section className="chat-people-strip" aria-label="Participants">
-          {participants.map((person) => (
-            <div key={person.id} className="chat-person-card">
-              <div className={`chat-person-card__avatar ${person.active ? "active" : ""}`}>{person.avatar}</div>
-              <span>{person.name}</span>
+        <div className="chat-workspace">
+          <aside className="chat-channel-panel" aria-label="Channels">
+            <div className="chat-panel-heading">
+              <span>Channels</span>
+              <button type="button" aria-label="Add channel">+</button>
             </div>
-          ))}
-        </section>
 
-        <section className="chat-thread" aria-label="Conversation">
-          {messages.map((message) => (
-            <article
-              key={message.id}
-              className={`chat-message ${message.mine ? "chat-message--outgoing" : "chat-message--incoming"}`}
-            >
-              {!message.mine && <div className="chat-message__avatar chat-message__avatar--round">{message.initials}</div>}
-              <div className={`chat-message__body ${message.mine ? "chat-message__body--right" : ""}`}>
-                {!message.mine && <span className="chat-message__author">{message.role}</span>}
-                <div className={`chat-message__bubble ${message.bubble} ${message.mine ? "chat-message__bubble--primary" : "glass-card"}`}>
-                  {message.content}
-                </div>
-                {message.mine && (
-                  <div className="chat-message__meta">
-                    <span>{message.time}</span>
-                    <span>✓✓</span>
+            <div className="chat-channel-list">
+              {channels.map((channel) => (
+                <button
+                  key={channel.id}
+                  type="button"
+                  className={`chat-channel ${channel.active ? "active" : ""}`}
+                >
+                  <span className="chat-channel__name">{channel.name}</span>
+                  <span className="chat-channel__meta">{channel.meta}</span>
+                </button>
+              ))}
+            </div>
+
+            <div className="chat-mini-card">
+              <strong>Lunch rush</strong>
+              <span>Peak window starts in 18 min.</span>
+            </div>
+          </aside>
+
+          <section className="chat-conversation" aria-label="Conversation">
+            <div className="chat-conversation__notice">
+              <span>Today</span>
+              <p>Share quick stall updates, wait times, and useful recommendations.</p>
+            </div>
+
+            <div className="chat-thread">
+              {messages.map((message) => (
+                <article
+                  key={message.id}
+                  className={`chat-message ${message.mine ? "chat-message--outgoing" : "chat-message--incoming"}`}
+                >
+                  {!message.mine && <div className="chat-message__avatar">{message.initials}</div>}
+                  <div className="chat-message__body">
+                    <div className="chat-message__meta-row">
+                      <strong>{message.author}</strong>
+                      <time>{message.time}</time>
+                    </div>
+                    <div className="chat-message__bubble">
+                      {message.content}
+                    </div>
                   </div>
-                )}
-              </div>
-              {message.mine && <div className="chat-message__avatar chat-message__avatar--round">{message.initials}</div>}
-            </article>
-          ))}
-        </section>
-
-        <footer className="chat-footer">
-          <div className="chat-quick-actions" aria-label="Quick replies">
-            {quickReplies.map((reply) => (
-              <button key={reply} type="button" className="chat-quick-actions__pill" onClick={() => handleSend(reply)}>
-                {reply}
-              </button>
-            ))}
-          </div>
-
-          <div className="chat-composer-shell">
-            <button type="button" className="chat-composer-shell__plus" aria-label="Add attachment">
-              ＋
-            </button>
-            <input
-              value={draft}
-              onChange={(event) => setDraft(event.target.value)}
-              onKeyDown={(event) => {
-                if (event.key === "Enter" && !event.shiftKey) {
-                  event.preventDefault();
-                  handleSend();
-                }
-              }}
-              placeholder="Type a message to the hub..."
-              aria-label="Type a message to the hub"
-            />
-
-            <div className="chat-composer-shell__tools" aria-label="Composer tools">
-              <button type="button" className="chat-composer-shell__tool">
-                ◫ <span>Quick Poll</span>
-              </button>
-              <button type="button" className="chat-composer-shell__tool">
-                ▣ <span>Shared Files</span>
-              </button>
-              <button type="button" className="chat-composer-shell__tool chat-composer-shell__tool--active">
-                🎙 <span>Voice Room</span>
-              </button>
-              <button type="button" className="chat-composer-shell__tool">
-                ✎ <span>Whiteboard</span>
-              </button>
+                  {message.mine && <div className="chat-message__avatar">ME</div>}
+                </article>
+              ))}
             </div>
 
-            <button type="button" className="chat-composer-shell__send" onClick={() => handleSend()} aria-label="Send message">
-              ▶
-            </button>
-          </div>
-        </footer>
+            <footer className="chat-footer">
+              <div className="chat-quick-actions" aria-label="Quick replies">
+                {quickReplies.map((reply) => (
+                  <button key={reply} type="button" onClick={() => handleSend(reply)}>
+                    {reply}
+                  </button>
+                ))}
+              </div>
+
+              <div className="chat-composer-shell">
+                <button type="button" className="chat-composer-shell__plus" aria-label="Add attachment">
+                  +
+                </button>
+                <input
+                  value={draft}
+                  onChange={(event) => setDraft(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" && !event.shiftKey) {
+                      event.preventDefault();
+                      handleSend();
+                    }
+                  }}
+                  placeholder="Write a useful update..."
+                  aria-label="Write a message"
+                />
+                <div className="chat-composer-shell__tools" aria-label="Composer tools">
+                  <button type="button">Poll</button>
+                  <button type="button">Files</button>
+                  <button type="button" className="active">Room</button>
+                </div>
+                <button type="button" className="chat-composer-shell__send" onClick={() => handleSend()} aria-label="Send message">
+                  Send
+                </button>
+              </div>
+            </footer>
+          </section>
+        </div>
 
         <Footer variant="chat" compact />
       </main>
 
       <aside className="chat-hub-right">
-        <div className="chat-side-card">
-          <p className="chat-side-card__label">Members</p>
+        <div className="chat-side-card chat-side-card--members">
+          <div className="chat-panel-heading">
+            <span>Members</span>
+            <strong>{activeParticipants.length} online</strong>
+          </div>
           <div className="chat-side-member-list">
-            {memberCards.map((member) => (
+            {participants.map((member) => (
               <div key={member.id} className="chat-side-member">
-                <span className={`chat-side-member__dot ${member.status}`} />
+                <div className="chat-side-member__avatar">{member.avatar}</div>
                 <div>
                   <strong>{member.name}</strong>
                   <span>{member.role}</span>
                 </div>
+                <span className={`chat-side-member__dot ${member.status}`} />
               </div>
             ))}
           </div>
-        </div>
-
-        <div className="chat-side-card chat-side-card--tip">
-          <p className="chat-side-card__label">Tip</p>
-          <p>Keep replies short, warm, and useful. This layout is tuned to feel like a calm group hangout.</p>
         </div>
 
         <div className="chat-side-card chat-side-card--summary">
@@ -443,6 +320,11 @@ const Chat = () => {
               <span>{item.label}</span>
             </div>
           ))}
+        </div>
+
+        <div className="chat-side-card chat-side-card--tip">
+          <p className="chat-side-card__label">Thread note</p>
+          <p>Keep updates short, current, and tied to a stall so others can act on them quickly.</p>
         </div>
       </aside>
     </section>
