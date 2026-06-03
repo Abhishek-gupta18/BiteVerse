@@ -5,13 +5,6 @@ import "../styles/Navbar.css";
 const Navbar = ({ onNotificationsToggle, userData, isSidebarOpen = false }) => {
   const [searchValue, setSearchValue] = useState("");
   const { theme, toggleTheme } = useTheme();
-  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth <= 980 : false);
-
-  React.useEffect(() => {
-    const onResize = () => setIsMobile(window.innerWidth <= 980);
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
 
   const notifications = [
     {
@@ -38,7 +31,7 @@ const Navbar = ({ onNotificationsToggle, userData, isSidebarOpen = false }) => {
     <nav 
       className="navbar"
       style={{
-        marginLeft: isMobile ? 0 : (isSidebarOpen ? '220px' : '90px'),
+        marginLeft: isSidebarOpen ? '220px' : '90px',
         transition: 'margin-left 0.38s ease-in-out'
       }}
     >

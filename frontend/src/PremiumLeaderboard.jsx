@@ -123,18 +123,6 @@ const PremiumLeaderboard = () => {
     marginLeft: isSidebarOpen ? '220px' : '90px',
   }
 
-  // responsive: collapse left margin on narrow viewports
-  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth <= 980 : false)
-  useEffect(() => {
-    const onResize = () => setIsMobile(window.innerWidth <= 980)
-    window.addEventListener('resize', onResize)
-    return () => window.removeEventListener('resize', onResize)
-  }, [])
-
-  if (isMobile) {
-    containerStyle.marginLeft = '0'
-  }
-
   return (
     <>
       <Navbar
