@@ -1,9 +1,23 @@
 import './App.css'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { triggerPageTransition } from './Transition'
 
 function App() {
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const prevHtmlOverflow = document.documentElement.style.overflow
+    const prevBodyOverflow = document.body.style.overflow
+
+    document.documentElement.style.overflow = 'hidden'
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.documentElement.style.overflow = prevHtmlOverflow || ''
+      document.body.style.overflow = prevBodyOverflow || ''
+    }
+  }, [])
 
   const handleNavClick = (event) => {
     const link = event.currentTarget
