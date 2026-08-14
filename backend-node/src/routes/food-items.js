@@ -36,6 +36,88 @@ router.get("/", authenticateToken, requireVerified, async (req, res) => {
   }
 });
 
+router.get("/trending", authenticateToken, requireVerified, async (req, res) => {
+  try {
+    const collegeId = Number(req.query.college_id);
+    const limitValue = parsePositiveInteger(req.query.limit, 10);
+
+    if (!collegeId || Number.isNaN(collegeId)) {
+      return res.status(400).json({ error: "college_id query parameter is required" });
+    }
+
+    const query = `
+      WITH recent_reviews AS (
+        SELECT r.food_id, r.rating
+        FROM reviews r
+        INNER JOIN food_items fi ON fi.id = r.food_id
+        INNER JOIN stalls s ON s.id = fi.stall_id
+        WHERE s.college_id = $1
+          AND r.created_at >= NOW() - INTERVAL '90 days'
+      ),
+      item_stats AS (
+        SELECT
+          fi.id,
+          fi.name,
+          s.name AS stall_name,
+          fi.price,
+          fi.image_url,
+          fi.season_tag,
+          ROUND(COALESCE(AVG(rr.rating), 0), 2) AS avg_rating,
+          COUNT(rr.food_id)::int AS review_count
+        FROM food_items fi
+        INNER JOIN stalls s ON s.id = fi.stall_id
+        LEFT JOIN recent_reviews rr ON rr.food_id = fi.id
+        WHERE s.college_id = $1
+        GROUP BY fi.id, fi.name, s.name, fi.price, fi.image_url, fi.season_tag
+      ),
+      global_stats AS (
+        SELECT COALESCE(ROUND(AVG(rating), 2), 0) AS global_avg_rating
+        FROM recent_reviews
+      ),
+      scored_items AS (
+        SELECT
+          i.id,
+          i.name,
+          i.stall_name,
+          i.price,
+          i.image_url,
+          i.avg_rating,
+          i.review_count,
+          (
+            ((i.review_count::numeric / (i.review_count::numeric + 10)) * i.avg_rating)
+            + ((10::numeric / (i.review_count::numeric + 10)) * g.global_avg_rating)
+          ) AS weighted_score,
+          CASE
+            WHEN i.season_tag = 'all_season' THEN 1.15
+            WHEN i.season_tag = 'winter' AND EXTRACT(MONTH FROM NOW()) IN (11, 12, 1, 2) THEN 1.15
+            WHEN i.season_tag = 'monsoon' AND EXTRACT(MONTH FROM NOW()) IN (6, 7, 8, 9) THEN 1.15
+            WHEN i.season_tag = 'summer' AND EXTRACT(MONTH FROM NOW()) IN (3, 4, 5, 10) THEN 1.15
+            ELSE 1.0
+          END AS seasonal_boost
+        FROM item_stats i
+        CROSS JOIN global_stats g
+      )
+      SELECT
+        id,
+        name,
+        stall_name,
+        price,
+        image_url,
+        avg_rating,
+        review_count
+      FROM scored_items
+      ORDER BY (weighted_score * seasonal_boost) DESC, review_count DESC, avg_rating DESC
+      LIMIT $2
+    `;
+
+    const result = await pool.query(query, [collegeId, limitValue]);
+    return res.json(result.rows);
+  } catch (error) {
+    console.error("Get trending food items error:", error);
+    return res.status(500).json({ error: "Failed to fetch trending food items" });
+  }
+});
+
 router.get("/:id", authenticateToken, requireVerified, async (req, res) => {
   try {
     const { id } = req.params;

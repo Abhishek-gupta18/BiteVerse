@@ -27,6 +27,8 @@ import ProtectedRoute from './ProtectedRoute.jsx'
 import AdminRoute from './AdminRoute.jsx'
 import PendingVerification from './PendingVerification.jsx'
 import AdminVerifications from './AdminVerifications.jsx'
+import AddReview from './AddReview.jsx'
+import AddStall from './AddStall.jsx'
 
 const { createRoot } = ReactDOMClient
 
@@ -313,6 +315,8 @@ function AppRoutes() {
         <Route path="/register" element={<Register />} />
         <Route path="/pending-verification" element={<ProtectedRoute><PendingVerification /></ProtectedRoute>} />
         <Route path="/admin/verifications" element={<AdminRoute><AdminVerifications /></AdminRoute>} />
+        <Route path="/reviews/new" element={<ProtectedRoute><AddReview /></ProtectedRoute>} />
+        <Route path="/stalls/new" element={<ProtectedRoute><AddStall /></ProtectedRoute>} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard userRole="student" /></ProtectedRoute>} />
         <Route path="/explore-food" element={<ProtectedRoute><ExpFood /></ProtectedRoute>} />
         <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />

@@ -1,8 +1,12 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from './context/ThemeContext';
+import { useAuth } from './context/AuthContext';
 import Footer from './components/Footer';
+import RecommendedFeed from './components/sections/RecommendedFeed';
 import './Dashboard.css';
+
+const API_BASE = 'http://localhost:5000/api';
 
 const avatarSvg = (label, primary, secondary) =>
   `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
@@ -159,12 +163,78 @@ function SectionHeader({ title, action }) {
 const Dashboard = () => {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
+  const { user } = useAuth();
   const [activeNav, setActiveNav] = useState('dashboard');
   const [activeFilter, setActiveFilter] = useState('Near Me');
   const [activeMood, setActiveMood] = useState('wild');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [collegeName, setCollegeName] = useState('Campus Explorer');
+  const [recommendations, setRecommendations] = useState([]);
+  const [recommendationsLoading, setRecommendationsLoading] = useState(false);
+  const [recommendationsError, setRecommendationsError] = useState('');
+
+  const profileDisplayName = user?.full_name || user?.username || 'Campus Explorer';
+  const profileAvatar = user?.profile_picture_url || avatarSvg(profileDisplayName, '#58a6ff', '#efa500');
+
+  useEffect(() => {
+    const resolveCollegeName = async () => {
+      if (!user?.college_id) {
+        setCollegeName('Campus Explorer');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/colleges/${user.college_id}`, { credentials: 'include' });
+        if (!response.ok) {
+          setCollegeName('Campus Explorer');
+          return;
+        }
+
+        const data = await response.json();
+        setCollegeName(data.name || 'Campus Explorer');
+      } catch (error) {
+        setCollegeName('Campus Explorer');
+      }
+    };
+
+    resolveCollegeName();
+  }, [user?.college_id]);
+
+  useEffect(() => {
+    const fetchTrending = async () => {
+      if (!user?.college_id) {
+        setRecommendations([]);
+        return;
+      }
+
+      setRecommendationsLoading(true);
+      setRecommendationsError('');
+
+      try {
+        const response = await fetch(`${API_BASE}/food-items/trending?college_id=${user.college_id}`, {
+          method: 'GET',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (!response.ok) {
+          throw new Error('Unable to load recommendations');
+        }
+
+        const data = await response.json();
+        setRecommendations(Array.isArray(data) ? data : []);
+      } catch (error) {
+        setRecommendations([]);
+        setRecommendationsError(error.message || 'Unable to load recommendations');
+      } finally {
+        setRecommendationsLoading(false);
+      }
+    };
+
+    fetchTrending();
+  }, [user?.college_id]);
 
   const stats = useMemo(
     () => [
@@ -184,11 +254,11 @@ const Dashboard = () => {
           </button>
 
           <div className="sidebar-profile">
-            <img className="sidebar-avatar" src={biteVerseAvatar} alt="user" />
+            <img className="sidebar-avatar" src={profileAvatar} alt={profileDisplayName} />
             {!sidebarCollapsed && (
               <div>
-                <strong>user</strong>
-                <p>Campus Explorer</p>
+                <strong>{profileDisplayName}</strong>
+                <p>{collegeName}</p>
                 <span className="level-badge">Level 5 Food Explorer</span>
               </div>
             )}
@@ -214,7 +284,7 @@ const Dashboard = () => {
             ))}
           </nav>
 
-          <button className="review-cta" type="button">
+          <button className="review-cta" type="button" onClick={() => navigate('/reviews/new')}>
             Write Review
           </button>
         </aside>
@@ -278,8 +348,8 @@ const Dashboard = () => {
                     setNotificationsOpen(false);
                   }}
                 >
-                  <img src={biteVerseAvatar} alt="Profile" />
-                  <span>user</span>
+                  <img src={profileAvatar} alt={profileDisplayName} />
+                  <span>{profileDisplayName}</span>
                   <span className={`profile-caret ${profileMenuOpen ? 'open' : ''}`}>v</span>
                 </button>
                 {profileMenuOpen && (
@@ -340,19 +410,51 @@ const Dashboard = () => {
               </div>
             </section>
 
-            <section className="dashboard-section">
-              <SectionHeader title="Hot Now" action="View all" />
-              <div className="trending-strip">
-                {trendingItems.map((item) => (
-                  <article key={item.title} className="trending-card glass-card">
-                    <div className="trending-card__image" style={{ backgroundImage: `url(${item.art})` }}>
-                      <span>HOT</span>
-                    </div>
-                    <h3>{item.title}</h3>
-                    <p>{item.stall} - {item.orders}</p>
-                  </article>
-                ))}
+            <section className="dashboard-section" style={{ marginBottom: '1.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+                <h2 style={{ margin: 0, fontSize: '1.5rem' }}>Trending Picks</h2>
+                <div style={{ display: 'flex', gap: '0.75rem' }}>
+                  <button type="button" className="primary-action" onClick={() => navigate('/reviews/new')}>
+                    Add Review
+                  </button>
+                  <button type="button" className="ghost-action" onClick={() => navigate('/stalls/new')}>
+                    Add New Stall
+                  </button>
+                </div>
               </div>
+
+              {recommendationsError ? (
+                <div className="empty-state-card">{recommendationsError}</div>
+              ) : recommendationsLoading ? (
+                <div className="food-grid" aria-live="polite">
+                  {[1, 2, 3, 4].map((item) => (
+                    <div key={item} className="food-card skeleton-card">
+                      <div className="food-image-container skeleton-block" />
+                      <div className="food-info">
+                        <div className="skeleton-line short" />
+                        <div className="skeleton-line medium" />
+                        <div className="skeleton-line small" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : recommendations.length > 0 ? (
+                <RecommendedFeed
+                  food={recommendations.map((item) => ({
+                    id: item.id,
+                    name: item.name,
+                    stall: item.stall_name,
+                    price: `₹${Number(item.price || 0).toFixed(2)}`,
+                    image: item.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80',
+                    rating: Number(item.avg_rating || 0).toFixed(1),
+                    tag: item.season_tag || 'Trending',
+                  }))}
+                />
+              ) : (
+                <div className="empty-state-card">
+                  No reviewed food items exist for this college yet. Be the first to add a review or a stall.
+                </div>
+              )}
             </section>
 
             <section className="campus-map glass-card">
@@ -475,7 +577,7 @@ const Dashboard = () => {
               </aside>
             </section>
 
-            <button className="floating-review-btn" type="button">Write a Review</button>
+            <button className="floating-review-btn" type="button" onClick={() => navigate('/reviews/new')}>Write a Review</button>
             <Footer variant="dashboard" />
           </main>
         </div>

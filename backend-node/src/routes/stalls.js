@@ -108,7 +108,7 @@ router.post("/", authenticateToken, requireVerified, async (req, res) => {
   }
 });
 
-router.patch("/:id", authenticateToken, async (req, res) => {
+router.patch("/:id", authenticateToken, requireVerified, async (req, res) => {
   try {
     const { id } = req.params;
     const existing = await pool.query("SELECT * FROM stalls WHERE id = $1", [id]);
