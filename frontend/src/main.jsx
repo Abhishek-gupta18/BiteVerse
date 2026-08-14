@@ -22,6 +22,9 @@ import Navbar from './components/Navbar.jsx'
 import Footer from './components/Footer.jsx'
 import PremiumLeaderboard from './PremiumLeaderboard.jsx'
 import { ThemeProvider, useTheme } from './context/ThemeContext'
+import { AuthProvider, useAuth } from './context/AuthContext'
+import ProtectedRoute from './ProtectedRoute.jsx'
+import PendingVerification from './PendingVerification.jsx'
 
 const { createRoot } = ReactDOMClient
 
@@ -274,27 +277,55 @@ function ButtonClickFeedback() {
   return null
 }
 
+function AppRoutes() {
+  const { isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: '#020617',
+        color: '#f8fafc',
+        fontSize: '1.1rem',
+        fontWeight: 600,
+      }}>
+        Loading BiteVerse...
+      </div>
+    );
+  }
+
+  return (
+    <BrowserRouter>
+      <ButtonClickFeedback />
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/features" element={<Features />} />
+        <Route path="/work" element={<Work />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/events" element={<Events />} />
+        <Route path="/community" element={<Community />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/pending-verification" element={<ProtectedRoute><PendingVerification /></ProtectedRoute>} />
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard userRole="student" /></ProtectedRoute>} />
+        <Route path="/explore-food" element={<ProtectedRoute><ExpFood /></ProtectedRoute>} />
+        <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
+        <Route path="/rewards" element={<ProtectedRoute><Reward /></ProtectedRoute>} />
+        <Route path="/leaderboard" element={<ProtectedRoute><PremiumLeaderboard /></ProtectedRoute>} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ThemeProvider>
-      <BrowserRouter>
-        <ButtonClickFeedback />
-        <Routes>
-          <Route path="/" element={<App />} />
-          <Route path="/features" element={<Features />} />
-          <Route path="/work" element={<Work />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/community" element={<Community />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<Dashboard userRole="student" />} />
-          <Route path="/explore-food" element={<ExpFood />} />
-          <Route path="/chat" element={<Chat />} />
-          <Route path="/rewards" element={<Reward />} />
-          <Route path="/leaderboard" element={<PremiumLeaderboard />} />
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
     </ThemeProvider>
   </StrictMode>,
 )

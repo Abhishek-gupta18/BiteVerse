@@ -3,6 +3,9 @@ const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const otpGenerator = require("otp-generator");
+const multer = require("multer");
+const { v2: cloudinary } = require("cloudinary");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const { pool } = require("../config/db");
 
 const router = express.Router();
@@ -19,13 +22,154 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+const getJwtMaxAge = () => {
+  const rawValue = process.env.JWT_EXPIRES_IN || "7d";
+  const match = rawValue.trim().match(/^(\d+)([smhd])$/i);
+
+  if (!match) {
+    return 7 * 24 * 60 * 60 * 1000;
+  }
+
+  const amount = Number(match[1]);
+  const unit = match[2].toLowerCase();
+
+  switch (unit) {
+    case "s":
+      return amount * 1000;
+    case "m":
+      return amount * 60 * 1000;
+    case "h":
+      return amount * 60 * 60 * 1000;
+    case "d":
+      return amount * 24 * 60 * 60 * 1000;
+    default:
+      return 7 * 24 * 60 * 60 * 1000;
+  }
+};
+
+const setAuthCookie = (res, token) => {
+  const isProduction = process.env.NODE_ENV === "production";
+
+  res.cookie("biteverse_token", token, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: "lax",
+    maxAge: getJwtMaxAge(),
+  });
+};
+
+const sanitizeUser = (user) => {
+  if (!user) return null;
+  const { password_hash, ...safeUser } = user;
+  return safeUser;
+};
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+const cloudinaryStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "biteverse/id-cards",
+    allowed_formats: ["jpg", "jpeg", "png", "webp"],
+    transformation: [{ width: 1600, height: 1600, crop: "limit" }],
+  },
+});
+
+const upload = multer({
+  storage: cloudinaryStorage,
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    if (!file || !file.mimetype || !file.mimetype.startsWith("image/")) {
+      return cb(new Error("Only image files are allowed"));
+    }
+    return cb(null, true);
+  },
+});
+
 // Helper to generate JWT
 const generateToken = (userId, username) => {
   return jwt.sign(
     { userId, username },
     process.env.JWT_SECRET || "your_secret_key",
-    { expiresIn: process.env.JWT_EXPIRES_IN || "1d" }
+    { expiresIn: process.env.JWT_EXPIRES_IN || "7d" }
   );
+};
+
+const authenticateToken = async (req, res, next) => {
+  const token = req.cookies?.biteverse_token;
+
+  if (!token) {
+    return res.status(401).json({ error: "Authentication required" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "your_secret_key");
+    const result = await pool.query("SELECT * FROM users WHERE id = $1", [decoded.userId]);
+
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: "User not found" });
+    }
+
+    req.user = sanitizeUser(result.rows[0]);
+    next();
+  } catch (error) {
+    return res.status(401).json({ error: "Invalid or expired token" });
+  }
+};
+
+const authenticateTokenOptional = async (req, res, next) => {
+  const token = req.cookies?.biteverse_token;
+
+  if (!token) {
+    req.user = null;
+    return next();
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "your_secret_key");
+    const result = await pool.query("SELECT * FROM users WHERE id = $1", [decoded.userId]);
+
+    req.user = result.rows.length > 0 ? sanitizeUser(result.rows[0]) : null;
+    return next();
+  } catch (error) {
+    req.user = null;
+    return next();
+  }
+};
+
+const authorizeRole = (allowedRoles = []) => {
+  const roles = Array.isArray(allowedRoles) ? allowedRoles : [allowedRoles];
+
+  return (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ error: "Authentication required" });
+    }
+
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ error: "Access denied" });
+    }
+
+    return next();
+  };
+};
+
+const requireVerified = (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({ error: "Authentication required" });
+  }
+
+  if (req.user.verification_status !== "verified") {
+    return res.status(403).json({
+      error: "verification_pending",
+      message: "Your account is pending admin approval",
+    });
+  }
+
+  return next();
 };
 
 // Helper to validate email
@@ -63,18 +207,15 @@ router.post("/request-otp", async (req, res) => {
       specialChars: false,
     });
 
-    const expiryTime = Date.now() + 5 * 60 * 1000; // 5 minutes
+    const expiryTime = Date.now() + 5 * 60 * 1000;
     const identifier = phone || email;
 
     otpStore.set(identifier, { otp, expiryTime });
-
-    // In production, send OTP via email or SMS
     console.log(`OTP for ${identifier}: ${otp}`);
 
     res.json({
       message: "OTP sent successfully",
       identifier,
-      // For development only - remove in production
       dev_otp: otp,
     });
   } catch (error) {
@@ -89,75 +230,61 @@ router.post("/verify-otp", async (req, res) => {
     const { identifier, otp } = req.body;
 
     if (!identifier || !otp) {
-      return res.status(400).json({
-        error: "Identifier and OTP are required",
-      });
+      return res.status(400).json({ error: "Identifier and OTP are required" });
     }
 
     const storedData = otpStore.get(identifier);
 
     if (!storedData) {
-      return res.status(400).json({
-        error: "OTP not found or expired",
-      });
+      return res.status(400).json({ error: "OTP not found or expired" });
     }
 
     if (storedData.expiryTime < Date.now()) {
       otpStore.delete(identifier);
-      return res.status(400).json({
-        error: "OTP has expired",
-      });
+      return res.status(400).json({ error: "OTP has expired" });
     }
 
     if (storedData.otp !== otp) {
-      return res.status(400).json({
-        error: "Invalid OTP",
-      });
+      return res.status(400).json({ error: "Invalid OTP" });
     }
 
-    // Clean up used OTP
     otpStore.delete(identifier);
 
-    // Find or create user
-    const connection = await pool.getConnection();
-    try {
-      const isPhone = isValidPhone(identifier);
-      const column = isPhone ? "phone" : "email";
+    const isPhone = isValidPhone(identifier);
+    const column = isPhone ? "phone" : "email";
 
-      // Check if user exists
-      const [users] = await connection.query(
-        `SELECT id, username FROM users WHERE ${column} = ?`,
-        [identifier]
+    const existingUserResult = await pool.query(
+      `SELECT id, username, full_name, email, phone, role, college_id, profile_picture_url, xp_points, verification_status
+       FROM users WHERE ${column} = $1`,
+      [identifier]
+    );
+
+    let user;
+
+    if (existingUserResult.rows.length > 0) {
+      user = existingUserResult.rows[0];
+    } else {
+      const username = `user_${Date.now()}`;
+      const fullName = isPhone ? `OTP User ${Date.now()}` : identifier;
+      const fallbackEmail = isPhone ? `${username}@biteverse.local` : identifier;
+      const fallbackPhone = isPhone ? identifier : null;
+      const insertResult = await pool.query(
+        `INSERT INTO users (full_name, username, email, phone, password_hash, role, verification_status, created_at, updated_at)
+         VALUES ($1, $2, $3, $4, $5, 'student', 'pending', NOW(), NOW())
+         RETURNING id, username, full_name, email, phone, role, college_id, profile_picture_url, xp_points, verification_status`,
+        [fullName, username, fallbackEmail, fallbackPhone, "otp_placeholder_hash"]
       );
 
-      let userId, username;
-
-      if (users.length > 0) {
-        // Existing user
-        userId = users[0].id;
-        username = users[0].username;
-      } else {
-        // New user - create with OTP
-        const newUsername = `user_${Date.now()}`;
-        const insertResult = await connection.query(
-          `INSERT INTO users (username, ${column}, auth_method, created_at) VALUES (?, ?, 'otp', NOW())`,
-          [newUsername, identifier]
-        );
-        userId = insertResult[0].insertId;
-        username = newUsername;
-      }
-
-      const token = generateToken(userId, username);
-
-      res.json({
-        message: "Login successful",
-        token,
-        userId,
-        username,
-      });
-    } finally {
-      connection.release();
+      user = insertResult.rows[0];
     }
+
+    const token = generateToken(user.id, user.username);
+    setAuthCookie(res, token);
+
+    return res.json({
+      message: "Login successful",
+      user: sanitizeUser(user),
+    });
   } catch (error) {
     console.error("Verify OTP error:", error);
     res.status(500).json({ error: "Failed to verify OTP" });
@@ -165,7 +292,7 @@ router.post("/verify-otp", async (req, res) => {
 });
 
 // REGISTER endpoint
-router.post("/register", async (req, res) => {
+router.post("/register", upload.single("id_card"), async (req, res) => {
   try {
     const {
       username,
@@ -179,7 +306,10 @@ router.post("/register", async (req, res) => {
       avatar,
     } = req.body;
 
-    // Validation
+    if (!req.file) {
+      return res.status(400).json({ error: "ID card is required" });
+    }
+
     if (!username || !email || !password || !fullName) {
       return res.status(400).json({
         error: "Username, email, password, and full name are required",
@@ -187,71 +317,68 @@ router.post("/register", async (req, res) => {
     }
 
     if (!isValidEmail(email)) {
-      return res.status(400).json({
-        error: "Invalid email format",
-      });
+      return res.status(400).json({ error: "Invalid email format" });
     }
 
     if (phone && !isValidPhone(phone)) {
-      return res.status(400).json({
-        error: "Invalid phone format",
-      });
+      return res.status(400).json({ error: "Invalid phone format" });
     }
 
     if (password.length < 8) {
-      return res.status(400).json({
-        error: "Password must be at least 8 characters",
-      });
+      return res.status(400).json({ error: "Password must be at least 8 characters" });
     }
 
-    const connection = await pool.getConnection();
-    try {
-      // Check if username or email exists
-      const [existing] = await connection.query(
-        "SELECT id FROM users WHERE username = ? OR email = ?",
-        [username, email]
-      );
+    const existingUser = await pool.query(
+      "SELECT id FROM users WHERE username = $1 OR email = $2",
+      [username, email]
+    );
 
-      if (existing.length > 0) {
-        return res.status(400).json({
-          error: "Username or email already exists",
-        });
-      }
+    if (existingUser.rows.length > 0) {
+      return res.status(400).json({ error: "Username or email already exists" });
+    }
 
-      // Hash password
-      const hashedPassword = await bcryptjs.hash(password, 10);
-
-      // Insert user
-      const result = await connection.query(
-        `INSERT INTO users (username, email, phone, password_hash, full_name, dob, college, role, avatar, auth_method, created_at) 
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'password', NOW())`,
-        [
-          username,
-          email,
-          phone || null,
-          hashedPassword,
-          fullName,
-          dob || null,
-          college || null,
-          role || "student",
-          avatar || null,
-        ]
-      );
-
-      const userId = result[0].insertId;
-      const token = generateToken(userId, username);
-
-      res.json({
-        message: "Registration successful",
-        token,
-        userId,
+    const hashedPassword = await bcryptjs.hash(password, 10);
+    const insertResult = await pool.query(
+      `INSERT INTO users (
+        full_name,
         username,
-      });
-    } finally {
-      connection.release();
-    }
+        email,
+        phone,
+        password_hash,
+        role,
+        college_id,
+        profile_picture_url,
+        id_card_url,
+        created_at,
+        updated_at
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), NOW())
+      RETURNING id, full_name, username, email, phone, role, college_id, profile_picture_url, id_card_url, xp_points, verification_status, created_at, updated_at`,
+      [
+        fullName,
+        username,
+        email,
+        phone || null,
+        hashedPassword,
+        role || "student",
+        college || null,
+        avatar || null,
+        req.file?.secure_url || req.file?.path || null,
+      ]
+    );
+
+    const user = insertResult.rows[0];
+    const token = generateToken(user.id, user.username);
+    setAuthCookie(res, token);
+
+    return res.status(201).json({
+      message: "Registration successful",
+      user: sanitizeUser(user),
+    });
   } catch (error) {
     console.error("Register error:", error);
+    if (error && error.message === "Only image files are allowed") {
+      return res.status(400).json({ error: "ID card must be an image file" });
+    }
     res.status(500).json({ error: "Registration failed" });
   }
 });
@@ -260,62 +387,80 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const { username, password, email } = req.body;
-
     const identifier = username || email;
 
     if (!identifier || !password) {
-      return res.status(400).json({
-        error: "Username/email and password are required",
-      });
+      return res.status(400).json({ error: "Username/email and password are required" });
     }
 
-    const connection = await pool.getConnection();
-    try {
-      const isEmail = identifier.includes("@");
-      const column = isEmail ? "email" : "username";
+    const isEmail = identifier.includes("@");
+    const queryColumn = isEmail ? "email" : "username";
 
-      const [users] = await connection.query(
-        `SELECT id, username, password_hash FROM users WHERE ${column} = ?`,
-        [identifier]
-      );
+    const result = await pool.query(
+      `SELECT * FROM users WHERE ${queryColumn} = $1`,
+      [identifier]
+    );
 
-      if (users.length === 0) {
-        return res.status(401).json({
-          error: "Invalid credentials",
-        });
-      }
-
-      const user = users[0];
-
-      if (!user.password_hash) {
-        return res.status(401).json({
-          error: "User registered with OTP. Use OTP login instead",
-        });
-      }
-
-      const isPasswordValid = await bcryptjs.compare(password, user.password_hash);
-
-      if (!isPasswordValid) {
-        return res.status(401).json({
-          error: "Invalid credentials",
-        });
-      }
-
-      const token = generateToken(user.id, user.username);
-
-      res.json({
-        message: "Login successful",
-        token,
-        userId: user.id,
-        username: user.username,
-      });
-    } finally {
-      connection.release();
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: "Invalid credentials" });
     }
+
+    const user = result.rows[0];
+
+    if (!user.password_hash || user.password_hash === "otp_placeholder_hash") {
+      return res.status(401).json({ error: "User registered with OTP. Use OTP login instead" });
+    }
+
+    const isPasswordValid = await bcryptjs.compare(password, user.password_hash);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    const token = generateToken(user.id, user.username);
+    setAuthCookie(res, token);
+
+    return res.json({
+      message: "Login successful",
+      user: sanitizeUser(user),
+    });
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ error: "Login failed" });
   }
 });
 
+router.get("/me", authenticateToken, async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT id, full_name, username, email, phone, role, college_id, profile_picture_url, id_card_url, xp_points, verification_status, created_at, updated_at FROM users WHERE id = $1",
+      [req.user.id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res.json({ user: sanitizeUser(result.rows[0]) });
+  } catch (error) {
+    console.error("Get current user error:", error);
+    return res.status(500).json({ error: "Failed to fetch current user" });
+  }
+});
+
+router.post("/logout", (req, res) => {
+  res.clearCookie("biteverse_token", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  });
+
+  return res.json({ message: "Logged out successfully" });
+});
+
 module.exports = router;
+module.exports.authenticateToken = authenticateToken;
+module.exports.authenticateTokenOptional = authenticateTokenOptional;
+module.exports.authorizeRole = authorizeRole;
+module.exports.requireVerified = requireVerified;
+module.exports.upload = upload;

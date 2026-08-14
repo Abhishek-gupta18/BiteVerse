@@ -3,9 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import './Register.css'
 import { triggerPageTransition } from './Transition'
 import { collegeOptions } from './collegeOptions'
-import axios from 'axios'
-
-const API_BASE = 'http://localhost:5000/api'
+import { useAuth } from './context/AuthContext'
 
 const takenUsernames = ['bitechef', 'student42', 'teacherpro', 'alexverse']
 
@@ -14,6 +12,7 @@ const createCartoonAvatar = (seed) =>
 
 function Register() {
   const navigate = useNavigate()
+  const { register } = useAuth()
   const [role, setRole] = useState('student')
   const [fullName, setFullName] = useState('')
   const [username, setUsername] = useState('')
@@ -133,27 +132,31 @@ function Register() {
     if (!hasErrors) {
       setLoading(true)
       try {
-        const response = await axios.post(`${API_BASE}/auth/register`, {
-          username,
-          email,
-          phone: phone ? `${countryCode}${phone}` : null,
-          password,
-          fullName,
-          dob: dob || null,
-          college: college || newCollege,
-          role,
-          avatar: profileImage || createCartoonAvatar(defaultAvatarSeed),
-        })
+        const formData = new FormData()
+
+        formData.append('username', username)
+        formData.append('email', email)
+        formData.append('phone', phone ? `${countryCode}${phone}` : '')
+        formData.append('password', password)
+        formData.append('fullName', fullName)
+        formData.append('dob', dob || '')
+        formData.append('college', college || newCollege)
+        formData.append('role', role)
+        formData.append('avatar', profileImage || createCartoonAvatar(defaultAvatarSeed))
+
+        if (documentFile) {
+          formData.append('id_card', documentFile)
+        }
+
+        await register(formData)
 
         setSuccess('Registration successful!')
-        localStorage.setItem('token', response.data.token)
-        localStorage.setItem('userId', response.data.userId)
-        localStorage.setItem('username', response.data.username)
 
         await triggerPageTransition(0, 0, { duration: 700 })
-        navigate('/dashboard')
+        navigate('/pending-verification')
       } catch (err) {
-        setError(err.response?.data?.error || 'Registration failed')
+        setError(err.message || 'Registration failed')
+      } finally {
         setLoading(false)
       }
     }
@@ -447,12 +450,12 @@ function Register() {
                 }}
                 onClick={() => document.getElementById('college-proof-input')?.click()}
               >
-                <span className="upload-title">College proof</span>
-                <span className="upload-hint">Image or PDF. Drag and drop supported.</span>
+                <span className="upload-title">ID card</span>
+                <span className="upload-hint">Upload a clear image of your college ID card.</span>
                 <input
                   id="college-proof-input"
                   type="file"
-                  accept="image/*,application/pdf"
+                  accept="image/*"
                   onChange={(event) => handleDocumentChange(event.target.files?.[0])}
                 />
                 <div className="file-meta">
@@ -461,11 +464,7 @@ function Register() {
                 </div>
                 {documentPreview ? (
                   <div className="file-preview">
-                    {documentFile?.type?.includes('pdf') ? (
-                      <iframe title="Document preview" src={documentPreview}></iframe>
-                    ) : (
-                      <img src={documentPreview} alt="Document preview" />
-                    )}
+                    <img src={documentPreview} alt="ID card preview" />
                   </div>
                 ) : null}
                 {touched.documentFile && errors.documentFile ? <small className="error-text">{errors.documentFile}</small> : null}

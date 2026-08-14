@@ -20,6 +20,7 @@ CREATE TABLE users (
     role VARCHAR(20) NOT NULL CHECK (role IN ('student', 'teacher', 'admin')) DEFAULT 'student',
     college_id INTEGER REFERENCES colleges(id) ON DELETE SET NULL,
     profile_picture_url TEXT,
+    id_card_url TEXT,
     xp_points INTEGER DEFAULT 0,
     verification_status VARCHAR(20) NOT NULL CHECK (verification_status IN ('pending', 'verified', 'rejected')) DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT NOW(),
@@ -50,6 +51,7 @@ CREATE TABLE food_items (
     image_url TEXT,
     description TEXT,
     season_tag VARCHAR(20) CHECK (season_tag IN ('winter', 'summer', 'monsoon', 'all_season')) DEFAULT 'all_season',
+    created_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );

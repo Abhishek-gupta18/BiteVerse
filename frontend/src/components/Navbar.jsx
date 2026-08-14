@@ -1,10 +1,14 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
+import { useAuth } from "../context/AuthContext";
 import "../styles/Navbar.css";
 
 const Navbar = ({ onNotificationsToggle, userData, isSidebarOpen = false }) => {
   const [searchValue, setSearchValue] = useState("");
+  const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
+  const { logout } = useAuth();
 
   const notifications = [
     {
@@ -83,6 +87,26 @@ const Navbar = ({ onNotificationsToggle, userData, isSidebarOpen = false }) => {
               <img src={userData.avatar} alt="Profile" />
             </button>
           </div>
+
+          <button
+            type="button"
+            onClick={async () => {
+              await logout();
+              navigate('/login');
+            }}
+            style={{
+              background: '#ef4444',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '8px',
+              padding: '0.6rem 0.9rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+              marginLeft: '0.5rem',
+            }}
+          >
+            Logout
+          </button>
         </div>
       </div>
     </nav>

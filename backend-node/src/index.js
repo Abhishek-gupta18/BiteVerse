@@ -5,8 +5,13 @@ const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const cookieParser = require("cookie-parser");
-const { checkDbConnection } = require("./config/db");
+const { pool } = require("./config/db");
 const authRoutes = require("./routes/auth");
+const adminRoutes = require("./routes/admin");
+const collegeRoutes = require("./routes/colleges");
+const stallRoutes = require("./routes/stalls");
+const foodItemRoutes = require("./routes/food-items");
+const reviewRoutes = require("./routes/reviews");
 
 const app = express();
 
@@ -18,26 +23,23 @@ app.use(cookieParser());
 
 app.get("/api/health", async (req, res) => {
   try {
-    await checkDbConnection();
-    res.json({
-      status: "ok",
-      service: "node-backend",
-      database: "connected",
-      timestamp: new Date().toISOString(),
-    });
+    const result = await pool.query("SELECT 1");
+    if (result && result.rows) {
+      return res.json({ status: "ok", db: "connected" });
+    }
+    return res.status(500).json({ message: "Database check returned no rows" });
   } catch (error) {
-    res.status(503).json({
-      status: "degraded",
-      service: "node-backend",
-      database: "disconnected",
-      error: error.message,
-      timestamp: new Date().toISOString(),
-    });
+    return res.status(500).json({ message: error.message });
   }
 });
 
 // Auth routes
 app.use("/api/auth", authRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/colleges", collegeRoutes);
+app.use("/api/stalls", stallRoutes);
+app.use("/api/food-items", foodItemRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

@@ -2,12 +2,11 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import './Login.css'
 import { triggerPageTransition } from './Transition'
-import axios from 'axios'
-
-const API_BASE = 'http://localhost:5000/api'
+import { useAuth } from './context/AuthContext'
 
 function Login() {
   const navigate = useNavigate()
+  const { login } = useAuth()
   const [mode, setMode] = useState('password')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -34,20 +33,17 @@ function Login() {
 
     setLoading(true)
     try {
-      const response = await axios.post(`${API_BASE}/auth/login`, {
+      await login({
         [identity.includes('@') ? 'email' : 'username']: identity,
         password,
       })
 
       setSuccess('Login successful!')
-      localStorage.setItem('token', response.data.token)
-      localStorage.setItem('userId', response.data.userId)
-      localStorage.setItem('username', response.data.username)
 
       await triggerPageTransition(0, 0, { duration: 700 })
       navigate('/dashboard')
     } catch (err) {
-      setError(err.response?.data?.error || 'Login failed')
+      setError(err.message || 'Invalid credentials')
     } finally {
       setLoading(false)
     }
@@ -67,7 +63,7 @@ function Login() {
     try {
       const response = await axios.post(`${API_BASE}/auth/request-otp`, {
         phone,
-      })
+      }, { withCredentials: true })
 
       setSuccess('OTP sent successfully!')
       setOtpSent(true)
@@ -95,15 +91,12 @@ function Login() {
 
     setLoading(true)
     try {
-      const response = await axios.post(`${API_BASE}/auth/verify-otp`, {
+      await axios.post(`${API_BASE}/auth/verify-otp`, {
         identifier: phone,
         otp,
-      })
+      }, { withCredentials: true })
 
       setSuccess('Login successful!')
-      localStorage.setItem('token', response.data.token)
-      localStorage.setItem('userId', response.data.userId)
-      localStorage.setItem('username', response.data.username)
 
       await triggerPageTransition(0, 0, { duration: 700 })
       navigate('/dashboard')
