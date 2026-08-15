@@ -4,6 +4,11 @@ import { useAuth } from './context/AuthContext';
 export default function ProtectedRoute({ children }) {
   const { user, isLoading } = useAuth();
   const location = useLocation();
+  const isDevAuthBypassEnabled = import.meta.env.DEV && import.meta.env.VITE_DISABLE_AUTH !== 'false';
+
+  if (isDevAuthBypassEnabled) {
+    return children;
+  }
 
   if (isLoading) {
     return (

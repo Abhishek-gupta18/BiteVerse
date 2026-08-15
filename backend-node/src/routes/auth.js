@@ -9,6 +9,11 @@ const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const { pool } = require("../config/db");
 
 const router = express.Router();
+const isDevAuthBypassEnabled = process.env.NODE_ENV !== "production" && process.env.DEV_AUTH_BYPASS !== "false";
+
+if (isDevAuthBypassEnabled) {
+  console.warn("[auth] DEV_AUTH_BYPASS is enabled. Authentication and verification checks are bypassed.");
+}
 
 // Store OTPs temporarily (in production, use Redis)
 const otpStore = new Map();
@@ -64,6 +69,76 @@ const sanitizeUser = (user) => {
   return safeUser;
 };
 
+const resolveDevBypassUser = async () => {
+  try {
+    const existingUser = await pool.query(
+      `SELECT id, full_name, username, email, phone, role, college_id, profile_picture_url, id_card_url, xp_points, verification_status, created_at, updated_at
+       FROM users
+       ORDER BY
+         CASE WHEN role = 'admin' THEN 0 ELSE 1 END,
+         CASE WHEN verification_status = 'verified' THEN 0 ELSE 1 END,
+         id ASC
+       LIMIT 1`
+    );
+
+    if (existingUser.rows.length > 0) {
+      return sanitizeUser(existingUser.rows[0]);
+    }
+
+    const devEmail = "dev.bypass@biteverse.local";
+    const devUsername = "dev_bypass_user";
+    const devPasswordHash = await bcryptjs.hash("dev_bypass_password", 10);
+
+    try {
+      const inserted = await pool.query(
+        `INSERT INTO users (
+          full_name,
+          username,
+          email,
+          phone,
+          password_hash,
+          role,
+          verification_status,
+          created_at,
+          updated_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW())
+        RETURNING id, full_name, username, email, phone, role, college_id, profile_picture_url, id_card_url, xp_points, verification_status, created_at, updated_at`,
+        ["Developer Bypass", devUsername, devEmail, null, devPasswordHash, "admin", "verified"]
+      );
+
+      return sanitizeUser(inserted.rows[0]);
+    } catch (insertError) {
+      const fallbackUser = await pool.query(
+        `SELECT id, full_name, username, email, phone, role, college_id, profile_picture_url, id_card_url, xp_points, verification_status, created_at, updated_at
+         FROM users
+         WHERE email = $1 OR username = $2
+         LIMIT 1`,
+        [devEmail, devUsername]
+      );
+
+      if (fallbackUser.rows.length > 0) {
+        return sanitizeUser(fallbackUser.rows[0]);
+      }
+
+      throw insertError;
+    }
+  } catch (error) {
+    return {
+      id: 1,
+      full_name: "Developer Bypass",
+      username: "dev_bypass_user",
+      email: "dev.bypass@biteverse.local",
+      phone: null,
+      role: "admin",
+      college_id: null,
+      profile_picture_url: null,
+      id_card_url: null,
+      xp_points: 0,
+      verification_status: "verified",
+    };
+  }
+};
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -100,6 +175,11 @@ const generateToken = (userId, username) => {
 };
 
 const authenticateToken = async (req, res, next) => {
+  if (isDevAuthBypassEnabled) {
+    req.user = await resolveDevBypassUser();
+    return next();
+  }
+
   const token = req.cookies?.biteverse_token;
 
   if (!token) {
@@ -122,6 +202,11 @@ const authenticateToken = async (req, res, next) => {
 };
 
 const authenticateTokenOptional = async (req, res, next) => {
+  if (isDevAuthBypassEnabled) {
+    req.user = await resolveDevBypassUser();
+    return next();
+  }
+
   const token = req.cookies?.biteverse_token;
 
   if (!token) {
@@ -145,6 +230,10 @@ const authorizeRole = (allowedRoles = []) => {
   const roles = Array.isArray(allowedRoles) ? allowedRoles : [allowedRoles];
 
   return (req, res, next) => {
+    if (isDevAuthBypassEnabled) {
+      return next();
+    }
+
     if (!req.user) {
       return res.status(401).json({ error: "Authentication required" });
     }
@@ -158,6 +247,10 @@ const authorizeRole = (allowedRoles = []) => {
 };
 
 const requireVerified = (req, res, next) => {
+  if (isDevAuthBypassEnabled) {
+    return next();
+  }
+
   if (!req.user) {
     return res.status(401).json({ error: "Authentication required" });
   }

@@ -3,12 +3,27 @@ import { createContext, useContext, useEffect, useState } from 'react';
 const AuthContext = createContext(null);
 
 const API_BASE = 'http://localhost:5000/api';
+const isDevAuthBypassEnabled = import.meta.env.DEV && import.meta.env.VITE_DISABLE_AUTH !== 'false';
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const loadSession = async () => {
+    if (isDevAuthBypassEnabled) {
+      setUser({
+        id: -1,
+        full_name: 'Developer Mode',
+        username: 'dev_mode',
+        email: 'dev@biteverse.local',
+        role: 'admin',
+        verification_status: 'verified',
+        college_id: null,
+      });
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch(`${API_BASE}/auth/me`, {
         method: 'GET',

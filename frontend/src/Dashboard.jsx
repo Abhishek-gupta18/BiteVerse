@@ -247,6 +247,7 @@ const Dashboard = () => {
 
   return (
     <div className="biteverse-shell">
+      <div className="aurora-layer" aria-hidden="true" />
       <div className="dashboard-content">
         <aside className={`biteverse-sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
           <button className="sidebar-collapse-btn" type="button" onClick={() => setSidebarCollapsed((value) => !value)}>
